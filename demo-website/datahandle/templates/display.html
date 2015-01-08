@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>燃气综合管理系统</title>
+</head>
+
+<body>
+<table background-color=#EEEEEE width=100% height=100% border="0" text-align=top>
+<tr>
+<td colspan="2" style="background-color:#EEEEEE;text-align:center;">
+<h1 style="font-family:华文行楷;color:blue;text-align:center;">燃气综合管理系统</h1>
+</td>
+</tr>
+
+<tr valign="top">
+<td style="background-color:#ffff99;width:10%;text-align:center;">
+<b>功能</b>
+<br />设备列表
+<br />数据统计
+<br />综合分析
+</td>
+<td align="center" style="background-color:#EEEEEE;height:80%;width:90%;">
+    {% for item in item_list %}
+    <table border="6">
+    <caption>{{ item.item_id }}. {{ item.item_name}} ({{ item.item_addr }})</caption>
+    <tr align="center" >
+    <td> 统计编号 </td>
+    <td> 周期内总流量 (L) </td>
+    <td> 更新时间 </td>
+    </tr>
+    <tr align="center">
+    <td> 1 </td>
+    <td> {{ item.item_data }} </td>
+    <td> {{ item.item_lastdate }} </td>
+    </tr>
+    </table>
+    <br /> 
+    {% endfor %} 
+</td>
+</tr>
+
+</table>
+</body>
+</html>
+
