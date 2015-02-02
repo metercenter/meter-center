@@ -41,4 +41,5 @@ while True:
             item.save()
 #tcpCliSock.send('[%s] %s' %(ctime(), data))
 
+
 tcpSerSock.close()
