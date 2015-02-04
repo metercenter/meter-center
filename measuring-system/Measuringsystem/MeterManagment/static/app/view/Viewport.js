@@ -15,7 +15,7 @@ Ext.define('ExtMVCOne.view.Viewport', {
         xtype : 'component',
         cls : 'logo',
         id: "app-header-title",
-        html : 'ExtJs MVC 系统'
+        html : '计量管理系统'
       }, "->", {
         iconCls : "logout",
         tooltip : "退出",

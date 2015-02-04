@@ -5,6 +5,7 @@
     autoLoad: true,
     proxy: {
         type: "ajax",
+        contentType: "application/json; charset=utf-8;",
         api: {
             read: 'Users/List',
             destroy: 'Users/Delete',

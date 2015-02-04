@@ -2,9 +2,10 @@
   extend : 'Ext.app.Controller',
   requires : [ 'ExtMVCOne.view.Meters.View',
                'ExtMVCOne.view.data.Grid',
-               'ExtMVCOne.view.meter.Grid'],
-  models : [ 'Company','Company' ],
-  stores : [ 'Companies','Companies' ],
+               'ExtMVCOne.view.meter.Grid'
+              ],
+  models : [ 'Data','Meter' ],
+  stores : [ 'Data','Meter' ],
   views: ['data.Grid','meter.Grid'],
   refs : [ {
     ref : "ContentPanel",

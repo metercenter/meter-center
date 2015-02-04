@@ -22,14 +22,14 @@ Ext.define('ExtMVCOne.view.user.List', {
 
   items: [
       {
-          title: 'Meter',
+          title: '流量计',
           flex: 1,
           margin: '0 0 10 0',
           xtype: 'metergrid'
           
       },
       {
-          title: 'Data',
+          title: '数据',
           flex: 1,
           xtype: 'datagrid'
       }
