@@ -6,7 +6,7 @@
             activate: {
               single: true,
               fn: function (panel) {
-                Ext.Msg.alert("提示信息", panel.title);
+                Ext.Msg.alert("提示信息", "该模块正在建设中...");
               }
             }
           },

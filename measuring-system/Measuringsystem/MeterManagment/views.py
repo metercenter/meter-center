@@ -6,6 +6,7 @@ from MeterManagment.models import User
 from MeterManagment.models import Data
 from django.http import HttpResponse
 from django.utils import timezone
+from django.utils import formats
 import json
 from datetime import datetime
 
@@ -99,7 +100,7 @@ def getData(requst):
             "id": each.pk,
             "data_id": each.data_id,
             "meter_id":     each.meter_id,
-            "data_date": each.data_date,
+            "data_date": formats.date_format(each.data_date,"SHORT_DATETIME_FORMAT"),
             "data_vb": each.data_vb,
             "data_vm": each.data_vm,
             "data_p":     each.data_p,
@@ -107,7 +108,7 @@ def getData(requst):
             "data_qb": each.data_qb,    
             "data_qm": each.data_qm,          
         }
-        print(each.data_date)
+        print(formats.date_format(each.data_date,"SHORT_DATETIME_FORMAT"))
         responsedata.append(each_dict)
     response = {}
     response['status'] = 'SUCESS'

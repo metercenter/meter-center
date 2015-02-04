@@ -21,12 +21,12 @@ Ext.define('ExtMVCOne.view.meter.Grid', {
     me.width = 750;
     me.columns = [ {
       text : '流量计编号',
-      width : '12%',
+      width : '8%',
       sortable : false,
       dataIndex : 'meter_id'
     }, {
       text : '用户编号',
-      width : '12%',
+      width : '6%',
       sortable : true,
 //      formatter : 'usMoney',
       dataIndex : 'user_id'
