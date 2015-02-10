@@ -12,8 +12,10 @@ from datetime import datetime
 
 # Create your views here.
 def mainPage(request):
-    print('helloworld')
     return render_to_response('index.html')
+
+def loginPage(request):
+    return render_to_response('login.html')
 
 def getMeter(request):
     posts = Meter()
