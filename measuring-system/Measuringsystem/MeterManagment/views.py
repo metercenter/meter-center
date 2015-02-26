@@ -1,21 +1,24 @@
 # coding=utf8
-from django.shortcuts import render
 from django.shortcuts import render_to_response
 from MeterManagment.models import Meter
 from MeterManagment.models import User
 from MeterManagment.models import Data
 from django.http import HttpResponse
-from django.utils import timezone
 from django.utils import formats
 import json
 from datetime import datetime
+from django.template import RequestContext
+from django.contrib.auth import authenticate
+
 
 # Create your views here.
 def mainPage(request):
-    return render_to_response('index.html')
+#     return render_to_response('index.html')
+    return render_to_response('index.html', context_instance=RequestContext(request))
 
 def loginPage(request):
-    return render_to_response('login.html')
+#     return render_to_response('login.html')
+    return render_to_response('login.html', context_instance=RequestContext(request))
 
 def getMeter(request):
     posts = Meter()
@@ -115,6 +118,37 @@ def getData(requst):
     response = {}
     response['status'] = 'SUCESS'
     response['data'] = responsedata
-#     print(responsedata)
     print(json.dumps(response))
     return HttpResponse(json.dumps(response),content_type ="application/json")
+
+def submit(request):
+#     user = authenticate(username=request.POST['login-username'], password=request.POST['login-password'])
+#     if user is None:
+#         print(user)
+#         return render_to_response('login.html', context_instance=RequestContext(request))
+    User.objects.filter(user_name='张三').delete()
+    post = User()
+    post.user_name = '张三'
+    post.user_addr = 'xiaole18393@cisco.com'
+    post.user_total = '管理员'
+    post.user_lastmonth = '1998-3-4'
+    post.save()
+    if request.method == "POST":
+            try:
+                dbuser = User.objects.get(user_name = request.POST['login-username'])
+                print(dbuser.user_addr)
+                print request.POST['login-username']
+                print request.POST['login-password']
+            except User.DoesNotExist:
+                print('user does not exist')
+            return render_to_response('index.html', context_instance=RequestContext(request))
+
+
+    
+# def result(request):
+#     
+#     print("sb")
+#     p = request.POST['answer']
+#     return render_to_response('result.html', {'answer': p}, context_instance=RequestContext(request))
+    
+    
