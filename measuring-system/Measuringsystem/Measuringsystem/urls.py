@@ -18,5 +18,5 @@ urlpatterns = patterns('',
     url(r'^get-data', getData),
     url(r'^login', loginPage),
     url(r'^$', mainPage),
-    url(r'^submit',submit),
+    url(r'^welcome',submit),
 )

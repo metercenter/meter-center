@@ -9,9 +9,11 @@ import json
 from datetime import datetime
 from django.template import RequestContext
 from django.contrib.auth import authenticate
+from django.contrib.auth.decorators import login_required
 
 
 # Create your views here.
+@login_required(login_url='/login/')
 def mainPage(request):
 #     return render_to_response('index.html')
     return render_to_response('index.html', context_instance=RequestContext(request))
@@ -98,7 +100,7 @@ def getData(requst):
 #     data_t = models.CharField(max_length=200)
 #     data_qb = models.CharField(max_length=200)
 #     data_qm = models.CharField(max_length=200)
-    print(datetime.now());
+#     print(datetime.now());
     responsedata = []
     for each in Data.objects.all():
         each_dict = {
@@ -113,12 +115,12 @@ def getData(requst):
             "data_qb": each.data_qb,    
             "data_qm": each.data_qm,          
         }
-        print(formats.date_format(each.data_date,"SHORT_DATETIME_FORMAT"))
+#         print(formats.date_format(each.data_date,"SHORT_DATETIME_FORMAT"))
         responsedata.append(each_dict)
     response = {}
     response['status'] = 'SUCESS'
     response['data'] = responsedata
-    print(json.dumps(response))
+#     print(json.dumps(response))
     return HttpResponse(json.dumps(response),content_type ="application/json")
 
 def submit(request):
@@ -133,16 +135,18 @@ def submit(request):
     post.user_total = '管理员'
     post.user_lastmonth = '1998-3-4'
     post.save()
+    mm = User.objects.all();
+    print(mm.first())
     if request.method == "POST":
             try:
                 dbuser = User.objects.get(user_name = request.POST['login-username'])
                 print(dbuser.user_addr)
                 print request.POST['login-username']
                 print request.POST['login-password']
+                return render_to_response('index.html', context_instance=RequestContext(request))
             except User.DoesNotExist:
                 print('user does not exist')
-            return render_to_response('index.html', context_instance=RequestContext(request))
-
+    return render_to_response('login.html', context_instance=RequestContext(request))
 
     
 # def result(request):
