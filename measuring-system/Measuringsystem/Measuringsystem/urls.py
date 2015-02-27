@@ -5,7 +5,7 @@ from MeterManagment.views import getMeter
 from MeterManagment.views import userList
 from MeterManagment.views import getData
 from MeterManagment.views import loginPage
-from MeterManagment.views import submit
+from MeterManagment.views import login_view
 
 urlpatterns = patterns('',
     # Examples:
@@ -17,6 +17,6 @@ urlpatterns = patterns('',
     url(r'^Users/List', userList),
     url(r'^get-data', getData),
     url(r'^login', loginPage),
-    url(r'^$', mainPage),
-    url(r'^welcome',submit),
+#     url(r'^$', mainPage),
+    url(r'^$',login_view),
 )

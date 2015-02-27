@@ -11,6 +11,7 @@ class User(models.Model):
     user_addr = models.CharField(max_length=200)
     user_total = models.CharField(max_length=200)
     user_lastmonth = models.CharField(max_length=200)
+    user_password = models.CharField(max_length=10, blank = True)
     def __unicode__(self):              # __unicode__ on Python 2
         return self.user_name
     
