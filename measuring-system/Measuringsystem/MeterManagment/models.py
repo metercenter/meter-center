@@ -48,6 +48,18 @@ class Data(models.Model):
 class DataAdmin(admin.ModelAdmin):
     list_display = ('data_id', 'meter_id', 'data_date', 'data_vb', 'data_vm', 'data_p', 'data_t', 'data_qb', 'data_qm')
     
+    
+class UserGroup(models.Model):
+    user_id = models.CharField(max_length = 24)
+    user_name = models.CharField(max_length=200)
+    user_password = models.CharField(max_length=10)
+    def __unicode__(self):              # __unicode__ on Python 2
+        return 'ID: '+ self.user_name + ' name: ' +self.user_password + ' password '+ self.user_id
+    
+class UserGroupAdmin(admin.ModelAdmin):
+    list_display = ('user_id', 'user_name', 'user_index', 'user_addr', 'user_total', 'user_lastmonth')
+
+
 admin.site.register(User, UserAdmin)
 admin.site.register(Meter, MeterAdmin)
 admin.site.register(Data, DataAdmin)

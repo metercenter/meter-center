@@ -2,7 +2,7 @@
 from django.shortcuts import render_to_response
 from MeterManagment.models import Meter
 from MeterManagment.models import User
-from MeterManagment.models import Data
+from MeterManagment.models import Data, UserGroup
 from django.http import HttpResponse
 from django.utils import formats
 import json
@@ -165,9 +165,9 @@ def login_view(request):
         login(request, user)    
         print request.user    
         try:
-            dbuser = User.objects.get(user_name = request.POST['login-username'], user_password = request.POST['login-password'])
-            if dbuser is not None:
-                return render_to_response('index.html', context_instance=RequestContext(request))
+#             dbuser = User.objects.get(user_name = request.POST['login-username'], user_password = request.POST['login-password'])
+#             if dbuser is not None:
+            return render_to_response('index.html', context_instance=RequestContext(request))
         except User.DoesNotExist:
             print('user does not exist')
     return render_to_response('login.html', context_instance=RequestContext(request))
@@ -175,3 +175,29 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return render_to_response('login.html', context_instance=RequestContext(request))
+
+
+def user_group_show(request):
+    user_id = UserGroup.objects.get(id = 0).user_id
+    user_group_json = generateTreeJSON(user_id);
+    print(user_group_json)
+    response = {}
+    response['status'] = 'SUCESS'
+    response['data'] = user_group_json
+#     return HttpResponse(json.dumps(response),content_type ="application/json")
+    return HttpResponse(user_group_json,content_type ="application/json")
+
+def generateTreeJSON(user_id):
+    firstChild = UserGroup.objects.filter(user_name__range = (user_id,user_id[0:-1]+str(int(user_id[-1])+1))).extra(where = ['LENGTH(user_name) > ' + str(len(user_id))]).extra(select = { 'minValue' : "MIN(user_name)" })
+    myself = UserGroup.objects.filter(user_name = user_id)
+    if firstChild[0].user_name is None:
+        #is leaf node
+        return '{"text" : "'+myself[0].user_password+'", "leaf" : true}'
+    else:
+        #is parent node
+        children = UserGroup.objects.filter(user_name__range = (user_id,user_id[0:-1]+str(int(user_id[-1])+1))).extra(where = ['LENGTH(user_name) = ' + str(len(firstChild[0].user_name))])
+        strJson = ''
+        for each in children:
+            strJson = strJson + generateTreeJSON(each.user_name) + ', '
+        strJson = strJson[0:-2] 
+        return '{"text" : "'+myself[0].user_password+'", "children" : ['+strJson+']}'
