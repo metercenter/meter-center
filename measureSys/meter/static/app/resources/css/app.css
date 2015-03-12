@@ -1,0 +1,28 @@
+﻿#North,#South{
+
+     background:#6C86AE !important;
+     background-image: -webkit-gradient(linear,50% 0%, 50% 100%, color-stop(0%, #6C86AE), color-stop(100%, #2a3f5d)) !important;
+     background-image: -webkit-linear-gradient(top,#6C86AE, #2a3f5d) !important;
+     background-image: -moz-linear-gradient(top,#6C86AE, #2a3f5d) !important;
+     background-image: -o-linear-gradient(top,#6C86AE, #2a3f5d) !important;
+     background-image: -ms-linear-gradient(top,#6C86AE, #2a3f5d) !important;
+     background-image: linear-gradient(top,#6C86AE, #2a3f5d) !important;
+     border: 1px solid #567422 !important;
+     //#526C95
+}
+
+
+
+.logo {
+  padding: 10px 10px 10px 31px !important;
+  /*background: url(../images/logo.png)no-repeat 10px 12px;*/
+  color: #fff !important ;
+  font-size: 18px !important;
+  font-weight: bold !important;
+  text-shadow: 0 1px 0 #4e691f !important;
+
+}
+
+.logout{
+     background:url("../Images/logout.png") !important;
+}
