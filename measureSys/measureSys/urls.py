@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
-from meter.views import mainPage
+from meter.views import mainPage, logout_view
 from meter.views import getMeter
 from meter.views import userList
 from meter.views import getData
@@ -18,6 +18,7 @@ urlpatterns = patterns('',
     url(r'^get-data', getData),
     url(r'^$', loginPage),
     url(r'^login', loginPage),
+    url(r'^Logout',logout_view),
     url(r'^main',login_view),
     url(r'^get-user-group',user_group_show),
 )

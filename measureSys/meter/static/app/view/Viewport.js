@@ -21,7 +21,7 @@ Ext.define('ExtMVCOne.view.Viewport', {
         tooltip : "退出",
         scale : "large",
         handler : function() {
-          window.location = "Account/Logout";
+          window.location = "Logout";
         }
       } ]
     },

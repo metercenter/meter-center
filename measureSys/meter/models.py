@@ -7,11 +7,11 @@ class User(models.Model):
     user_name = models.CharField(max_length=200)
     user_password = models.CharField(max_length=10)
     user_company = models.CharField(max_length=200)
-    user_addr = models.CharField(max_length=200, blank = True)
-    user_phone = models.CharField(max_length=20, blank = True)
-    user_index = models.CharField(max_length=200, blank = True)
-    user_total = models.CharField(max_length=200, blank = True)
-    user_lastmonth = models.CharField(max_length=200, blank = True)
+    user_addr = models.CharField(max_length=200)
+    user_phone = models.CharField(max_length=20)
+    user_index = models.CharField(max_length=200)
+    user_total = models.CharField(max_length=200)
+    user_lastmonth = models.CharField(max_length=200)
     def __unicode__(self):              # __unicode__ on Python 2
         return self.user_name
     

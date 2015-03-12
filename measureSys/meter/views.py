@@ -16,38 +16,57 @@ from django.contrib.auth.decorators import login_required
 @login_required(login_url='/login/')
 def mainPage(request):
 #     return render_to_response('index.html')
-    return render_to_response('index.html', context_instance=RequestContext(request))
+    try:
+        if  not 'user_id' in request.session:
+            return render_to_response('index.html', context_instance=RequestContext(request))
+    except:
+        print('session has been closed')
+    return render_to_response('login.html', context_instance=RequestContext(request))
 
 def loginPage(request):
 #     return render_to_response('login.html')
-    return render_to_response('login.html', context_instance=RequestContext(request))
+    if 'user_id' in request.session:
+        del request.session['user_id']
+    # return render_to_response('login.html', context_instance=RequestContext(request))
+    return render_to_response('login.html')
 
 def getMeter(request):
     posts = Meter()
     posts.meter_id = 1
-    posts.user_id = 2
-    posts.meter_name = '流量计'
+    user = User.objects.get(user_id = '0001000100000001')
+    posts.user = user
+    #posts.user_id = 2
+    posts.meter_name = '万达流量计'
     posts.meter_type =  1
+    posts.user_id = '0001000100000001'
     posts.meter_index = 3
-    posts.meter_eui = 'eui64'
+    posts.meter_eui = 'wandaguangchang'
     posts.user_meterdata = '1,2,3,4'
     posts.user_revise = '1'
     posts.user_reviseid = '2,3,4,5'
     posts.save()
     responseData = []
-    for each in  Meter.objects.all():
-        each_dict = {
-              "meter_id": each.meter_id,
-              "user_id": each.user_id,
-              "meter_name": each.meter_name,
-              "meter_type": each.meter_type,
-              "meter_index": each.meter_index,
-              "meter_eui": each.meter_eui,              
-              "user_meterdata": each.user_meterdata,
-              "user_revise": each.user_revise,              
-              "user_reviseid": each.user_reviseid,
+    user_id = request.session['user_id']
+    Children = User.objects.filter(user_id__range = (user_id,user_id[0:-1]+str(int(user_id[-1])+1))).extra(where = ['LENGTH(user_id) > ' + str(len(user_id))])
+    print len(Children)
+    for i in range (0, len(Children)):
+        print('==================')
+        print(Children[i].user_id)
+        print('==================')
+        for each in  Meter.objects.filter(user_id = Children[i].user_id):
+            print Children[i].user_id
+            each_dict = {
+                  "meter_id": each.meter_id,
+                  "user_id": each.user_id,
+                  "meter_name": each.meter_name,
+                  "meter_type": each.meter_type,
+                  "meter_index": each.meter_index,
+                  "meter_eui": each.meter_eui,              
+                  "user_meterdata": each.user_meterdata,
+                  "user_revise": each.user_revise,              
+                  "user_reviseid": each.user_reviseid,
             }
-        responseData.append(each_dict)
+            responseData.append(each_dict)
     response = {}
     response['status'] = 'SUCESS'
     response['data'] = responseData
@@ -56,11 +75,12 @@ def getMeter(request):
 
 def userList(requst):
     post = User()
-    post.user_name = '张三'
-    post.user_addr = 'xiaole18393@cisco.com'
-    post.user_total = '管理员'
-    post.user_lastmonth = '1998-3-4'
-    post.save()
+    post.user_name = 'subuser'
+    post.user_id = '0001000100000001'
+    post.user_company = '海底捞'
+    post.user_password = '1234'
+
+    #--------------------------------------------------------------- post.save()
 #     responsedata = serializers.serialize("json", UserList.objects.all())
     userlist =  User.objects.all()
     responsedata = []
@@ -158,7 +178,7 @@ def submit(request):
 #     p = request.POST['answer']
 #     return render_to_response('result.html', {'answer': p}, context_instance=RequestContext(request))
     
-def login_view(request):    
+def login_view1(request):    
     user = authenticate(username=request.POST['login-username'], password=request.POST['login-password'])
     print (user)
     if user is not None:
@@ -166,26 +186,44 @@ def login_view(request):
         print request.user    
         try:
 #             dbuser = User.objects.get(user_name = request.POST['login-username'], user_password = request.POST['login-password'])
-#             if dbuser is not None:
+#             if fordbuser is not None:
             return render_to_response('index.html', context_instance=RequestContext(request))
         except User.DoesNotExist:
             print('user does not exist')
     return render_to_response('login.html', context_instance=RequestContext(request))
 
-def logout_view(request):
+def login_view(request):
+    try:
+        if 'user_id' in request.session:
+            return render_to_response('index.html', context_instance=RequestContext(request))
+        username = request.POST['login-username']
+        password = request.POST['login-password']
+        user = User.objects.get(user_name = username, user_password = password)
+        if user.user_id is not None:
+            request.session['user_id'] = user.user_id
+            return render_to_response('index.html', context_instance=RequestContext(request))
+    except:
+        print ('user does not exist')
+    loginPage(request)
+    return render_to_response('login.html', context_instance=RequestContext(request))
+
+def logout_view1(request):
     logout(request)
     return render_to_response('login.html', context_instance=RequestContext(request))
 
+def logout_view(request):
+    del request.session['user_id']
+    loginPage(request)
+    return render_to_response('login.html', context_instance=RequestContext(request))
 
 def user_group_show(request):
-    userID = User.objects.get(id = 1).user_id
+    if  not 'user_id' in request.session:
+        loginPage(request)
+        return render_to_response('login.html', context_instance=RequestContext(request))
+    print request.session['user_id']
+    userID = User.objects.get(user_id = request.session['user_id']).user_id
 #     userID = '0001'
     user_group_json = generateTreeJSON(userID);
-    print(user_group_json)
-    response = {}
-    response['status'] = 'SUCESS'
-    response['data'] = user_group_json
-#     return HttpResponse(json.dumps(response),content_type ="application/json")
     return HttpResponse(user_group_json,content_type ="application/json")
 
 def generateTreeJSON(user_id):
