@@ -17,7 +17,7 @@ Ext.define('ExtMVCOne.store.Files', {
     
 //    folderSort: true
     root: {
-      text: '当前用户',
+      text: '我公司',
       expanded: true
     },
 //    
