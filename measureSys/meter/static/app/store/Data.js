@@ -1,4 +1,4 @@
-Ext.define('ExtMVCOne.store.Data', {
+var dataStore = Ext.define('ExtMVCOne.store.Data', {
     extend: 'Ext.data.Store',
     alias: 'store.data',
     model: 'ExtMVCOne.model.Data',

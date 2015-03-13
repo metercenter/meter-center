@@ -17,11 +17,19 @@ Ext.define('ExtMVCOne.view.user.Tree', {
           expandDelay:100
        }
     },
+    listeners: {
+      itemclick: function(view, record, item, index, e, eOpts) {
+//        console.log(item);
+//        alert(record.data.text);
+      }
+    },
+
   initComponent: function() {
         var store = Ext.create('ExtMVCOne.store.Files');
         Ext.apply(this, {
-            store: store
+            store: store,
         });
+        this.rootVisible = false;
         this.callParent(arguments);
     }
 

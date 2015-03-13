@@ -2,7 +2,7 @@
   extend : 'Ext.panel.Panel',
   alias : 'widget.metersview',
   requires : [ 'Ext.layout.container.Border', 'ExtMVCOne.view.user.List',
-      'ExtMVCOne.view.user.Tree' ],
+      'ExtMVCOne.view.user.Tree', 'ExtMVCOne.model.UserLevel' ],
   layout : 'border',
   bodyBorder : false,
 
@@ -35,15 +35,12 @@
       style : 'margin:10px 5px 10px 50px;',
       iconAlign : 'top',
       handler : function() {
-        new Ext.window.Window({
-          autoShow : true,
-          title : '客户信息',
-           fieldDefaults: {
-           labelAlign: 'right',
-           labelWidth: 115,
-           msgTarget: 'side'
-           },
-          //          
+        var myForm = new Ext.form.Panel({
+          width : 500,
+          height : 300,
+          title : '注册用户',
+          floating : true,
+          closable : true,
           items : [ {
             xtype : 'fieldset',
             title : '用户信息',
@@ -79,7 +76,7 @@
               anchor : '100%'
             },
 
-            items : [{
+            items : [ {
               fieldLabel : '客户名称',
               name : 'company'
             }, {
@@ -87,24 +84,45 @@
               name : 'phone',
             }, {
               xtype : 'combobox',
-              fieldLabel : '客户等级',
-              name : 'state',
-//              store : {
-//                type : 'states'
-//              },
-              valueField : 'abbr',
-              displayField : 'level',
-              typeAhead : true,
+              id : 'user_company',
+              fieldLabel : '主管单位',
+              displayField : 'user_company',
+              store : {
+                fields : [ 'user_id', 'user_company' ],
+                proxy : {
+                  type : 'ajax',
+                  url : '/get-user-level',
+                  reader : {
+                    type : 'json'
+                  }
+                },
+                autoLoad : true
+              },
               queryMode : 'local',
-              emptyText : '选择用户类型'
             } ]
           } ],
           //
           buttons : [ {
             text : '注册',
-            formBind : true
+            formBind : true,
+            handler : function() {
+              // alert('nihao');
+              console.log(this);
+              var f = myForm.getForm();
+              Ext.Ajax.request({
+                url : '/register_company',
+                method : 'POST',
+                params : f.getValues(),
+                success: function(response,opts) {
+                  myForm.hide();
+                },
+                failure : function() {
+                }
+              });
+            }
           } ]
         });
+        myForm.show();
       }
     }, {
       xtype : 'button',
@@ -113,7 +131,96 @@
       scale : 'medium',
       iconAlign : 'top',
       handler : function() {
-        window.location.href = "/get-excel-file";
+        var myForm = new Ext.form.Panel({
+          width : 500,
+          height : 330,
+          title : '流量计信息',
+          floating : true,
+          closable : true,
+          items : [ {
+            xtype : 'fieldset',
+            title : '流量计基本信息',
+            defaultType : 'textfield',
+            defaults : {
+              anchor : '100%'
+            },
+
+            items : [ {
+              allowBlank : false,
+              fieldLabel : '用户/流量计名称',
+              name : 'meter_name',
+              emptyText : '用户或流量名称'
+            },{
+              allowBlank : false,
+              fieldLabel : '流量计标示',
+              name : 'meter_eui',
+              emptyText : 'EUI64编号'
+            }, {
+              allowBlank : false,
+              fieldLabel : '流量计类型',
+              name : 'meter_type',
+              emptyText : '数值',
+            } ]
+          }, {
+            xtype : 'fieldset',
+            title : '校准及参考值',
+
+            defaultType : 'textfield',
+            defaults : {
+              anchor : '100%'
+            },
+
+            items : [ {
+              fieldLabel : '用户校准值',
+              name : 'user_revise'
+            }, {
+              fieldLabel : '标况参考值',
+              name : 'meter_qb',
+            }, {
+              fieldLabel : '工况参考值',
+              name : 'meter_qm',
+            },{
+              xtype : 'combobox',
+              id : 'user_company',
+              fieldLabel : '隶属客户',
+              displayField : 'user_company',
+              store : {
+                fields : [ 'user_id', 'user_company' ],
+                proxy : {
+                  type : 'ajax',
+                  url : '/get-usermeter-level',
+                  reader : {
+                    type : 'json'
+                  }
+                },
+                autoLoad : true
+              },
+              queryMode : 'local',
+            } ]
+          } ],
+          //
+          buttons : [ {
+            text : '登记',
+            formBind : true,
+            handler : function() {
+              // alert('nihao');
+              console.log(this);
+              var f = myForm.getForm();
+              Ext.Ajax.request({
+                url : '/register_meter',
+                method : 'POST',
+                params : f.getValues(),
+                success: function() {
+                  myForm.hide();
+                },
+                failure : function() {
+                  console.log('failure');
+                }
+              });
+            }
+          } ]
+        });
+        myForm.show();
       }
     } ]
   }, {

@@ -44,7 +44,7 @@ def getMeter(request):
     posts.user_meterdata = '1,2,3,4'
     posts.user_revise = '1'
     posts.user_reviseid = '2,3,4,5'
-    posts.save()
+#     posts.save()
     responseData = []
     user_id = request.session['user_id']
     Children = User.objects.filter(user_id__range = (user_id,user_id[0:-1]+str(int(user_id[-1])+1))).extra(where = ['LENGTH(user_id) > ' + str(len(user_id))])
@@ -178,24 +178,25 @@ def submit(request):
 #     p = request.POST['answer']
 #     return render_to_response('result.html', {'answer': p}, context_instance=RequestContext(request))
     
-def login_view1(request):    
-    user = authenticate(username=request.POST['login-username'], password=request.POST['login-password'])
-    print (user)
-    if user is not None:
-        login(request, user)    
-        print request.user    
-        try:
-#             dbuser = User.objects.get(user_name = request.POST['login-username'], user_password = request.POST['login-password'])
-#             if fordbuser is not None:
-            return render_to_response('index.html', context_instance=RequestContext(request))
-        except User.DoesNotExist:
-            print('user does not exist')
-    return render_to_response('login.html', context_instance=RequestContext(request))
+# def login_view1(request):    
+#     user = authenticate(username=request.POST['login-username'], password=request.POST['login-password'])
+#     print (user)
+#     if user is not None:
+#         login(request, user)    
+#         print request.user    
+#         try:
+# #             dbuser = User.objects.get(user_name = request.POST['login-username'], user_password = request.POST['login-password'])
+# #             if fordbuser is not None:
+#             return render_to_response('index.html', context_instance=RequestContext(request))
+#         except User.DoesNotExist:
+#             print('user does not exist')
+#     return render_to_response('login.html', context_instance=RequestContext(request))
 
 def login_view(request):
     try:
         if 'user_id' in request.session:
             return render_to_response('index.html', context_instance=RequestContext(request))
+        print("=================")
         username = request.POST['login-username']
         password = request.POST['login-password']
         user = User.objects.get(user_name = username, user_password = password)
@@ -223,7 +224,7 @@ def user_group_show(request):
     print request.session['user_id']
     userID = User.objects.get(user_id = request.session['user_id']).user_id
 #     userID = '0001'
-    user_group_json = generateTreeJSON(userID);
+    user_group_json = '{ "children": '+generateTreeJSON(userID)+'}';
     return HttpResponse(user_group_json,content_type ="application/json")
 
 def generateTreeJSON(user_id):
@@ -240,3 +241,120 @@ def generateTreeJSON(user_id):
             strJson = strJson + generateTreeJSON(each.user_id) + ', '
         strJson = strJson[0:-2] 
         return '{"text" : "'+myself[0].user_company+'", "children" : ['+strJson+']}'
+    
+def user_level(request):
+    if  not 'user_id' in request.session:
+        loginPage(request)
+        return render_to_response('login.html', context_instance=RequestContext(request))
+    responsedata = []
+    for each in User.objects.filter(user_id__startswith = request.session['user_id']).extra(where = ['LENGTH(user_id) < 5']):
+        each_dict = {
+            "user_id": each.user_id,
+            "user_company":     each.user_company,    
+        }
+#         print(formats.date_format(each.data_date,"SHORT_DATETIME_FORMAT"))
+        responsedata.append(each_dict)
+    response = {}
+    response['status'] = 'SUCCESS'
+    response['data'] = responsedata
+#     print(json.dumps(response))
+    return HttpResponse(json.dumps(responsedata),content_type ="application/json")
+
+def meter_level(request):
+    if  not 'user_id' in request.session:
+        loginPage(request)
+        return render_to_response('login.html', context_instance=RequestContext(request))
+    responsedata = []
+    for each in User.objects.filter(user_id__startswith = request.session['user_id']).extra(where = ['LENGTH(user_id)  = 8']):
+        each_dict = {
+            "user_id": each.user_id,
+            "user_company":     each.user_company,    
+        }
+#         print(formats.date_format(each.data_date,"SHORT_DATETIME_FORMAT"))
+        responsedata.append(each_dict)
+    response = {}
+    response['status'] = 'SUCCESS'
+    response['data'] = responsedata
+#     print(json.dumps(response))
+    return HttpResponse(json.dumps(responsedata),content_type ="application/json")
+
+def generateID(userName):
+    user = User.objects.filter(user_company__exact = userName)
+    brother = User.objects.filter(user_id__startswith = user[0].user_id).extra(where = ['LENGTH(user_id) = ' + str(len(user[0].user_id)+4)]).order_by('user_id')
+    if len(brother) == 0:
+        return user[0].user_id+'0001'
+#     if len(brother) == 0:
+#         return user[0].user_id+'0002'
+    ID = brother[0].user_id
+    for i in range(1,len(brother)):
+        if int(brother[i].user_id) - int(ID) >1:
+            return ID[0:-1]+str(int(ID[-1])+1)
+        else:
+            ID = brother[i].user_id
+            
+    return ID[0:-1]+str(int(ID[-1])+1)
+
+def register_company(request):
+    if  not 'user_id' in request.session:
+        loginPage(request)
+        return render_to_response('login.html', context_instance=RequestContext(request))
+    print request.POST['user']
+    userName = request.POST['user']
+    userPassword = request.POST['pass']
+    userCompany = request.POST['company']
+    userPhone = request.POST['phone']
+    userParent = request.POST['user_company-inputEl']
+    user = User();
+    user.user_name = userName;
+    user.user_password = userPassword
+    user.user_company = userCompany
+    user.user_phone = userPhone;
+    user.user_id = generateID(userParent)
+    user.save();
+    response = {}
+    response['status'] = 'SUCESS'
+    response['data'] = {}
+#     print(json.dumps(response))
+    return HttpResponse(json.dumps(response),content_type ="application/json")
+
+def generateMeterID(userName):
+    user = User.objects.filter(user_company__exact = userName)
+    children = User.objects.filter(user_id__startswith = user[0].user_id).extra(where = ['LENGTH(user_id) = ' + str(len(user[0].user_id)+8)]).order_by('user_id')
+    if len(children) == 0:
+        return user[0].user_id+'00000001'
+#     if len(children) == 0:
+#         return user[0].user_id+'00000002'
+    ID = children[0].user_id
+    for i in range(1,len(children)):
+        if int(children[i].user_id) - int(ID) >1:
+            return ID[0:-1]+str(int(ID[-1])+1)
+        else:
+            ID = children[i].user_id
+            
+    return ID[0:-1]+str(int(ID[-1])+1)
+
+def register_meter(request):
+    if  not 'user_id' in request.session:
+        loginPage(request)
+        return render_to_response('login.html', context_instance=RequestContext(request))
+    meterName = request.POST['meter_name']
+    meterEUI = request.POST['meter_eui']
+    meterType = request.POST['meter_type']
+    userRevise = request.POST['user_revise']
+    meterQb = request.POST['meter_qb']
+    meterQm = request.POST['meter_qm']
+    meterUser = request.POST['user_company-inputEl']
+    meter = Meter();
+    meter.meter_name = meterName;
+    meter.meter_eui = meterEUI
+    meter.meter_type = meterType
+    meter.user_revise = userRevise
+    meter.meter_qb = meterQb
+    meter.meter_qm = meterQm
+    meter.user_id = generateMeterID(meterUser)
+    meter.save();
+    response = {}
+    response['status'] = 'SUCESS'
+    response['data'] = {}
+#     print(json.dumps(response))
+    return HttpResponse(json.dumps(response),content_type ="application/json")

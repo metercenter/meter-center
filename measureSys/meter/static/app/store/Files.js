@@ -17,15 +17,10 @@ Ext.define('ExtMVCOne.store.Files', {
     
 //    folderSort: true
     root: {
-      text: '我公司',
+      text: '当前用户',
       expanded: true
     },
-//    
-//    foulderSort: true,
-//    sorters:[{
-//      property: 'text',
-//      direction: 'ASC'
-//    }]
+    rootVisible : false,
     
 });
 //Ext.define('ExtMVCOne.store.Files', {

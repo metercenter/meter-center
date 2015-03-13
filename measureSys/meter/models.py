@@ -29,9 +29,11 @@ class Meter(models.Model):
     user_meterdata = models.CharField(max_length=200)
     user_revise = models.CharField(max_length=200)
     user_reviseid = models.CharField(max_length=200)
+    meter_qb = models.CharField(max_length=200)
+    meter_qm = models.CharField(max_length=200)
     def __unicode__(self):              # __unicode__ on Python 2
-        return self.meter_name
-    
+        return "name: "+self.meter_name+"meter EUI64: "+ self.meter_eui
+        
 class MeterAdmin(admin.ModelAdmin):
     list_display = ('meter_id',  'meter_name', 'meter_type', 'meter_index', 'meter_eui', 'user_meterdata', 'user_revise', 'user_reviseid')
 
