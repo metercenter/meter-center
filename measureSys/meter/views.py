@@ -10,6 +10,7 @@ from datetime import datetime
 from django.template import RequestContext
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+import csv
 
 
 # Create your views here.
@@ -31,42 +32,49 @@ def loginPage(request):
     return render_to_response('login.html')
 
 def getMeter(request):
-    posts = Meter()
-    posts.meter_id = 1
-    user = User.objects.get(user_id = '0001000100000001')
-    posts.user = user
-    #posts.user_id = 2
-    posts.meter_name = '万达流量计'
-    posts.meter_type =  1
-    posts.user_id = '0001000100000001'
-    posts.meter_index = 3
-    posts.meter_eui = 'wandaguangchang'
-    posts.user_meterdata = '1,2,3,4'
-    posts.user_revise = '1'
-    posts.user_reviseid = '2,3,4,5'
+#     posts = Meter()
+#     posts.meter_id = 1
+#     user = User.objects.get(user_id = '0001000100000001')
+#     posts.user = user
+#     #posts.user_id = 2
+#     posts.meter_name = '万达流量计'
+#     posts.meter_type =  1
+#     posts.user_id = '0001000100000001'
+#     posts.meter_index = 3
+#     posts.meter_eui = 'wandaguangchang'
+#     posts.user_meterdata = '1,2,3,4'
+#     posts.user_revise = '1'
+#     posts.user_reviseid = '2,3,4,5'
 #     posts.save()
     responseData = []
-    user_id = request.session['user_id']
-    Children = User.objects.filter(user_id__range = (user_id,user_id[0:-1]+str(int(user_id[-1])+1))).extra(where = ['LENGTH(user_id) > ' + str(len(user_id))])
-    print len(Children)
-    for i in range (0, len(Children)):
-        print('==================')
-        print(Children[i].user_id)
-        print('==================')
-        for each in  Meter.objects.filter(user_id = Children[i].user_id):
-            print Children[i].user_id
-            each_dict = {
-                  "meter_id": each.meter_id,
-                  "user_id": each.user_id,
-                  "meter_name": each.meter_name,
-                  "meter_type": each.meter_type,
-                  "meter_index": each.meter_index,
-                  "meter_eui": each.meter_eui,              
-                  "user_meterdata": each.user_meterdata,
-                  "user_revise": each.user_revise,              
-                  "user_reviseid": each.user_reviseid,
-            }
-            responseData.append(each_dict)
+    try:
+        if 'user_name' in request.GET:
+            user = User.objects.get(user_company = request.GET['user_name'])
+        else:
+            user = User.objects.get(user_id = request.session['user_id'])
+        
+        user_id = user.user_id
+        Children = Meter.objects.filter(user_id__range = (user_id,user_id[0:-1]+str(int(user_id[-1])+1))).extra(where = ['LENGTH(user_id) > ' + str(len(user_id))])
+        for i in range (0, len(Children)):
+            print('==================')
+            print(Children[i].user_id)
+            print('==================')
+            for each in  Meter.objects.filter(user_id = Children[i].user_id):
+                print Children[i].user_id
+                each_dict = {
+                      "meter_id": each.meter_id,
+                      "user_id": each.user_id,
+                      "meter_name": each.meter_name,
+                      "meter_type": each.meter_type,
+                      "meter_index": each.meter_index,
+                      "meter_eui": each.meter_eui,              
+                      "user_meterdata": each.user_meterdata,
+                      "user_revise": each.user_revise,              
+                      "user_reviseid": each.user_reviseid,
+                }
+                responseData.append(each_dict)
+    except:
+        print('user is not existed')
     response = {}
     response['status'] = 'SUCESS'
     response['data'] = responseData
@@ -98,17 +106,20 @@ def userList(requst):
     response['data'] = responsedata
     return HttpResponse(json.dumps(response),content_type ="application/json")
 
-def getData(requst):
+def getData(request):
 #     print('before')
 #     post = Data()
 #     post.data_id = 1
-#     post.meter_id = 2
+#     post.meter_id = 0
 #     post.data_vb = '12'
 #     post.data_vm = '23'
 #     post.data_p = '34'
 #     post.data_t = '45'
 #     post.data_qb = '56'
 #     post.data_qm = '78'
+#     post.data_warn = True
+#     post.meter_eui = 'hello'
+#     post.data_date = datetime.now()
 #     post.save()
 #     print('after')
 #     data_id = models.IntegerField(default=0)
@@ -122,21 +133,35 @@ def getData(requst):
 #     data_qm = models.CharField(max_length=200)
 #     print(datetime.now());
     responsedata = []
-    for each in Data.objects.all():
-        each_dict = {
-            "id": each.pk,
-            "data_id": each.data_id,
-            "meter_id":     each.meter_id,
-            "data_date": formats.date_format(each.data_date,"SHORT_DATETIME_FORMAT"),
-            "data_vb": each.data_vb,
-            "data_vm": each.data_vm,
-            "data_p":     each.data_p,
-            "data_t": each.data_t,
-            "data_qb": each.data_qb,    
-            "data_qm": each.data_qm,          
-        }
-#         print(formats.date_format(each.data_date,"SHORT_DATETIME_FORMAT"))
-        responsedata.append(each_dict)
+    try:
+        if 'user_name' in request.GET:
+            request.session['user_name'] = request.GET['user_name']
+            user = User.objects.get(user_company = request.GET['user_name'])
+        else:
+            user = User.objects.get(user_id = request.session['user_id'])
+            
+        user_id = user.user_id
+        Children = Meter.objects.filter(user_id__range = (user_id,user_id[0:-1]+str(int(user_id[-1])+1))).extra(where = ['LENGTH(user_id) > ' + str(len(user_id))])
+        for i in range (0, len(Children)):
+            meterID = Meter.objects.filter(user_id = Children[i].user_id)
+            for j in range(0,len(meterID)):
+                for each in Data.objects.filter(meter_eui = meterID[j].meter_eui):
+                    each_dict = {
+                        "id": each.pk,
+                        "data_id": each.data_id,
+                        "meter_id":     each.meter_id,
+                        "data_date": formats.date_format(each.data_date,"SHORT_DATETIME_FORMAT"),
+                        "data_vb": each.data_vb,
+                        "data_vm": each.data_vm,
+                        "data_p":     each.data_p,
+                        "data_t": each.data_t,
+                        "data_qb": each.data_qb,    
+                        "data_qm": each.data_qm,          
+                    }
+            #         print(formats.date_format(each.data_date,"SHORT_DATETIME_FORMAT"))
+                    responsedata.append(each_dict)
+    except:
+        print('user is not existed')
     response = {}
     response['status'] = 'SUCESS'
     response['data'] = responsedata
@@ -214,6 +239,8 @@ def logout_view1(request):
 
 def logout_view(request):
     del request.session['user_id']
+    if 'user_name' in request.session:
+        del request.session['user_name']
     loginPage(request)
     return render_to_response('login.html', context_instance=RequestContext(request))
 
@@ -280,9 +307,12 @@ def meter_level(request):
 
 def generateID(userName):
     user = User.objects.filter(user_company__exact = userName)
-    brother = User.objects.filter(user_id__startswith = user[0].user_id).extra(where = ['LENGTH(user_id) = ' + str(len(user[0].user_id)+4)]).order_by('user_id')
+    brother = User.objects.filter(user_id__startswith = user[0].user_id).extra(where = ['LENGTH(user_id) <= ' + str(len(user[0].user_id)+4)]).extra(where = ['LENGTH(user_id) > ' + str(len(user[0].user_id))]).order_by('user_id')
     if len(brother) == 0:
-        return user[0].user_id+'0001'
+        if user[0].user_id == '00':
+            return '0001'
+        else:
+            return user[0].user_id+'0001'
 #     if len(brother) == 0:
 #         return user[0].user_id+'0002'
     ID = brother[0].user_id
@@ -319,10 +349,10 @@ def register_company(request):
 
 def generateMeterID(userName):
     user = User.objects.filter(user_company__exact = userName)
-    children = User.objects.filter(user_id__startswith = user[0].user_id).extra(where = ['LENGTH(user_id) = ' + str(len(user[0].user_id)+8)]).order_by('user_id')
+    children = Meter.objects.filter(user_id__startswith = user[0].user_id).extra(where = ['LENGTH(user_id) = ' + str(len(user[0].user_id)+8)]).order_by('user_id')
     if len(children) == 0:
         return user[0].user_id+'00000001'
-#     if len(children) == 0:
+#     if len(children) == 1:
 #         return user[0].user_id+'00000002'
     ID = children[0].user_id
     for i in range(1,len(children)):
@@ -358,3 +388,29 @@ def register_meter(request):
     response['data'] = {}
 #     print(json.dumps(response))
     return HttpResponse(json.dumps(response),content_type ="application/json")
+
+def getExcelFile(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="Data.csv"'
+    #database operation3
+    writer = csv.writer(response)
+    writer.writerow(['Name', 'Accept Time', 'Vb(Nm3)', 'Vm(m3)','P','T','Qb(Nm3/h)','Qm(m3/h)'])
+    try:
+        if 'user_name' in request.session:
+            user = User.objects.get(user_company = request.session['user_name'])
+        else:
+            user = User.objects.get(user_id = request.session['user_id'])
+            
+        user_id = user.user_id
+        Children = Meter.objects.filter(user_id__range = (user_id,user_id[0:-1]+str(int(user_id[-1])+1))).extra(where = ['LENGTH(user_id) > ' + str(len(user_id))])
+        for i in range (0, len(Children)):
+            meterID = Meter.objects.filter(user_id = Children[i].user_id)
+            for j in range(0,len(meterID)):
+                meterName = meterID[j].meter_name
+                for each in Data.objects.filter(meter_eui = meterID[j].meter_eui):
+                    writer.writerow([meterName, formats.date_format(each.data_date,"SHORT_DATETIME_FORMAT"), each.data_vb, each.data_vm, each.data_p, each.data_t,each.data_qb,each.data_qm])
+            #         print(formats.date_format(each.data_date,"SHORT_DATETIME_FORMAT"))
+    except:
+        print('user is not existed')
+
+    return response

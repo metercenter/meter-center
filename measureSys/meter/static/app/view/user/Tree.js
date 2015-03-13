@@ -21,6 +21,21 @@ Ext.define('ExtMVCOne.view.user.Tree', {
       itemclick: function(view, record, item, index, e, eOpts) {
 //        console.log(item);
 //        alert(record.data.text);
+//        console.log(Ext.ComponentQuery.query('#datagrid'));
+        Ext.ComponentQuery.query('#datagrid')[0].store.load({
+          params : {
+            user_name : record.data.text
+          },
+          callback : function(records, options, success) {
+          }
+        });
+        Ext.ComponentQuery.query('#metergrid')[0].store.load({
+          params : {
+            user_name : record.data.text
+          },
+          callback : function(records, options, success) {
+          }
+        });
       }
     },
 

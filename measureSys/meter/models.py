@@ -20,8 +20,8 @@ class UserAdmin(admin.ModelAdmin):
 
 class Meter(models.Model):
     meter_id = models.IntegerField(default=0)
-#     user_id = models.IntegerField(default=0)
-    user = models.ForeignKey(User, related_name = 'user_meter')
+    user_id = models.CharField(max_length=24)
+#     user = models.ForeignKey(User, related_name = 'user_meter')
     meter_name = models.CharField(max_length=200)
     meter_type = models.IntegerField(default=0)
     meter_index = models.CharField(max_length=200)
@@ -40,6 +40,8 @@ class MeterAdmin(admin.ModelAdmin):
 class Data(models.Model):
     data_id = models.IntegerField(default=0)
     meter_id = models.IntegerField(default=0)
+    meter_eui = models.CharField(max_length=200)
+    data_warn = models.BooleanField(default = False)
     data_date = models.DateTimeField('date published')
     data_vb = models.CharField(max_length=200)
     data_vm = models.CharField(max_length=200)

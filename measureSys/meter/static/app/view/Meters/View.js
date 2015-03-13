@@ -53,7 +53,7 @@
               allowBlank : false,
               fieldLabel : '用户名',
               name : 'user',
-              emptyText : '客户登陆名'
+              emptyText : '客户登录名'
             }, {
               allowBlank : false,
               fieldLabel : '密码',
@@ -114,7 +114,11 @@
                 method : 'POST',
                 params : f.getValues(),
                 success: function(response,opts) {
-                  myForm.hide();
+                  Ext.MessageBox.confirm('提示', '客户信息已注册，是否关闭窗口？', callBack); 
+                  function callBack(btn,text) { 
+                    if(btn !='no')
+                       myForm.hide();
+                  } 
                 },
                 failure : function() {
                 }
@@ -211,7 +215,11 @@
                 method : 'POST',
                 params : f.getValues(),
                 success: function() {
-                  myForm.hide();
+                  Ext.MessageBox.confirm('提示', '流量计信息已登记，是否关闭窗口？', callBack); 
+                  function callBack(btn,text) { 
+                    if(btn !='no')
+                       myForm.hide();
+                  } 
                 },
                 failure : function() {
                   console.log('failure');

@@ -5,7 +5,7 @@ from meter.views import getMeter
 from meter.views import userList
 from meter.views import getData
 from meter.views import loginPage
-from meter.views import login_view, user_group_show,user_level,register_company,register_meter,meter_level
+from meter.views import login_view, user_group_show,user_level,register_company,register_meter,meter_level,getExcelFile
 
 urlpatterns = patterns('',
     # Examples:
@@ -25,4 +25,5 @@ urlpatterns = patterns('',
     url(r'^get-usermeter-level',meter_level),
     url(r'^register_company',register_company),
     url(r'^register_meter',register_meter),
+    url(r'^get-excel-file',getExcelFile),
 )
