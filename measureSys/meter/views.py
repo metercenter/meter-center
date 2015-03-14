@@ -1,6 +1,6 @@
 # coding=utf8
 from django.shortcuts import render_to_response
-from meter.models import Meter, MeterType
+from meter.models import Meter, MeterType, DataWarnType
 from meter.models import User
 from meter.models import Data
 from django.http import HttpResponse
@@ -103,6 +103,9 @@ def getMeter(request):
     return HttpResponse(json.dumps(response), content_type="application/json")
     return render_to_response('index.html')
 
+def getReason(warn_type):
+    return DataWarnType.objects.get(data_warn = warn_type).data_warn_reason;
+
 def warnList(request):
     responsedata = []
     try:
@@ -111,7 +114,7 @@ def warnList(request):
         for each in userlist:
             meterlist = Meter.objects.filter(user_id__startswith = each.user_id)
             for meter in meterlist:
-                datalist = Data.objects.filter(meter_eui = meter.meter_eui, data_warn = True)
+                datalist = Data.objects.filter(meter_eui = meter.meter_eui, data_warn__gt =  0)
                 for data in datalist:
                     data_dict = {
                         "id": data.pk,
@@ -119,6 +122,7 @@ def warnList(request):
                         "data_vb":     data.data_vb,
                         "data_vm": data.data_vm,
                         "data_p": data.data_p,
+                        "data_warn": getReason(data.data_warn),
                     }
                     responsedata.append(data_dict)
     except:
@@ -297,14 +301,15 @@ def user_group_show(request):
     return HttpResponse(user_group_json,content_type ="application/json")
 
 def generateTreeJSON(user_id):
-    firstChild = User.objects.filter(user_id__range = (user_id,user_id[0:-1]+str(int(user_id[-1])+1))).extra(where = ['LENGTH(user_id) > ' + str(len(user_id))]).extra(select = { 'minValue' : "MIN(user_id)" })
+#     firstChild = User.objects.filter(user_id__range = (user_id,user_id[0:-1]+str(int(user_id[-1])+1))).extra(where = ['LENGTH(user_id) > ' + str(len(user_id))]).extra(select = { 'minValue' : "MIN(user_id)" })
+    firstChild = User.objects.filter(user_id__startswith = user_id).extra(where = ['LENGTH(user_id) > ' + str(len(user_id))]).order_by('user_id')
     myself = User.objects.filter(user_id = user_id)
-    if firstChild[0].user_id is None:
+    if len(firstChild) == 0:
         #is leaf node
         return '{"text" : "'+myself[0].user_company+'", "leaf" : true}'
     else:
         #is parent node
-        children = User.objects.filter(user_id__range = (user_id,user_id[0:-1]+str(int(user_id[-1])+1))).extra(where = ['LENGTH(user_id) = ' + str(len(firstChild[0].user_id))])
+        children = User.objects.filter(user_id__startswith = user_id).extra(where = ['LENGTH(user_id) = ' + str(len(firstChild[0].user_id))])
         strJson = ''
         for each in children:
             strJson = strJson + generateTreeJSON(each.user_id) + ', '

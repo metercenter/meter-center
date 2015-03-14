@@ -41,7 +41,7 @@ class Data(models.Model):
     data_id = models.IntegerField(default=0)
     meter_id = models.IntegerField(default=0)
     meter_eui = models.CharField(max_length=200)
-    data_warn = models.BooleanField(default = False)
+    data_warn = models.IntegerField(default=0)
     data_date = models.DateTimeField('date published')
     data_vb = models.CharField(max_length=200)
     data_vm = models.CharField(max_length=200)
@@ -61,6 +61,15 @@ class MeterType(models.Model):
 
 class MeterTypeAdmin(admin.ModelAdmin):
     list_display = ('meter_type', 'meter_type_name')
+    
+class DataWarnType(models.Model):
+    data_warn = models.IntegerField(default = 0)
+    data_warn_reason = models.CharField(max_length = 200)
+    def __uincode__(self):
+        return "warn_type: " +self.data_warn
+    
+class DataWarnTypeAdmin(admin.ModelAdmin):
+    list_display = ('warn_type', 'warn_type_reason')
 
 admin.site.register(User, UserAdmin)
 admin.site.register(Meter, MeterAdmin)

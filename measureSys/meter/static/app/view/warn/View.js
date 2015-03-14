@@ -13,7 +13,7 @@
         { text: '工况总累计', dataIndex: 'data_vm', flex: 1 },
         { text: '压力', dataIndex: 'data_p', flex: 1 },
 //        { xtype: "datecolumn", text: '创建时间', dataIndex: 'Created', format: "Y-m-d H:i:s", width: 150 },
-//        { xtype: "datecolumn", text: '最后登录时间', dataIndex: 'Created', format: "Y-m-d H:i:s", width: 150 },
+        { text: '警报原因', dataIndex: 'data_warn', flex: 1 },
 //        { xtype: 'checkcolumn', dataIndex: "IsApproved", text: "允许登录", winth: 150 }
     ]
 

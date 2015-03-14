@@ -22,6 +22,8 @@ Ext.define('ExtMVCOne.model.Warn', {
     name : 'data_qb'
   }, {
     name : 'data_qm'
+  },{
+    name : 'data_warn'
   }],
   idProperty : "id"
 });
