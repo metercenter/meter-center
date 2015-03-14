@@ -9,6 +9,8 @@ Ext.define('ExtMVCOne.model.Meter', {
        {name: 'meter_eui'},
        {name: 'user_meterdata'},
        {name: 'user_revise'},
-       {name: 'user_reviseid'}
+       {name: 'user_reviseid'},
+       {name: 'meter_qb'},
+       {name: 'meter_qm'}
        ]
 });

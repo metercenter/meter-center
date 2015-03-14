@@ -1,6 +1,6 @@
 # coding=utf8
 from django.shortcuts import render_to_response
-from meter.models import Meter
+from meter.models import Meter, MeterType
 from meter.models import User
 from meter.models import Data
 from django.http import HttpResponse
@@ -11,7 +11,22 @@ from django.template import RequestContext
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 import csv
+import sys  
 
+
+
+def unicode_csv_reader(unicode_csv_data, dialect=csv.excel, **kwargs):
+    # csv.py doesn't do Unicode; encode temporarily as UTF-8:
+    csv_reader = csv.reader(utf_8_encoder(unicode_csv_data),
+                            dialect=dialect, **kwargs)
+    csv.writer
+    for row in csv_reader:
+        # decode UTF-8 back to Unicode, cell by cell:
+        yield [unicode(cell, 'utf-8') for cell in row]
+
+def utf_8_encoder(unicode_csv_data):
+    for line in unicode_csv_data:
+        yield line.encode('utf-8')
 
 # Create your views here.
 @login_required(login_url='/login/')
@@ -30,6 +45,11 @@ def loginPage(request):
         del request.session['user_id']
     # return render_to_response('login.html', context_instance=RequestContext(request))
     return render_to_response('login.html')
+
+def meterTypeName(meter_type):
+    meterType = MeterType.objects.get(meter_type = meter_type)
+    return meterType.meter_type_name
+
 
 def getMeter(request):
 #     posts = Meter()
@@ -65,12 +85,14 @@ def getMeter(request):
                       "meter_id": each.meter_id,
                       "user_id": each.user_id,
                       "meter_name": each.meter_name,
-                      "meter_type": each.meter_type,
+                      "meter_type": meterTypeName(each.meter_type),
                       "meter_index": each.meter_index,
                       "meter_eui": each.meter_eui,              
                       "user_meterdata": each.user_meterdata,
                       "user_revise": each.user_revise,              
                       "user_reviseid": each.user_reviseid,
+                      "meter_qm":each.meter_qm,
+                      "meter_qb":each.meter_qb,
                 }
                 responseData.append(each_dict)
     except:
@@ -134,6 +156,8 @@ def getData(request):
             request.session['user_name'] = request.GET['user_name']
             user = User.objects.get(user_company = request.GET['user_name'])
         elif 'meter_eui' in request.GET:
+            request.session['meter_eui'] = request.GET['meter_eui']
+            request.session['is_meter_eui'] = True 
             for each in Data.objects.filter(meter_eui = request.GET['meter_eui']):
                     each_dict = {
                         "id": each.pk,
@@ -159,6 +183,7 @@ def getData(request):
             
         user_id = user.user_id
         Children = Meter.objects.filter(user_id__range = (user_id,user_id[0:-1]+str(int(user_id[-1])+1))).extra(where = ['LENGTH(user_id) > ' + str(len(user_id))])
+    #         Children = Meter.objects.filter(user_id__startswith = user_id)
         for i in range (0, len(Children)):
             meterID = Meter.objects.filter(user_id = Children[i].user_id)
             for j in range(0,len(meterID)):
@@ -386,15 +411,17 @@ def register_meter(request):
         return render_to_response('login.html', context_instance=RequestContext(request))
     meterName = request.POST['meter_name']
     meterEUI = request.POST['meter_eui']
-    meterType = request.POST['meter_type']
+    meterType = request.POST['meter_type-inputEl']
     userRevise = request.POST['user_revise']
     meterQb = request.POST['meter_qb']
     meterQm = request.POST['meter_qm']
     meterUser = request.POST['user_company-inputEl']
+    metertypelist = MeterType.objects.get(meter_type_name = meterType)
+    
     meter = Meter();
     meter.meter_name = meterName;
     meter.meter_eui = meterEUI
-    meter.meter_type = meterType
+    meter.meter_type = metertypelist.meter_type
     meter.user_revise = userRevise
     meter.meter_qb = meterQb
     meter.meter_qm = meterQm
@@ -418,16 +445,45 @@ def getExcelFile(request):
         else:
             user = User.objects.get(user_id = request.session['user_id'])
             
+        if 'meter_eui' in request.session:
+            if request.session['is_meter_eui'] == True:
+                request.session['is_meter_eui'] = False
+                meterName = Meter.objects.get(meter_eui = request.session['meter_eui']).meter_name
+                print "meter_name: "+ meterName
+                for each in Data.objects.filter(meter_eui = request.session['meter_eui']):
+                    writer.writerow([meterName.encode('utf-8'),  formats.date_format(each.data_date,"SHORT_DATETIME_FORMAT"), each.data_vb, each.data_vm, each.data_p, each.data_t,each.data_qb,each.data_qm])
+                return response
         user_id = user.user_id
-        Children = Meter.objects.filter(user_id__range = (user_id,user_id[0:-1]+str(int(user_id[-1])+1))).extra(where = ['LENGTH(user_id) > ' + str(len(user_id))])
+        
+        print "user_id is " +user_id
+        
+#             Children = Meter.objects.filter(user_id__range = (user_id,user_id[0:-1]+str(int(user_id[-1])+1))).extra(where = ['LENGTH(user_id) > ' + str(len(user_id))])
+        Children = Meter.objects.filter(user_id__startswith = user_id)
+        print "meter num is : "+ str(len(Children))
         for i in range (0, len(Children)):
             meterID = Meter.objects.filter(user_id = Children[i].user_id)
             for j in range(0,len(meterID)):
                 meterName = meterID[j].meter_name
                 for each in Data.objects.filter(meter_eui = meterID[j].meter_eui):
-                    writer.writerow([meterName, formats.date_format(each.data_date,"SHORT_DATETIME_FORMAT"), each.data_vb, each.data_vm, each.data_p, each.data_t,each.data_qb,each.data_qm])
+                    writer.writerow([meterName.encode('utf-8'),  formats.date_format(each.data_date,"SHORT_DATETIME_FORMAT"), each.data_vb, each.data_vm, each.data_p, each.data_t,each.data_qb,each.data_qm])
             #         print(formats.date_format(each.data_date,"SHORT_DATETIME_FORMAT"))
     except:
         print('user is not existed')
 
     return response
+
+def getMeterType(request):
+    responsedata = []
+    for each in MeterType.objects.all():
+        each_dict = {
+            "meter_type": each.meter_type,
+            "meter_type_name":     each.meter_type_name,    
+        }
+#         print(formats.date_format(each.data_date,"SHORT_DATETIME_FORMAT"))
+        responsedata.append(each_dict)
+    response = {}
+    response['status'] = 'SUCCESS'
+    response['data'] = responsedata
+#     print(json.dumps(response))
+    return HttpResponse(json.dumps(responsedata),content_type ="application/json")
+    

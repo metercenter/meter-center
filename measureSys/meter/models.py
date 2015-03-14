@@ -53,7 +53,14 @@ class Data(models.Model):
 class DataAdmin(admin.ModelAdmin):
     list_display = ('data_id', 'meter_id', 'data_date', 'data_vb', 'data_vm', 'data_p', 'data_t', 'data_qb', 'data_qm')
     
+class MeterType(models.Model):
+    meter_type = models.IntegerField(default=0)
+    meter_type_name = models.CharField(max_length = 200)
+    def __uincode__(self):
+        return "meter_type: "+self.meter_type
 
+class MeterTypeAdmin(admin.ModelAdmin):
+    list_display = ('meter_type', 'meter_type_name')
 
 admin.site.register(User, UserAdmin)
 admin.site.register(Meter, MeterAdmin)

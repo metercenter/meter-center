@@ -25,12 +25,16 @@ Ext.define('ExtMVCOne.view.data.Grid', {
       width : '6%',
       sortable : false,
       dataIndex : 'data_id'
-    }, {
-      text : '流量计编号',
-      width : '8%',
-      sortable : true,
-      dataIndex : 'meter_id'
-    }, {
+    }, 
+    
+//    {
+//      text : '流量计编号',
+//      width : '8%',
+//      sortable : true,
+//      dataIndex : 'meter_id'
+//    }, 
+    
+    {
       text : '接收时间',
       width : '12%',
       sortable : true,

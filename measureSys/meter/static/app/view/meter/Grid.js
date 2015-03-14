@@ -32,12 +32,14 @@ Ext.define('ExtMVCOne.view.meter.Grid', {
     var me = this;
 
     me.width = 750;
-    me.columns = [ {
-      text : '流量计编号',
-      width : '8%',
-      sortable : false,
-      dataIndex : 'meter_id'
-    }, {
+    me.columns = [ 
+//                   {
+//      text : '流量计编号',
+//      width : '8%',
+//      sortable : false,
+//      dataIndex : 'meter_id'
+//    }, 
+    {
       text : '用户编号',
       width : '6%',
       sortable : true,
@@ -71,21 +73,16 @@ Ext.define('ExtMVCOne.view.meter.Grid', {
 // return out;
 // },
       dataIndex : 'meter_type'
-    },{
-      text : '流量计序列号',
-      width : '12%',
-      sortable : true,
-// renderer : function(val) {
-// var out = Ext.util.Format.number(val, '0.00%');
-// if (val > 0) {
-// return '<span style="color:' + "#73b51e" + ';">' + out + '</span>';
-// } else if (val < 0) {
-// return '<span style="color:' + "#cf4c35" + ';">' + out + '</span>';
-// }
-// return out;
-// },
-      dataIndex : 'meter_index'
-    }, {
+    },
+    
+//    {
+//      text : '流量计序列号',
+//      width : '12%',
+//      sortable : true,
+//      dataIndex : 'meter_index'
+//    }, 
+    
+    {
       text : '流量计数据',
       width : '12%',
       sortable : true,
@@ -106,17 +103,17 @@ Ext.define('ExtMVCOne.view.meter.Grid', {
       // formatter : 'date("m/d/Y")',
       dataIndex : 'meter_eui'
     }, {
-      text : '用户校准',
+      text : '流量计工况参考值',
       width : '12%',
       sortable : true,
       // formatter : 'date("m/d/Y")',
-      dataIndex : 'user_revise'
+      dataIndex : 'meter_qb'
     }, {
-      text : '校准编号',
+      text : '流量计标况参考值',
       width : '12%',
       sortable : true,
       // formatter : 'date("m/d/Y")',
-      dataIndex : 'user_reviseid'
+      dataIndex : 'meter_qm'
     }];
     
     var meterStore = new ExtMVCOne.store.Meter();

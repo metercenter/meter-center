@@ -161,10 +161,22 @@
               name : 'meter_eui',
               emptyText : 'EUI64编号'
             }, {
-              allowBlank : false,
+              xtype : 'combobox',
+              id : 'meter_type',
               fieldLabel : '流量计类型',
-              name : 'meter_type',
-              emptyText : '数值',
+              displayField : 'meter_type_name',
+              store : {
+                fields : [ 'meter_type', 'meter_type_name' ],
+                proxy : {
+                  type : 'ajax',
+                  url : '/getMeterType',
+                  reader : {
+                    type : 'json'
+                  }
+                },
+                autoLoad : true
+              },
+              queryMode : 'local',
             } ]
           }, {
             xtype : 'fieldset',
