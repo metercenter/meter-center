@@ -56,11 +56,11 @@ def getMeter(request):
         user_id = user.user_id
         Children = Meter.objects.filter(user_id__range = (user_id,user_id[0:-1]+str(int(user_id[-1])+1))).extra(where = ['LENGTH(user_id) > ' + str(len(user_id))])
         for i in range (0, len(Children)):
-            print('==================')
-            print(Children[i].user_id)
-            print('==================')
+#             print('==================')
+#             print(Children[i].user_id)
+#             print('==================')
             for each in  Meter.objects.filter(user_id = Children[i].user_id):
-                print Children[i].user_id
+#                 print Children[i].user_id
                 each_dict = {
                       "meter_id": each.meter_id,
                       "user_id": each.user_id,
@@ -81,62 +81,79 @@ def getMeter(request):
     return HttpResponse(json.dumps(response), content_type="application/json")
     return render_to_response('index.html')
 
-def userList(requst):
-    post = User()
-    post.user_name = 'subuser'
-    post.user_id = '0001000100000001'
-    post.user_company = '海底捞'
-    post.user_password = '1234'
-
-    #--------------------------------------------------------------- post.save()
-#     responsedata = serializers.serialize("json", UserList.objects.all())
-    userlist =  User.objects.all()
+def warnList(request):
     responsedata = []
-    for user in userlist:
-        user_dict = {
-            "id": user.pk,
-            "Username": user.user_name,
-            "Email":     user.user_addr,
-            "Roles": user.user_total,
-            "LastLoginDate": user.user_lastmonth,
-        }
-        responsedata.append(user_dict)
+    try:
+#         user = User.objects.get(user_id = request.session['user_id'])
+        userlist =  User.objects.filter(user_id__startswith = request.session['user_id'])
+        for each in userlist:
+            meterlist = Meter.objects.filter(user_id__startswith = each.user_id)
+            for meter in meterlist:
+                datalist = Data.objects.filter(meter_eui = meter.meter_eui, data_warn = True)
+                for data in datalist:
+                    data_dict = {
+                        "id": data.pk,
+                        "data_date": formats.date_format(data.data_date,"SHORT_DATETIME_FORMAT"),
+                        "data_vb":     data.data_vb,
+                        "data_vm": data.data_vm,
+                        "data_p": data.data_p,
+                    }
+                    responsedata.append(data_dict)
+    except:
+        print "user is not exsited"
+    response = {}
+    response['status'] = 'SUCESS'
+    response['data'] = responsedata
+    return HttpResponse(json.dumps(response),content_type ="application/json")    
+
+def userList(request):
+    try:
+        user = User.objects.get(user_id = request.session['user_id'])
+        userlist =  User.objects.filter(user_id__startswith = user.user_id)
+        responsedata = []
+        for user in userlist:
+            user_dict = {
+                "id": user.pk,
+                "user_company": user.user_company,
+                "user_name":     user.user_name,
+                "user_password": user.user_password,
+                "user_phone": user.user_phone,
+            }
+            responsedata.append(user_dict)
+    except:
+        print "user is not exsited"
     response = {}
     response['status'] = 'SUCESS'
     response['data'] = responsedata
     return HttpResponse(json.dumps(response),content_type ="application/json")
 
 def getData(request):
-#     print('before')
-#     post = Data()
-#     post.data_id = 1
-#     post.meter_id = 0
-#     post.data_vb = '12'
-#     post.data_vm = '23'
-#     post.data_p = '34'
-#     post.data_t = '45'
-#     post.data_qb = '56'
-#     post.data_qm = '78'
-#     post.data_warn = True
-#     post.meter_eui = 'hello'
-#     post.data_date = datetime.now()
-#     post.save()
-#     print('after')
-#     data_id = models.IntegerField(default=0)
-#     meter_id = models.IntegerField(default=0)
-#     data_date = models.DateTimeField('date published')
-#     data_vb = models.CharField(max_length=200)
-#     data_vm = models.CharField(max_length=200)
-#     data_p = models.CharField(max_length=200)
-#     data_t = models.CharField(max_length=200)
-#     data_qb = models.CharField(max_length=200)
-#     data_qm = models.CharField(max_length=200)
-#     print(datetime.now());
     responsedata = []
     try:
         if 'user_name' in request.GET:
             request.session['user_name'] = request.GET['user_name']
             user = User.objects.get(user_company = request.GET['user_name'])
+        elif 'meter_eui' in request.GET:
+            for each in Data.objects.filter(meter_eui = request.GET['meter_eui']):
+                    each_dict = {
+                        "id": each.pk,
+                        "data_id": each.data_id,
+                        "meter_id":     each.meter_id,
+                        "data_date": formats.date_format(each.data_date,"SHORT_DATETIME_FORMAT"),
+                        "data_vb": each.data_vb,
+                        "data_vm": each.data_vm,
+                        "data_p":     each.data_p,
+                        "data_t": each.data_t,
+                        "data_qb": each.data_qb,    
+                        "data_qm": each.data_qm,          
+                    }
+            #         print(formats.date_format(each.data_date,"SHORT_DATETIME_FORMAT"))
+                    responsedata.append(each_dict)
+            response = {}
+            response['status'] = 'SUCESS'
+            response['data'] = responsedata
+        #     print(json.dumps(response))
+            return HttpResponse(json.dumps(response),content_type ="application/json")
         else:
             user = User.objects.get(user_id = request.session['user_id'])
             
@@ -221,7 +238,7 @@ def login_view(request):
     try:
         if 'user_id' in request.session:
             return render_to_response('index.html', context_instance=RequestContext(request))
-        print("=================")
+#         print("=================")
         username = request.POST['login-username']
         password = request.POST['login-password']
         user = User.objects.get(user_name = username, user_password = password)

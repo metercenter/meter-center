@@ -8,7 +8,7 @@ Ext.define('ExtMVCOne.view.MainPanel', {
 
         me.items = [
             { title: "数据管理", id: "contentPanel", layout: "fit"},
-            { title: "警报数据", id: "picPanel" },
+            { title: "警报信息", id: "picPanel" },
             { title: "日志管理", id: "logPanel" }
         ];
 

@@ -5,7 +5,7 @@ from meter.views import getMeter
 from meter.views import userList
 from meter.views import getData
 from meter.views import loginPage
-from meter.views import login_view, user_group_show,user_level,register_company,register_meter,meter_level,getExcelFile
+from meter.views import login_view, user_group_show,user_level,register_company,register_meter,meter_level,getExcelFile,warnList
 
 urlpatterns = patterns('',
     # Examples:
@@ -15,6 +15,7 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^get-meter', getMeter),
     url(r'^Users/List', userList),
+    url(r'^Warn/List', warnList),
     url(r'^get-data', getData),
     url(r'^$', loginPage),
     url(r'^login', loginPage),

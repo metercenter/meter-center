@@ -6,7 +6,8 @@
             activate: {
               single: true,
               fn: function (panel) {
-                Ext.Msg.alert("提示信息", "该模块正在建设中...");
+//                Ext.Msg.alert("提示信息", "该模块正在建设中...");
+                this.application.getController('Warn').init();
               }
             }
           },

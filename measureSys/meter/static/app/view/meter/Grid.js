@@ -14,7 +14,20 @@ Ext.define('ExtMVCOne.view.meter.Grid', {
   viewConfig : {
     enableTextSelection : true
   },
-
+  listeners: {
+    itemdblclick: function(view, record, item, index, e, eOpts) {
+      console.log(record.data.meter_eui);
+//      alert(record;
+//      console.log(Ext.ComponentQuery.query('#datagrid'));
+      Ext.ComponentQuery.query('#datagrid')[0].store.load({
+        params : {
+          meter_eui : record.data.meter_eui
+        },
+        callback : function(records, options, success) {
+        }
+      });
+    }
+  },
   initComponent : function() {
     var me = this;
 
@@ -28,119 +41,95 @@ Ext.define('ExtMVCOne.view.meter.Grid', {
       text : '用户编号',
       width : '6%',
       sortable : true,
-//      formatter : 'usMoney',
+// formatter : 'usMoney',
       dataIndex : 'user_id'
     }, {
       text : '流量计名称',
       width : '12%',
       sortable : true,
-//      renderer : function(val) {
-//        var out = Ext.util.Format.number(val, '0.00');
-//        if (val > 0) {
-//          return '<span style="color:' + "#73b51e" + ';">' + out + '</span>';
-//        } else if (val < 0) {
-//          return '<span style="color:' + "#cf4c35" + ';">' + out + '</span>';
-//        }
-//        return out;
-//      },
+// renderer : function(val) {
+// var out = Ext.util.Format.number(val, '0.00');
+// if (val > 0) {
+// return '<span style="color:' + "#73b51e" + ';">' + out + '</span>';
+// } else if (val < 0) {
+// return '<span style="color:' + "#cf4c35" + ';">' + out + '</span>';
+// }
+// return out;
+// },
       dataIndex : 'meter_name'
     }, {
       text : '流量计类型',
       width : '12%',
       sortable : true,
-//      renderer : function(val) {
-//        var out = Ext.util.Format.number(val, '0.00');
-//        if (val > 0) {
-//          return '<span style="color:' + "#73b51e" + ';">' + out + '</span>';
-//        } else if (val < 0) {
-//          return '<span style="color:' + "#cf4c35" + ';">' + out + '</span>';
-//        }
-//        return out;
-//      },
+// renderer : function(val) {
+// var out = Ext.util.Format.number(val, '0.00');
+// if (val > 0) {
+// return '<span style="color:' + "#73b51e" + ';">' + out + '</span>';
+// } else if (val < 0) {
+// return '<span style="color:' + "#cf4c35" + ';">' + out + '</span>';
+// }
+// return out;
+// },
       dataIndex : 'meter_type'
     },{
       text : '流量计序列号',
       width : '12%',
       sortable : true,
-//      renderer : function(val) {
-//        var out = Ext.util.Format.number(val, '0.00%');
-//        if (val > 0) {
-//          return '<span style="color:' + "#73b51e" + ';">' + out + '</span>';
-//        } else if (val < 0) {
-//          return '<span style="color:' + "#cf4c35" + ';">' + out + '</span>';
-//        }
-//        return out;
-//      },
+// renderer : function(val) {
+// var out = Ext.util.Format.number(val, '0.00%');
+// if (val > 0) {
+// return '<span style="color:' + "#73b51e" + ';">' + out + '</span>';
+// } else if (val < 0) {
+// return '<span style="color:' + "#cf4c35" + ';">' + out + '</span>';
+// }
+// return out;
+// },
       dataIndex : 'meter_index'
     }, {
       text : '流量计数据',
       width : '12%',
       sortable : true,
-//      renderer : function(val) {
-//        var out = Ext.util.Format.number(val, '0.00%');
-//        if (val > 0) {
-//          return '<span style="color:' + "#73b51e" + ';">' + out + '</span>';
-//        } else if (val < 0) {
-//          return '<span style="color:' + "#cf4c35" + ';">' + out + '</span>';
-//        }
-//        return out;
-//      },
+// renderer : function(val) {
+// var out = Ext.util.Format.number(val, '0.00%');
+// if (val > 0) {
+// return '<span style="color:' + "#73b51e" + ';">' + out + '</span>';
+// } else if (val < 0) {
+// return '<span style="color:' + "#cf4c35" + ';">' + out + '</span>';
+// }
+// return out;
+// },
       dataIndex : 'user_meterdata'
     }, {
       text : '流量计标识',
       width : '12%',
       sortable : true,
-      //formatter : 'date("m/d/Y")',
+      // formatter : 'date("m/d/Y")',
       dataIndex : 'meter_eui'
     }, {
       text : '用户校准',
       width : '12%',
       sortable : true,
-      //formatter : 'date("m/d/Y")',
+      // formatter : 'date("m/d/Y")',
       dataIndex : 'user_revise'
     }, {
       text : '校准编号',
       width : '12%',
       sortable : true,
-      //formatter : 'date("m/d/Y")',
+      // formatter : 'date("m/d/Y")',
       dataIndex : 'user_reviseid'
-    }, 
-//    {
-//      menuDisabled : true,
-//      sortable : false,
-//      xtype : 'actioncolumn',
-//      width : 50,
-//      items : [ {
-//        iconCls : 'sell-col',
-//        tooltip : 'Sell stock',
-//        handler : function(grid, rowIndex, colIndex) {
-//          var rec = grid.getStore().getAt(rowIndex);
-//          Ext.Msg.alert('Sell', 'Sell ' + rec.get('name'));
-//        }
-//      }, {
-//        getClass : function(v, meta, rec) {
-//          if (rec.get('change') < 0) {
-//            return 'alert-col';
-//          } else {
-//            return 'buy-col';
-//          }
-//        },
-//        getTip : function(v, meta, rec) {
-//          if (rec.get('change') < 0) {
-//            return 'Hold stock';
-//          } else {
-//            return 'Buy stock';
-//          }
-//        },
-//        handler : function(grid, rowIndex, colIndex) {
-//          var rec = grid.getStore().getAt(rowIndex), action = (rec.get('change') < 0 ? 'Hold' : 'Buy');
-//
-//          Ext.Msg.alert(action, action + ' ' + rec.get('name'));
-//        }
-//      } ]
-//    } 
-    ];
-
+    }];
+    
+    var meterStore = new ExtMVCOne.store.Meter();
+    Ext.apply(this, {
+      store : meterStore,
+    });
+    setInterval(function() {
+// _mask.hide();
+// Ext.MessageBox.alert("Status", "Restart " + SelectedServer + "
+// Successfully");
+      meterStore.load();
+     }, 60000);
+    
     me.callParent();
   }
 });

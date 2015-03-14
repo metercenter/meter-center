@@ -71,6 +71,11 @@ Ext.define('ExtMVCOne.view.data.Grid', {
     Ext.apply(this, {
       store : dataStore,
     });
+    setInterval(function() {
+//      _mask.hide();
+//      Ext.MessageBox.alert("Status", "Restart " + SelectedServer + " Successfully");
+      dataStore.load();
+     }, 60000);
     
     me.callParent();
   }

@@ -106,8 +106,8 @@
             text : '注册',
             formBind : true,
             handler : function() {
+//              console.log(Ext.ComponentQuery.query('#userTree'));
               // alert('nihao');
-              console.log(this);
               var f = myForm.getForm();
               Ext.Ajax.request({
                 url : '/register_company',
@@ -115,6 +115,7 @@
                 params : f.getValues(),
                 success: function(response,opts) {
                   Ext.MessageBox.confirm('提示', '客户信息已注册，是否关闭窗口？', callBack); 
+                  Ext.ComponentQuery.query('#userTree')[0].store.load();
                   function callBack(btn,text) { 
                     if(btn !='no')
                        myForm.hide();
@@ -208,7 +209,6 @@
             formBind : true,
             handler : function() {
               // alert('nihao');
-              console.log(this);
               var f = myForm.getForm();
               Ext.Ajax.request({
                 url : '/register_meter',
@@ -233,6 +233,7 @@
     } ]
   }, {
     title : '用户群',
+    itemId: 'userTree',
     region : 'west',
     floatable : false,
     margin : '5 0 0 0',
