@@ -72,7 +72,7 @@ Ext.define('app.view.editorPanelContent.AddMeter', {
     style : 'margin:10px 10px 10px 10px;',
     items : [{
       xtype : 'combobox',
-      name : 'meter_type',
+//      name : 'meter_type',
       fieldLabel : '修正仪',
       displayField : 'meter_type_name',
       editable: false,
@@ -90,31 +90,31 @@ Ext.define('app.view.editorPanelContent.AddMeter', {
       queryMode : 'local',
     }, {
       fieldLabel : '流量计型号',
-      name : 'meter_index',
+//      name : 'meter_index',
       emptyText : '型号'
     }, {
       fieldLabel : '流量计铅封编号',
-      name : 'meter_index',
+//      name : 'meter_index',
       emptyText : '型号'
     }, {
       fieldLabel : '压力范围',
-      name : 'meter_index',
+//      name : 'meter_index',
       emptyText : '0.8-5'
     }, {
       fieldLabel : '温度范围',
-      name : 'meter_index',
+//      name : 'meter_index',
       emptyText : '-10-60'
     }, {
       fieldLabel : '流量范围',
-      name : 'meter_index',
+//      name : 'meter_index',
       emptyText : '32-650'
     }, {
       fieldLabel : '检定有效期',
-      name : 'meter_index',
+//      name : 'meter_index',
       emptyText : '型号'
     }, {
       fieldLabel : '通讯方式',
-      name : 'meter_index',
+//      name : 'meter_index',
       emptyText : '型号'
     } ]
   } ],

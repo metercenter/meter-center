@@ -441,9 +441,9 @@ def register_meter(request):
     meterName = request.POST['meter_name']
     meterEUI = request.POST['meter_eui']
     meterType = request.POST['meter_type']
-    userRevise = request.POST['user_revise']
-    meterQb = request.POST['meter_qb']
-    meterQm = request.POST['meter_qm']
+#     userRevise = request.POST['user_revise']
+#     meterQb = request.POST['meter_qb']
+#     meterQm = request.POST['meter_qm']
     meterUser = request.POST['user_company']
     metertypelist = MeterType.objects.get(meter_type_name = meterType)
     meteSet = Meter.objects.filter(meter_eui = meterEUI)
@@ -455,9 +455,9 @@ def register_meter(request):
     meter.meter_name = meterName;
     meter.meter_eui = meterEUI
     meter.meter_type = metertypelist.meter_type
-    meter.user_revise = userRevise
-    meter.meter_qb = meterQb
-    meter.meter_qm = meterQm
+#     meter.user_revise = userRevise
+#     meter.meter_qb = meterQb
+#     meter.meter_qm = meterQm
     meter.user_id = generateMeterID(meterUser)
     meter.save();
     
