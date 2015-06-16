@@ -161,7 +161,7 @@ table.gridtable td {
 }
 
 div.test ul > li{
-	width: 60px;
+	width: 70px;
 	float: right;
 	list-style: none;
 	display: inline;
@@ -200,4 +200,37 @@ h1.header {
 
 div.introductionShow {
   padding-left:40px;
+}
+
+a:link {
+    color: #FFFFFF;
+    font-size: 15px;
+}
+/* visited link */
+a:visited {
+    color: #FFFFFF;
+}
+/* mouse over link */
+a:hover {
+    color: #000000;
+}
+
+/* selected link */
+a:active {
+    color: #0000FF;
+}
+
+#header-title {
+  font-size: 20px;
+  color: #202020;
+  height: 38px;
+  line-height: 65px;
+  float: left;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+  margin:0px 0 0 70px;
+}
+
+.header-button-active button {
+  color: #383838;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
 }

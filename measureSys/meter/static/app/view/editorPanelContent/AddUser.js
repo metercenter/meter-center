@@ -50,7 +50,7 @@ Ext.define('app.view.editorPanelContent.AddUser', {
       name : 'company'
     }, {
       fieldLabel : '客户电话',
-      name : 'phone',
+      name : 'phone'
     }, {
       xtype : 'combobox',
 //      id : 'user_company',
@@ -68,7 +68,7 @@ Ext.define('app.view.editorPanelContent.AddUser', {
         },
         autoLoad : true
       },
-      queryMode : 'local',
+      queryMode : 'local'
     } ]
   } ],
   buttons : [ {

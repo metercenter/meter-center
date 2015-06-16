@@ -38,7 +38,7 @@ Ext.define('app.view.introduction.Introduction', {
      var me = this;
      var store = Ext.create('store.introductionStore');
      Ext.apply(this, {
-       store: store,
+       store: store
      });
      store.load({
        callback:function(r,options,success){

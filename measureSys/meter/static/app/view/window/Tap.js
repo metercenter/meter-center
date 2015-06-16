@@ -17,9 +17,7 @@ Ext.define('app.view.window.Tap', {
       xtype : 'fieldset',
 
       defaultType : 'textfield',
-      defaults : {
-        anchor : '100%'
-      },
+
 //      padding : '10px',
 
 //      minHeight : 150,
@@ -28,6 +26,7 @@ Ext.define('app.view.window.Tap', {
 
       defaults : {
         layout : 'form',
+        anchor : '100%',
         xtype : 'container',
         defaultType : 'textfield',
         style : 'width: 33%'
@@ -52,8 +51,8 @@ Ext.define('app.view.window.Tap', {
         }, {
           fieldLabel : '6#'
         }]
-      } ],
-    } ],
+      } ]
+    } ]
   } ],
   //
   buttons : [ {

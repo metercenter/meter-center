@@ -3,7 +3,8 @@ Ext.define('app.view.diagram.UserTopology',{
 	alias: 'widget.drawPic',
 	requires: 	[
 					'app.controller.diagram.UserTopology',
-					'app.view.window.Filter'
+					'app.view.window.Filter',
+					'app.view.window.Meter'
 				],
 	controller: 'userTopology',
 	layout: 'fit',
@@ -21,12 +22,12 @@ Ext.define('app.view.diagram.UserTopology',{
         items: [{
             type: "path",
             path: "M67.7116,149.476 Z",
-            stroke:"#323232",
+            stroke:"#323232"
             ////fill:"#969696"
         }, {
             type: "path",
             path: "M153.789,99.1958 L134.521,106.303 L134.521,92.0884 L153.789,99.1958 Z",
-            stroke:"#323232",
+            stroke:"#323232"
             //fill:"#969696"
         },
         {
@@ -81,7 +82,7 @@ Ext.define('app.view.diagram.UserTopology',{
             path: "M310.076,100.824 L290.808,107.931 L290.808,93.7163 L310.076,100.824 Z",
             stroke:"#323232",
             fill:"#969696",
-            cursor:'pointer',
+            cursor:'pointer'
         },
         {
             type: "path",
@@ -122,24 +123,44 @@ Ext.define('app.view.diagram.UserTopology',{
             type: "path",
             path: "M205.885,90.9889 L258.694,90.9889 L258.694,108.83 L205.885,108.83 L205.885,90.9889 Z",
             stroke:"#323232",
-            //fill:"#969696"
+            fill:"#969696",
+            cursor:'pointer',
+            listeners: {
+              click: {
+                element: 'el', //bind to the underlying el property on the panel
+                fn: function(){ 
+                  var filterForm = Ext.create('app.view.window.Meter');
+                  filterForm.show();
+                }//console.log(this)}
+              },
+            }
         },
         {
             type: "path",
             path: "M206.598,138.93 L259.408,138.93 L259.408,156.771 L206.598,156.771 L206.598,138.93 Z",
             stroke:"#323232",
-            //fill:"#969696"
+            cursor:'pointer',
+            fill:"#969696",
+              listeners: {
+                click: {
+                  element: 'el', //bind to the underlying el property on the panel
+                  fn: function(){ 
+                    var filterForm = Ext.create('app.view.window.Meter');
+                    filterForm.show();
+                  }//console.log(this)}
+                },
+              }
         },
         {
             type: "path",
             path: "M68.5856,147.366 C68.5856,147.366 350.04,149.507 350.04,149.507 C350.04,149.507 350.04,100.98 350.04,100.98 C350.04,100.98 67.7116,98.8389 67.7116,98.8389 C67.7116,98.8389 68.5856,147.366 68.5856,147.366 Z",
-            stroke:"#323232",
-            //fill:"#969696"
+            stroke:"#323232"
+//            fill:"#969696"
         },
         {
             type: "path",
             path: "M376.444,123.816 C350.04,123.816 350.04,123.816 350.04,123.816 ",
-            stroke:"#323232",
+            stroke:"#323232"
             // fill:"#969696"
         },
         {

@@ -11,7 +11,7 @@ Ext.define('app.view.container.CompanyContainer',{
           scrollable : true,
           scrollFlags: {
             y: true,
-            both: true,
+            both: true
           },
           layout: {
               type: 'vbox',
@@ -21,8 +21,8 @@ Ext.define('app.view.container.CompanyContainer',{
             xtype:'introduction',
             height: 200
           }, {
-            xtype:'userFeedback',
+            xtype:'userFeedback'
         },{
-          xtype:'warnInformation',
-        }],
+          xtype:'warnInformation'
+        }]
 });

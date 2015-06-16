@@ -17,6 +17,6 @@ Ext.define('app.store.tree.UserTreeStore', {
     text : '当前用户',
     expanded : true
   },
-  rootVisible : false,
+  rootVisible : false
 
 });

@@ -18,6 +18,8 @@ Ext.define('app.model.grid.WarnInformationModel',{
     name: 'solution'
   }, {
     name: 'other'
+  }, {
+    name: 'warn_date'
   }]
 
 });

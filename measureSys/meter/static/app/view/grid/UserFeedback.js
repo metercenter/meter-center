@@ -12,8 +12,9 @@ Ext.define('app.view.grid.UserFeedback',{
         'app.store.grid.UserFeedbackStore'
     ],
     title: '用户反馈信息',
+    id: 'userfeedbackgrid',
     padding: '10 10',
-    height: 200,
+    height: 300,
     initComponent: function(){
       var store = Ext.create('store.userFeedbackStore');
     	Ext.apply(this, {
@@ -21,32 +22,29 @@ Ext.define('app.view.grid.UserFeedback',{
             columns: [{ 
                 text: '客户',
                 sortable: true,
-                dataIndex: 'user_id',
+                dataIndex: 'user_company',
 //                flex: 1
-                width: 75
+                width: '20%'
             },{
                 text: '反馈时间',
                 sortable: true,
-                formatter: 'usMoney',
                 dataIndex: 'report_time',
-                width: 75
+                width: '20%'
             },{
                 text: '处理时限',
                 sortable: true,
-                renderer: this.changeRenderer,
                 dataIndex: 'solution_deadline',
-                width: 80
+                width: '20%'
             },{
                 text: '问题描述',
                 sortable: true,
-                renderer: this.pctChangeRenderer,
                 dataIndex: 'problem',
-                width: 100
+                width: '20%'
             },{
                 text: '处理结果',
                 sortable: true,
                 dataIndex: 'solution_result',
-                width: 115,
+                width: '20%'
 //                formatter: 'date("m/d/Y")'
             }],
 

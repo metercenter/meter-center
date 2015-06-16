@@ -9,16 +9,17 @@ Ext.define('app.view.container.IdentifyContainer',{
           scrollable : true,
           scrollFlags: {
             y: true,
-            both: true,
+            both: true
           },
           layout: {
               type: 'vbox',
               align: 'stretch'
           },
           items: [{
-            xtype:'indentificationCenter',
+            xtype:'indentificationCenter'
           }, {
-            xtype:'identifyMeter',
-        }],
+            xtype:'identifyMeter'
+
+        }]
   
 });

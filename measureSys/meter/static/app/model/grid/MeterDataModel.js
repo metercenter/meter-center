@@ -4,7 +4,7 @@ Ext.define('app.model.grid.MeterDataModel', {
   fields : [ {
     name : 'data_id'
   }, {
-    name : 'meter_id'
+    name : 'meter_eui'
   }, {
     name : 'data_date'
   }, {
@@ -19,5 +19,7 @@ Ext.define('app.model.grid.MeterDataModel', {
     name : 'data_qb'
   }, {
     name : 'data_qm'
+  }, {
+    name : 'data_battery'
   } ]
 });

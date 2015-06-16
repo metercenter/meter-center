@@ -7,6 +7,7 @@ Ext.define('app.view.container.ChartContainer',{
 //    'app.view.dataChart.DataChart'
   ],
   id: 'chartcontainer',
+  companyName : 'niaho',
   layout: {
       type: 'vbox',
       align: 'stretch'
@@ -15,8 +16,8 @@ Ext.define('app.view.container.ChartContainer',{
       xtype:'drawPic',
       height: 200
     }, {
-      xtype:'meterDataChart',
-  }],
+      xtype:'meterDataChart'
+  }]
 //  initComponent: function(){
 //    this.callParent();
 //  }

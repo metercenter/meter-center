@@ -5,7 +5,9 @@ Ext.define('app.view.main.ChangableEditorPanel', {
     requires: [
                  'app.view.introduction.Introduction',
                  'app.view.editorPanelContent.AddUser',
-                 'app.view.editorPanelContent.AddMeter'
+                 'app.view.editorPanelContent.AddMeter',
+                 'app.view.editorPanelContent.AddCompanyIntro',
+                 'app.view.editorPanelContent.AddFeedback'
               ],
 
 	layout: 'fit',
@@ -16,6 +18,12 @@ Ext.define('app.view.main.ChangableEditorPanel', {
 		},{
 			xtype: 'addMeter',
 			hidden: true
+    },{
+      xtype: 'addCompanyIntro',
+      hidden: true
+		},{
+		  xtype:'addFeedback',
+		  hidden: true
 		}],
 
 	initComponent: function() {

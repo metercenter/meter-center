@@ -30,7 +30,7 @@ Ext.define('app.view.container.WriteStore', {
         proxy: {
             type: 'ajax',
             api: {
-                read: 'app.php/users/view',
+                read: 'app.php/users/view'
                 // create: 'app.php/users/create',
                 // update: 'app.php/users/update',
                 // destroy: 'app.php/users/destroy'

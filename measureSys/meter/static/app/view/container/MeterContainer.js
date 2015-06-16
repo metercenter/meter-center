@@ -13,7 +13,7 @@ Ext.define('app.view.container.MeterContainer', {
    scrollable : true,
    scrollFlags: {
      y: true,
-     both: true,
+     both: true
    },
    id : 'metercontainer',
    items: [{

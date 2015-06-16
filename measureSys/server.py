@@ -5,6 +5,7 @@ os.environ["DJANGO_SETTINGS_MODULE"] = "measureSys.settings"
 from django.contrib.auth.models import User
 from meter.models import Meter
 from meter.models import Data
+from meter.models import WarnInfo
 import django
 django.setup()
 
@@ -23,7 +24,7 @@ while True:
     print 'waiting for message...'
     data, addr = SerSock.recvfrom(BUFSIZE)
     print 'received message from:', addr
-    print data
+    print data 
     if data:
         if len(data) < 12:
             continue
@@ -35,7 +36,6 @@ while True:
         continue
 
     meter_list = Meter.objects.all()
-    #eui_str=eui.decode('UTF-8').encode('hex')
     eui_str=eui.encode('hex')
     print eui_str
 
@@ -47,27 +47,37 @@ while True:
  
     if data_type == 6:
         payload = data[12:(12+length)]
-        qb, vb1, vb2 = struct.unpack("!IIH", payload)
+        qb, vb1, vb2, warn, battery = struct.unpack("!IIHHH", payload)
         meter_data=Data.objects.filter(meter_eui=eui_str).order_by('-data_id')
         if len(meter_data) > 0:
             new_id = meter_data[0].data_id + 1
-#            vb_last=float(meter_data[0].data_vb)
-#            vb_diff=vb1 - vb_last
-#            val=(float(meter.meter_qb))*4/5
-#            print vb_last, vb_diff, val 
-#            if vb_diff < val:
-#              warn=1
-#            else:
-#              warn=0
-                       
+                      
         else:
             print ("firstdata of this meter\n")
             new_id = 1;
-            warn=False
-
-        qb_s = str(qb)
+       
+        warn_num = 0
+        if warn&0x1000:
+            warn_num = 1
+        if warn&0x0080:
+            warn_num = 2
+        if warn&0x0008:
+            warn_num = 3 
+        if warn&0x0004:
+            warn_num = 4
+        if warn&0x0002:
+            warn_num = 5 
+        if warn&0x0001:
+            warn_num = 6
+        if warn_num != 0:
+            new_warn = WarnInfo(meter_eui=eui_str,data_warn=warn_num, warn_level=1)
+            new_warn.warn_date = datetime.datetime.now()
+            new_warn.save()
+ 
+        qb_s = str(qb/1000.0)
         vb_s = str(vb1)+'.'+str(vb2)
-        new_data = Data(data_id=new_id, meter_id=meter.meter_id, meter_eui=eui_str, data_warn=warn, data_vb=vb_s, data_qb=qb_s)
+        battery_s = str(battery/1000.0)
+        new_data = Data(data_id=new_id, meter_id=meter.meter_id, meter_eui=eui_str, data_battery=battery_s, data_vb=vb_s, data_qb=qb_s)
         new_data.data_date = datetime.datetime.now()
         new_data.save()
 
@@ -77,19 +87,16 @@ while True:
         meter_data=Data.objects.filter(meter_eui=eui_str).order_by('-data_id')
         if len(meter_data) > 0:
             new_id = meter_data[0].data_id + 1
- #           vb_last=float(meter_data[0].data_vb)
- #           vb_diff=vb1 - vb_last
- #           val=(float(meter.meter_qb))*4/5
- #           print vb_last, vb_diff, val 
- #           if vb_diff < val:
- #             warn=1
- #           else:
- #             warn=0
-                       
+                      
         else:
             print ("firstdata for this meter\n")
             new_id = 1;
-        warn=False
+ 
+        if battery<3:
+            new_warn = WarnInfo(meter_eui=eui_str,data_warn=9,warn_level=1)
+            new_warn.warn_date = datetime.datetime.now()
+            new_warn.save()
+ 
         battery_s = str(battery)
         vb_s = str(vb1)+'.'+str(vb2)
         vm_s = str(vm1)+'.'+str(vm2)      
@@ -97,7 +104,35 @@ while True:
         t_s = str(temp)
         qb_s = str(qb)
         qm_s = str(qm)
-        new_data = Data(data_id=new_id, meter_id=meter.meter_id, meter_eui=eui_str, data_battery=battery_s, data_warn=warn, data_vb=vb_s, data_vm=vm_s, data_p=p_s, data_t=t_s, data_qb=qb_s, data_qm=qm_s)
+        new_data = Data(data_id=new_id, meter_id=meter.meter_id, meter_eui=eui_str, data_battery=battery_s, data_vb=vb_s, data_vm=vm_s, data_p=p_s, data_t=t_s, data_qb=qb_s, data_qm=qm_s)
+        new_data.data_date = datetime.datetime.now()
+        new_data.save()
+
+    if data_type == 8:
+        print ("type 8\n")
+        payload = data[12:(12+length)]
+        battery, warn, vm2, vb2, vm1, vb1, pres, temp, qm, qb = struct.unpack("!HHHHIIffff", payload)
+        meter_data=Data.objects.filter(meter_eui=eui_str).order_by('-data_id')
+        if len(meter_data) > 0:
+            new_id = meter_data[0].data_id + 1
+                      
+        else:
+            print ("firstdata for this meter\n")
+            new_id = 1;
+ 
+        if battery<3:
+            new_warn = WarnInfo(meter_eui=eui_str,data_warn=9,warn_level=1)
+            new_warn.warn_date = datetime.datetime.now()
+            new_warn.save()
+ 
+        battery_s = str(battery)
+        vb_s = str(vb1)+'.'+str(vb2)
+        vm_s = str(vm1)+'.'+str(vm2)      
+        p_s = str(pres)
+        t_s = str(temp)
+        qb_s = str(qb)
+        qm_s = str(qm)
+        new_data = Data(data_id=new_id, meter_id=meter.meter_id, meter_eui=eui_str, data_battery=battery_s, data_vb=vb_s, data_vm=vm_s, data_p=p_s, data_t=t_s, data_qb=qb_s, data_qm=qm_s)
         new_data.data_date = datetime.datetime.now()
         new_data.save()
 

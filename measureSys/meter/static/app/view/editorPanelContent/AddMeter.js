@@ -41,7 +41,7 @@ Ext.define('app.view.editorPanelContent.AddMeter', {
         },
         autoLoad : true
       },
-      queryMode : 'local',
+      queryMode : 'local'
     }, {
       xtype : 'combobox',
       fieldLabel : '隶属客户',
@@ -59,7 +59,7 @@ Ext.define('app.view.editorPanelContent.AddMeter', {
         },
         autoLoad : true
       },
-      queryMode : 'local',
+      queryMode : 'local'
     } ]
   }, {
     xtype : 'fieldset',
@@ -87,7 +87,7 @@ Ext.define('app.view.editorPanelContent.AddMeter', {
         },
         autoLoad : true
       },
-      queryMode : 'local',
+      queryMode : 'local'
     }, {
       fieldLabel : '流量计型号',
 //      name : 'meter_index',

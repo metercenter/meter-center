@@ -1,91 +1,179 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
+
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title>计量系统 - 登录</title>
-	<link id="legacyCSS" rel="stylesheet" type="text/css" href="/static/resources/styles/legacy_login.css">
-		<!-- <link rel="stylesheet" type="text/css" href="/static/orchestration/lib/extjs/resources/css/ext-all.css" />
-		<script type="text/javascript" src="/static/orchestration/lib/extjs/ext-base.js"></script>
-		script type="text/javascript" src="/static/orchestration/login.js"></script>		 -->
-<link href="/static/resources/extjs/resources/ext-theme-crisp/build/resources/ext-theme-crisp-all.css" rel="stylesheet" />
-<link href="/static/resources/styles/style.css" rel="stylesheet" />
+  <!-- Meta, title, CSS, favicons, etc. -->
+  <meta charset="utf-8">
+  <title>计量系统-登录</title>
+  <meta name="keywords" content="Bootstrap 3 Admin Dashboard Template Theme" />
+  <meta name="description" content="AdminDesigns - Bootstrap 3 Admin Dashboard Theme">
+  <meta name="author" content="AdminDesigns">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <!-- Font CSS (Via CDN) -->
+  <!-- <link rel='stylesheet' type='text/css' href='http://fonts.useso.com/css?family=Open+Sans:300,400,600,700'> -->
 
+  <!-- Theme CSS -->
+  <link rel="stylesheet" type="text/css" href="static/resources/styles/theme.css">
 
-<script src="/static/resources/extjs/bootstrap.js"></script>
-<script src="/static/resources/extjs/ext-charts-debug.js"></script>
-<script src="/static/resources/extjs/locale/ext-locale-zh_CN.js"></script>
-<script src="/static/resources/extjs/ux/PreviewPlugin.js"></script>
-<script src="/static/resources/extjs/ux/ProgressBarPager.js"></script>
+  <!-- Admin Forms CSS -->
+  <link rel="stylesheet" type="text/css" href="static/resources/styles/admin-forms.css">
+
+  <!-- Favicon -->
+
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+   <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+   <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+   <![endif]-->
 </head>
 
-<body class="reboot2" style="background: #FFFFFF;">
-	<div id="loginShell" class="dijitContainer dijitBorderContainerNoGutter" style="padding: 0px;">
-		<form id="login" name="login" action="main" method="post">
-			<input type="hidden" name="login" value="login">
+<body class="external-page sb-l-c sb-r-c">
 
-				<div id="loginPage" class="loginPage" style="margin: -225px auto auto auto; position: relative; width: 690px; height: 450px; top: 50%">
-					<div class="loginBackTop">
-						<div class="productInfo" style="margin-top: 5px;">
-							<!--<div class="productLogoContainer productLogo" style="margin:-width:10px;"></div>-->
-							<div class="productDesc" style="margin-left: 60px;">
-							</div>
-						</div>
-						<div class="userFormContainer">
-							<table class="userForm" border="0">
-								<tbody>
-									<tr>
-										<td class="userFormLabel">用户名</td>
-										<td><input id="login-username" type="text" name="login-username" autocomplete="off" class="dijit dijitReset dijitLeft dijitTextBox"
-											maxlength="32" style="margin-left: 5px;"> <script type="text/javascript">
-                       /*  $(document).ready(function() {
-                          $("#login\\:username").focus();
-                          setTimeout(function() {
-                            history.go(0);
-                          }, 29 * 60 * 1000);
-                        }); */
-                      </script></td>
-									</tr>
-									<tr>
-										<td class="userFormLabel">密码</td>
-										<td><input id="login-password" type="password" name="login-password" autocomplete="off" maxlength="32" style="margin-left: 5px;"
-											class="dijit dijitReset dijitLeft dijitTextBox"></td>
-									</tr>
-									<tr>
-										<td></td>
-										<td>
-											<div style="margin-left: 5px;">
-												<button class="login-btn">登录</button>
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td></td>
-										<td><div class="errors"></div></td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-					</div>
-					<div class="loginMiddle">
-						<div class="middleContent"></div>
-					</div>
-					<div class="loginMiddle">
-						<div class="loginMiddleInformation" style="border: medium none;">
-							<div class="loginMiddleInformationContainer"></div>
-						</div>
-					</div>
-<!-- 					<div class="loginMiddle loginMiddleCopyright">
-						<div class="copyright">© 2013-2014 Cisco Systems, Inc. Cisco, Cisco Systems and Cisco Systems logo are registered trademarks of Cisco
-							Systems, Inc. and/or its affiliates in the U.S and certain other countries</div>
-						<div class="copyrightLogo" title="Cisco Logo"></div>
-					</div> -->
-					<div class="loginBackBottom loginBackBottomContainer">
-						<div class="bottom-center"></div>
-					</div>
-				</div> <input type="hidden" name="javax.faces.ViewState" id="javax.faces.ViewState" value="j_id5:j_id6">
-		</form>
-	</div>
+  <!-- Start: Main -->
+  <div id="main" class="animated fadeIn">
+
+    <!-- Start: Content-Wrapper -->
+    <section id="content_wrapper">
+
+      <!-- begin canvas animation bg -->
+      <div id="canvas-wrapper">
+        <canvas id="demo-canvas"></canvas>
+      </div>
+
+      <!-- Begin: Content -->
+      <section id="content">
+
+        <div class="admin-form theme-info" id="login1">
+
+          <div class="row mb15 table-layout">
+
+            <div class="col-xs-6 va-m pln">
+              <a href="login.html" title="Return to Dashboard">
+                <img src="static/resources/images/logo_white_copy.png" width="1014" height="176" class="img-responsive w250" title="meassys Logo">
+              </a>
+            </div>
+
+            <div class="col-xs-6 text-right va-b pr5">
+              <div class="login-links">
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="panel panel-info mt10 br-n">
+
+            <div class="panel-heading heading-border bg-white">
+              <span class="panel-title hidden">
+                <i class="fa fa-sign-in"></i>Register</span>
+              <div class="section row mn">
+              </div>
+            </div>
+
+            <!-- end .form-header section -->
+            <form method="post" action="main" id="contact">
+              <div class="panel-body bg-light p30">
+                <div class="row">
+                  <div class="col-sm-7 pr30">
+
+                    <div class="section row hidden">
+                    </div>
+
+                    <div class="section">
+                      <label for="username" class="field-label text-muted fs18 mb10">用户名</label>
+                      <label for="username" class="field prepend-icon">
+                        <input type="text" name="login-username" id="username" class="gui-input" placeholder="输入用户名">
+                        <label for="username" class="field-icon">
+                          <i class="fa fa-user"></i>
+                        </label>
+                      </label>
+                    </div>
+                    <!-- end section -->
+
+                    <div class="section">
+                      <label for="username" class="field-label text-muted fs18 mb10">密码</label>
+                      <label for="password" class="field prepend-icon">
+                        <input type="password" name="login-password" id="password" class="gui-input" placeholder="输入密码">
+                        <label for="password" class="field-icon">
+                          <i class="fa fa-lock"></i>
+                        </label>
+                      </label>
+                    </div>
+                    <!-- end section -->
+
+                  </div>
+                  <div class="col-sm-5 br-l br-grey pl30">
+                    <h3 class="mb25"> 登录后您将会访问到如下信息:</h3>
+                    <p class="mb15">
+                      <span class="fa fa-check text-success pr5"></span>流量计的读取信息</p>
+                    <p class="mb15">
+                      <span class="fa fa-check text-success pr5"></span>流量计的报警信息</p>
+                    <p class="mb15">
+                      <span class="fa fa-check text-success pr5"></span>流量计的统计信息</p>
+                    <p class="mb15">
+                      <span class="fa fa-check text-success pr5"></span>流量计的数据分析信息</p>
+                  </div>
+                </div>
+              </div>
+              <!-- end .form-body section -->
+              <div class="panel-footer clearfix p10 ph15">
+                <button type="submit" class="button btn-primary mr10 pull-right">登录</button>
+                <label class="switch ib switch-primary pull-left input-align mt10">
+                  <input type="checkbox" name="remember" id="remember" checked>
+                  <label for="remember" data-on="YES" data-off="NO"></label>
+                  <span>记住我</span>
+                </label>
+              </div>
+              <!-- end .form-footer section -->
+            </form>
+          </div>
+        </div>
+
+      </section>
+      <!-- End: Content -->
+
+    </section>
+    <!-- End: Content-Wrapper -->
+
+  </div>
+  <!-- End: Main -->
+
+  <!-- BEGIN: PAGE SCRIPTS -->
+
+  <!-- jQuery -->
+  <script src="static/resources/jquery/jquery-1.11.1.min.js"></script>
+  <script src="static/resources/jquery/jquery-ui.min.js"></script>
+
+  <!-- CanvasBG Plugin(creates mousehover effect) -->
+  <script src="static/resources/canvasbg/canvasbg.js"></script>
+
+
+  <!-- Page Javascript -->
+  <script type="text/javascript">
+  jQuery(document).ready(function() {
+
+    "use strict";
+
+    // Init Theme Core      
+    //Core.init();
+
+    // Init Demo JS
+    //Demo.init();
+
+    // Init CanvasBG and pass target starting location
+    CanvasBG.init({
+      Loc: {
+        x: window.innerWidth / 2,
+        y: window.innerHeight / 3.3
+      },
+    });
+
+  });
+  </script>
+
+  <!-- END: PAGE SCRIPTS -->
 
 </body>
+
 </html>

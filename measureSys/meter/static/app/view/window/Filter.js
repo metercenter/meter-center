@@ -17,9 +17,6 @@ Ext.define('app.view.window.Filter', {
       xtype : 'fieldset',
 
       defaultType : 'textfield',
-      defaults : {
-        anchor : '100%'
-      },
 //      padding : '10px',
 
 //      minHeight : 150,
@@ -28,6 +25,7 @@ Ext.define('app.view.window.Filter', {
 
       defaults : {
         layout : 'form',
+        anchor : '100%',
         xtype : 'container',
         defaultType : 'textfield',
         style : 'width: 50%'
@@ -53,8 +51,8 @@ Ext.define('app.view.window.Filter', {
         }, {
           fieldLabel : '图片上传'
         } ]
-      } ],
-    } ],
+      } ]
+    } ]
   } ],
   //
   buttons : [ {

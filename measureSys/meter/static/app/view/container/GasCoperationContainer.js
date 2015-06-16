@@ -13,7 +13,7 @@ Ext.define('app.view.container.GasCoperationContainer',{
           scrollable : true,
           scrollFlags: {
             y: true,
-            both: true,
+            both: true
           },
           layout: {
               type: 'vbox',
@@ -21,10 +21,10 @@ Ext.define('app.view.container.GasCoperationContainer',{
           },
           items: [{
             padding: '10 10',
-            xtype:'metersStatus',
+            xtype:'metersStatus'
           }, {
-            xtype:'outputDiff',
+            xtype:'outputDiff'
         },{
-          xtype:'warnInformationCompany',
-        }],
+          xtype:'warnInformationCompany'
+        }]
 });

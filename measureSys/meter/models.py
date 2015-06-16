@@ -30,6 +30,9 @@ class Meter(models.Model):
     user_reviseid = models.CharField(max_length=200)
     meter_qb = models.CharField(max_length=200)
     meter_qm = models.CharField(max_length=200)
+    meter_version = models.CharField(max_length=200)
+    wrap_code = models.CharField(max_length=200)
+    communication = models.CharField(max_length=200)
     def __unicode__(self):              # __unicode__ on Python 2
         return "name: "+self.meter_name+"meter EUI64: "+ self.meter_eui
         
@@ -48,6 +51,7 @@ class Data(models.Model):
     data_t = models.CharField(max_length=200)
     data_qb = models.CharField(max_length=200)
     data_qm = models.CharField(max_length=200)
+    data_battery = models.CharField(max_length=200)
 
 class DataAdmin(admin.ModelAdmin):
     list_display = ('data_id', 'meter_id', 'data_date', 'data_vb', 'data_vm', 'data_p', 'data_t', 'data_qb', 'data_qm')
@@ -64,8 +68,11 @@ class MeterTypeAdmin(admin.ModelAdmin):
 class DataWarnType(models.Model):
     data_warn = models.IntegerField(default = 0)
     data_warn_reason = models.CharField(max_length = 200)
+    data_warn_solution = models.CharField(max_length = 200)
+    data_warn_level = models.CharField(max_length = 200)
     def __uincode__(self):
         return "warn_type: " +self.data_warn
+    
 class WarnInfo(models.Model):
     meter_eui = models.CharField(max_length=200)
     data_warn = models.IntegerField(default = 0)
@@ -73,7 +80,6 @@ class WarnInfo(models.Model):
     warn_date = models.DateTimeField('date published')
     warn_solution = models.CharField(max_length=200)
     warn_other = models.CharField(max_length=200)
-    warn_date = models.DateTimeField('date published')
     def __uincode__(self):
         return "meter_eui: " +self.meter_eui + "data_warn " + self.data_warn 
         
@@ -105,12 +111,16 @@ class IdentificationMeter(models.Model):
     meter_type = models.IntegerField(default=0)
     meter_version = models.CharField(max_length=200)
     meter_index = models.CharField(max_length=200)
-    output_range = models.CharField(max_length=200)
+    
     identify_date = models.DateTimeField('date published')
     next_identify_date = models.DateTimeField('date published')
     medium = models.CharField(max_length=200)
-    pressure = models.CharField(max_length=200)
-    temperature = models.CharField(max_length=200)
+    outputMin = models.CharField(max_length=200)
+    outputMax = models.CharField(max_length=200)
+    pressureMin = models.CharField(max_length=200)
+    pressureMax = models.CharField(max_length=200)
+    temperatureMin = models.CharField(max_length=200)
+    temperatureMax = models.CharField(max_length=200)
     Qmax100 = models.CharField(max_length=200)
     Qmax60 = models.CharField(max_length=200)
     Qmax40 = models.CharField(max_length=200)
@@ -118,8 +128,17 @@ class IdentificationMeter(models.Model):
     Qmax10 = models.CharField(max_length=200)
     def __uincode__(self):
         return "meter_eui: "+self.meter_eui+ " meter_type: "+self.meter_type+ " meter_index "+ self.meter_index + " output_range: "+ self.output_range 
-
-
+class outputDiff(models.Model):
+    input = models.CharField(max_length=200)
+    industry_output = models.CharField(max_length=200)
+    resident_output = models.CharField(max_length=200)
+    other_output = models.CharField(max_length=200)
+    output_diff = models.CharField(max_length=200)
+    output_date = models.DateTimeField('date published')
+    user_id = models.CharField(max_length=24)
+    def __uincode__(self):
+        return "user_id: "+self.user_id+ " input: "+self.input+ " industry_output "+ self.industry_output
+    
 admin.site.register(User, UserAdmin)
 admin.site.register(Meter, MeterAdmin)
 admin.site.register(Data, DataAdmin)

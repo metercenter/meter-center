@@ -5,12 +5,12 @@ Ext.define('app.store.grid.WarnInformationStore',{
                'app.model.grid.WarnInformationModel'
              ],
   
-  autoLoad : true,
+//  autoLoad : true,
   
   model: 'app.model.grid.WarnInformationModel',
   proxy: {
     type : 'ajax',
-    url : '/Warn/List',
+    url : '/getWarnInfo',
     reader : {
       type : 'json',
       rootProperty : "data",

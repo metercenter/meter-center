@@ -15,7 +15,7 @@ Ext.define('app.view.main.BrowseArea', {
     userName: '金昇公司',
 
     items: [{
-        region: 'north',
+        region: 'north'
     }, {
         region: 'west',
 //        collapsible: true,

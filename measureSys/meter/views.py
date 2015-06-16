@@ -1,9 +1,9 @@
-# coding=utf8
+#coding=utf8
 from django.shortcuts import render_to_response
 from meter.models import Meter, MeterType, DataWarnType
 from meter.models import User
-from meter.models import Data
-from meter.models import Company, UserFeedback, IdentificationMeter
+from meter.models import Data, WarnInfo
+from meter.models import Company, UserFeedback, IdentificationMeter, outputDiff
 from django.http import HttpResponse
 from django.utils import formats
 import json
@@ -13,7 +13,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 import csv
 import sys  
-
+import datetime
+from django.db.models import Sum
 
 
 def unicode_csv_reader(unicode_csv_data, dialect=csv.excel, **kwargs):
@@ -70,32 +71,54 @@ def getMeter(request):
     responseData = []
     try:
         if 'user_id' in request.GET:
-            user = User.objects.filter(user_id = request.GET['user_id'])
+            userID = request.GET['user_id']
         else:
-            user = User.objects.filter(user_id = request.session['user_id'])
-        
-#         user_id = user.user_id
-#         Children = Meter.objects.filter(user_id__range = (user_id,user_id[0:-1]+str(int(user_id[-1])+1))).extra(where = ['LENGTH(user_id) > ' + str(len(user_id))])
-#         for i in range (0, len(Children)):
-#             print('==================')
-#             print(Children[i].user_id)
-#             print('==================')
-        for each in  Meter.objects.filter(user_id = user[0].user_id):
-#                 print Children[i].user_id
-            each_dict = {
-                  "meter_id": each.meter_id,
-                  "user_id": each.user_id,
-                  "meter_name": each.meter_name,
-                  "meter_type": meterTypeName(each.meter_type),
-                  "meter_index": each.meter_index,
-                  "meter_eui": each.meter_eui,              
-                  "user_meterdata": each.user_meterdata,
-                  "user_revise": each.user_revise,              
-                  "user_reviseid": each.user_reviseid,
-                  "meter_qm":each.meter_qm,
-                  "meter_qb":each.meter_qb,
-            }
-            responseData.append(each_dict)
+            userID = request.session['user_id']
+        each = Meter.objects.filter(user_id = userID)
+        identData = IdentificationMeter.objects.filter(meter_eui = each[0].meter_eui).order_by('-id')
+        if len(identData) > 0:
+            outputMin =  identData[0].outputMin,
+            outputMax =  identData[0].outputMax,
+            pressureMin =  identData[0].pressureMin,
+            pressureMax = identData[0].pressureMax,
+            temperatureMin = identData[0].temperatureMin,
+            temperatureMax = identData[0].temperatureMax,
+            valid_time = formats.date_format(identData[0].next_identify_date,"SHORT_DATETIME_FORMAT"),
+            meter_version = identData[0].meter_version,
+            meter_index = identData[0].meter_index
+        else:  
+            outputMin =  '',
+            outputMax =  '',
+            pressureMin =  '',
+            pressureMax = '',
+            temperatureMin = '',
+            temperatureMax = '',
+            valid_time = '',
+            meter_version = '',
+            meter_index = '',     
+        each_dict = {
+              "meter_id": each[0].meter_id,
+              "user_id": each[0].user_id,
+              "meter_name": each[0].meter_name,
+              "meter_type": meterTypeName(each[0].meter_type),
+              "meter_index": each[0].meter_index,
+              "meter_eui": each[0].meter_eui,              
+              "user_meterdata": each[0].user_meterdata,
+              "user_revise": each[0].user_revise,              
+              "user_reviseid": each[0].user_reviseid,
+              "meter_qm":each[0].meter_qm,
+              "meter_qb":each[0].meter_qb,
+              "outputMin": outputMin,
+              "outputMax": outputMax,
+              "pressureMin": pressureMin,
+              "pressureMax": pressureMax,
+              "temperatureMin": temperatureMin,
+              "temperatureMax": temperatureMax,
+              "valid_time" : valid_time,
+              "meter_version": meter_version,
+              "meter_index":meter_index 
+        }
+        responseData.append(each_dict)
     except:
         print('user is not existed')
     response = {}
@@ -158,55 +181,36 @@ def getData(request):
     responsedata = []
     try:
         if 'user_name' in request.GET:
-            request.session['user_name'] = request.GET['user_name']
             user = User.objects.get(user_company = request.GET['user_name'])
-        elif 'meter_eui' in request.GET:
-            request.session['meter_eui'] = request.GET['meter_eui']
-            request.session['is_meter_eui'] = True 
-            for each in Data.objects.filter(meter_eui = request.GET['meter_eui']):
-                    each_dict = {
-                        "id": each.pk,
-                        "data_id": each.data_id,
-                        "meter_id":     each.meter_id,
-                        "data_date": formats.date_format(each.data_date,"SHORT_DATETIME_FORMAT"),
-                        "data_vb": each.data_vb,
-                        "data_vm": each.data_vm,
-                        "data_p":     each.data_p,
-                        "data_t": each.data_t,
-                        "data_qb": each.data_qb,    
-                        "data_qm": each.data_qm,          
-                    }
-            #         print(formats.date_format(each.data_date,"SHORT_DATETIME_FORMAT"))
-                    responsedata.append(each_dict)
+            meter = Meter.objects.get(user_id = user.user_id)
+            if 'start' in request.GET and 'limit' in request.GET:
+                start = request.GET['start']
+                limit = request.GET['limit']
+            else:
+                start = 0
+                limit = Data.objects.filter(meter_eui = meter.meter_eui).count()
+            for each in Data.objects.filter(meter_eui = meter.meter_eui).order_by('-data_date')[start:start+limit]:
+                each_dict = {
+                    "id": each.pk,
+                    "data_id": each.data_id,
+                    "meter_eui":     each.meter_eui,
+                    "data_date": formats.date_format(each.data_date,"SHORT_DATETIME_FORMAT"),
+                    "data_vb": each.data_vb,
+                    "data_vm": each.data_vm,
+                    "data_p":     each.data_p,
+                    "data_t": each.data_t,
+                    "data_qb": each.data_qb,    
+                    "data_qm": each.data_qm,  
+                    "data_battery": each.data_battery,        
+                }
+        #         print(formats.date_format(each.data_date,"SHORT_DATETIME_FORMAT"))
+                responsedata.append(each_dict)
             response = {}
             response['status'] = 'SUCESS'
+            response['totalCount'] = Data.objects.filter(meter_eui = meter.meter_eui).count()
             response['data'] = responsedata
-        #     print(json.dumps(response))
-            return HttpResponse(json.dumps(response),content_type ="application/json")
-        else:
-            user = User.objects.get(user_id = request.session['user_id'])
-            
-        user_id = user.user_id
-        Children = Meter.objects.filter(user_id__range = (user_id,user_id[0:-1]+str(int(user_id[-1])+1))).extra(where = ['LENGTH(user_id) > ' + str(len(user_id))])
-    #         Children = Meter.objects.filter(user_id__startswith = user_id)
-        for i in range (0, len(Children)):
-            meterID = Meter.objects.filter(user_id = Children[i].user_id)
-            for j in range(0,len(meterID)):
-                for each in Data.objects.filter(meter_eui = meterID[j].meter_eui):
-                    each_dict = {
-                        "id": each.pk,
-                        "data_id": each.data_id,
-                        "meter_id":     each.meter_id,
-                        "data_date": formats.date_format(each.data_date,"SHORT_DATETIME_FORMAT"),
-                        "data_vb": each.data_vb,
-                        "data_vm": each.data_vm,
-                        "data_p":     each.data_p,
-                        "data_t": each.data_t,
-                        "data_qb": each.data_qb,    
-                        "data_qm": each.data_qm,          
-                    }
-            #         print(formats.date_format(each.data_date,"SHORT_DATETIME_FORMAT"))
-                    responsedata.append(each_dict)
+    #     print(json.dumps(response))
+        return HttpResponse(json.dumps(response),content_type ="application/json")
     except:
         print('user is not existed')
     response = {}
@@ -335,6 +339,69 @@ def user_level(request):
 #     print(json.dumps(response))
     return HttpResponse(json.dumps(responsedata),content_type ="application/json")
 
+def getIndUser(request):
+    if  not 'user_id' in request.session:
+        loginPage(request)
+        return render_to_response('login.html', context_instance=RequestContext(request))
+    responsedata = []
+    if not 'user_id' in request.GET:
+        userID = request.session['user_id']
+    else:
+        userID = request.GET['user_id']
+    for each in User.objects.filter(user_id__startswith = userID).extra(where = ['LENGTH(user_id) = 8']):
+        each_dict = {
+            "user_id": each.user_id,
+            "user_company":     each.user_company,    
+        }
+#         print(formats.date_format(each.data_date,"SHORT_DATETIME_FORMAT"))
+        responsedata.append(each_dict)
+    response = {}
+    response['status'] = 'SUCCESS'
+    response['data'] = responsedata
+#     print(json.dumps(response))
+    return HttpResponse(json.dumps(responsedata),content_type ="application/json") 
+
+def getIndComp (request):
+    if  not 'user_id' in request.session:
+        loginPage(request)
+        return render_to_response('login.html', context_instance=RequestContext(request))
+    responsedata = []
+    for each in User.objects.filter(user_id__startswith = request.session['user_id']).extra(where = ['LENGTH(user_id) = 4']):
+        each_dict = {
+            "user_id": each.user_id,
+            "gas_company":     each.user_company,    
+        }
+#         print(formats.date_format(each.data_date,"SHORT_DATETIME_FORMAT"))
+        responsedata.append(each_dict)
+    response = {}
+    response['status'] = 'SUCCESS'
+    response['data'] = responsedata
+#     print(json.dumps(response))
+    return HttpResponse(json.dumps(responsedata),content_type ="application/json")       
+
+def getIndMeter(request):
+    if  not 'user_id' in request.session:
+        loginPage(request)
+        return render_to_response('login.html', context_instance=RequestContext(request))
+    responsedata = []
+    if not 'user_id' in request.GET:
+        user_id = request.GET['user_id']
+    else:
+        user_id = request.session['user_id']
+    for each in Meter.objects.filter(user_id__startswith = user_id):
+        each_dict = {
+            "user_id": each.user_id,
+            "meter_eui":     each.meter_eui,    
+        }
+#         print(formats.date_format(each.data_date,"SHORT_DATETIME_FORMAT"))
+        responsedata.append(each_dict)
+    response = {}
+    response['status'] = 'SUCCESS'
+    response['data'] = responsedata
+#     print(json.dumps(response))
+    return HttpResponse(json.dumps(responsedata),content_type ="application/json")    
+ 
+
 def selectPanel(request):
     if  not 'user_id' in request.session:
         loginPage(request)
@@ -422,16 +489,14 @@ def generateMeterID(userName):
     children = Meter.objects.filter(user_id__startswith = user[0].user_id).extra(where = ['LENGTH(user_id) = ' + str(len(user[0].user_id)+8)]).order_by('user_id')
     if len(children) == 0:
         return user[0].user_id+'00000001'
-#     if len(children) == 1:
-#         return user[0].user_id+'00000002'
     ID = children[0].user_id
     for i in range(1,len(children)):
         if int(children[i].user_id) - int(ID) >1:
-            return ID[0:-1]+str(int(ID[-1])+1)
+            return str(int(ID)+1).zfill(16)
         else:
             ID = children[i].user_id
             
-    return ID[0:-1]+str(int(ID[-1])+1)
+    return str(int(ID)+1).zfill(16)
 
 def register_meter(request):
     if  not 'user_id' in request.session:
@@ -477,35 +542,19 @@ def getExcelFile(request):
     response['Content-Disposition'] = 'attachment; filename="Data.csv"'
     #database operation3
     writer = csv.writer(response)
-    writer.writerow(['Name', 'Accept Time', 'Vb(Nm3)', 'Vm(m3)','P','T','Qb(Nm3/h)','Qm(m3/h)'])
+    writer.writerow(['Accept Time', 'Vb(Nm3)', 'Vm(m3)','P','T','Qb(Nm3/h)','Qm(m3/h)'])
     try:
-        if 'user_name' in request.session:
-            user = User.objects.get(user_company = request.session['user_name'])
-        else:
-            user = User.objects.get(user_id = request.session['user_id'])
-            
-        if 'meter_eui' in request.session:
-            if request.session['is_meter_eui'] == True:
-                request.session['is_meter_eui'] = False
-                meterName = Meter.objects.get(meter_eui = request.session['meter_eui']).meter_name
-                print "meter_name: "+ meterName
-                for each in Data.objects.filter(meter_eui = request.session['meter_eui']):
-                    writer.writerow([meterName.encode('utf-8'),  formats.date_format(each.data_date,"SHORT_DATETIME_FORMAT"), each.data_vb, each.data_vm, each.data_p, each.data_t,each.data_qb,each.data_qm])
-                return response
-        user_id = user.user_id
-        
-        print "user_id is " +user_id
-        
-#             Children = Meter.objects.filter(user_id__range = (user_id,user_id[0:-1]+str(int(user_id[-1])+1))).extra(where = ['LENGTH(user_id) > ' + str(len(user_id))])
-        Children = Meter.objects.filter(user_id__startswith = user_id)
-        print "meter num is : "+ str(len(Children))
-        for i in range (0, len(Children)):
-            meterID = Meter.objects.filter(user_id = Children[i].user_id)
-            for j in range(0,len(meterID)):
-                meterName = meterID[j].meter_name
-                for each in Data.objects.filter(meter_eui = meterID[j].meter_eui):
-                    writer.writerow([meterName.encode('utf-8'),  formats.date_format(each.data_date,"SHORT_DATETIME_FORMAT"), each.data_vb, each.data_vm, each.data_p, each.data_t,each.data_qb,each.data_qm])
-            #         print(formats.date_format(each.data_date,"SHORT_DATETIME_FORMAT"))
+        if 'user_company' in request.GET:
+            userID = getUserId(request.GET['user_company'])
+            Children = Meter.objects.filter(user_id__startswith = userID)
+            print "meter num is : "+ str(len(Children))
+            for i in range (0, len(Children)):
+                meterID = Meter.objects.filter(user_id = Children[i].user_id)
+                for j in range(0,len(meterID)):
+                    meterName = meterID[j].meter_name
+                    for each in Data.objects.filter(meter_eui = meterID[j].meter_eui):
+                        writer.writerow([formats.date_format(each.data_date,"SHORT_DATETIME_FORMAT"), each.data_vb, each.data_vm, each.data_p, each.data_t,each.data_qb,each.data_qm])
+                #         print(formats.date_format(each.data_date,"SHORT_DATETIME_FORMAT"))
     except:
         print('user is not existed')
 
@@ -533,13 +582,13 @@ def getCompanyInfo(request):
     try:
 #         if 'user_id' in request.session:
 #             return render_to_response('index.html', context_instance=RequestContext(request))
-        company = Company.objects.get(user_id = request.session['user_id'])
+        company = Company.objects.all()
         each_dict = {
-            "title": company.company_title,
-            "content":company.company_content, 
-            "addr":company.company_addr, 
-            "contract":company.company_contract, 
-            "tel":company.company_tel,    
+            "title": company[0].company_title,
+            "content":company[0].company_content, 
+            "addr":company[0].company_addr, 
+            "contract":company[0].company_contract, 
+            "tel":company[0].company_tel,    
         }
         responsedata.append(each_dict)
         response['status'] = 'SUCCESS'
@@ -558,7 +607,7 @@ def getUserFeedback(request):
     for each in UserFeedback.objects.all():
         each_dict = {
             "id": each.pk,
-            "user_id": each.user_id,
+            "user_company": getUserCompanyName(each.user_id),
             "report_time":     formats.date_format(each.report_time,"SHORT_DATETIME_FORMAT"),
             "solution_deadline": each.solution_deadline,
             "problem": each.problem,
@@ -573,18 +622,20 @@ def getUserFeedback(request):
 def getIndentificationMeter(request):
     responsedata = []
 
-    for each in IdentificationMeter.objects.all():
+    for each in IdentificationMeter.objects.order_by('-id'):
         each_dict = {
             "id": each.pk,
+            "user_company": getUserName(each.meter_eui),
             "meter_eui": each.meter_eui,
             "identify_date":     formats.date_format(each.identify_date,"SHORT_DATETIME_FORMAT"),
-            "identify_date":     formats.date_format(each.next_identify_date,"SHORT_DATETIME_FORMAT"),
-            "meter_type": each.meter_type,
+            "next_identify_date":     formats.date_format(each.next_identify_date,"SHORT_DATETIME_FORMAT"),
+            "meter_type": meterTypeName(each.meter_type),
             "meter_index": each.meter_index,
-            "output_range": each.output_range,
+            "meter_version": each.meter_version,
+            "output_range": each.outputMin+'~'+each.outputMax,
             "medium": each.medium,
-            "pressure": each.pressure,
-            "temperature": each.temperature,
+            "pressure": each.pressureMin+'~'+each.pressureMax,
+            "temperature": each.temperatureMin+'~'+each.temperatureMax,
             "Qmax100": each.Qmax100,
             "Qmax60": each.Qmax60,
             "Qmax40": each.Qmax40,
@@ -592,6 +643,373 @@ def getIndentificationMeter(request):
             "Qmax10": each.Qmax10,
         }
         responsedata.append(each_dict)
+    response = {}
+    response['status'] = 'SUCESS'
+    response['data'] = responsedata
+    return HttpResponse(json.dumps(response),content_type ="application/json")
+
+def addIndentificationMeter(request):
+    if  not 'user_id' in request.session:
+        loginPage(request)
+        return render_to_response('login.html', context_instance=RequestContext(request))
+    response = {}
+    meter_eui = request.POST['meter_eui']
+    meter_type = request.POST['meter_type']
+    meter_version = request.POST['meter_version']
+    meter_index = request.POST['meter_index']
+    identify_date = request.POST['identify_date']
+    next_identify_date = request.POST['next_identify_date']
+    medium = request.POST['medium']
+    pressureMax = request.POST['pressureMax']
+    pressureMin = request.POST['pressureMin']
+    temperatureMax = request.POST['temperatureMax']
+    temperatureMin = request.POST['temperatureMin']
+    outputMax = request.POST['outputMax']
+    outputMin = request.POST['outputMin']
+    Qmax100 = request.POST['Qmax100']
+    Qmax60 = request.POST['Qmax60']
+    Qmax40 = request.POST['Qmax40']   
+    Qmax20 = request.POST['Qmax20']
+    Qmax10 = request.POST['Qmax10']   
+             
+    indMeter = IdentificationMeter()
+    indMeter.meter_eui = meter_eui
+    indMeter.meter_type = meter_type
+    indMeter.meter_version = meter_version
+    indMeter.meter_index = meter_index
+    indMeter.identify_date = datetime.datetime.strptime(identify_date,'%Y-%m-%d')
+    indMeter.next_identify_date = datetime.datetime.strptime(next_identify_date,'%Y-%m-%d')
+    indMeter.medium = medium
+    indMeter.outputMax = outputMax
+    indMeter.outputMin = outputMin
+    indMeter.pressureMax = pressureMax
+    indMeter.pressureMin = pressureMin
+    indMeter.temperatureMax = temperatureMax
+    indMeter.temperatureMin = temperatureMin
+    indMeter.Qmax100 = Qmax100
+    indMeter.Qmax60 = Qmax60
+    indMeter.Qmax40 = Qmax40
+    indMeter.Qmax20 = Qmax20
+    indMeter.Qmax10 = Qmax10
+    indMeter.save();
+   
+    response['status'] = 'SUCCESS'
+    response['data'] = {}
+#     print(json.dumps(response))
+    return HttpResponse(json.dumps(response),content_type ="application/json")  
+
+def getUserId(company):
+    user = User.objects.get(user_company = company)
+    return user.user_id
+def getUserCompanyName(userId):
+    user = User.objects.get(user_id = userId)
+    return user.user_company
+
+
+def addOutputDiff(request):
+    if  not 'user_id' in request.session:
+        loginPage(request)
+        return render_to_response('login.html', context_instance=RequestContext(request))
+    response = {}
+    input = request.POST['input']
+    industry_output = request.POST['industry_output']
+    resident_output = request.POST['resident_output']
+    other_output = request.POST['other_output']
+    output_diff = request.POST['output_diff']
+    output_date = request.POST['output_date']
+    user_company = request.POST['user_company']
+    outputInfo = outputDiff();
+    outputInfo.input = input
+    outputInfo.industry_output = industry_output
+    outputInfo.resident_output = resident_output
+    outputInfo.other_output = other_output
+    outputInfo.output_diff = output_diff
+    outputInfo.output_date = datetime.datetime.strptime(output_date,'%Y-%m-%d')
+    outputInfo.user_id = getUserId(user_company)
+    outputInfo.save();
+    
+   
+    response['status'] = 'SUCCESS'
+    response['data'] = {}
+#     print(json.dumps(response))
+    return HttpResponse(json.dumps(response),content_type ="application/json")
+def modifyOutputDiff(request):
+    if  not 'user_id' in request.session:
+        loginPage(request)
+        return render_to_response('login.html', context_instance=RequestContext(request))
+    response = {}
+    input = request.POST['input']
+    industry_output = request.POST['industry_output']
+    resident_output = request.POST['resident_output']
+    other_output = request.POST['other_output']
+    output_diff = request.POST['output_diff']
+    output_date = request.POST['output_date']
+    user_company = request.POST['user_company']
+    outputInfo = outputDiff.objects.get(user_id = getUserId(user_company), output_date = datetime.datetime.strptime(output_date,'%Y-%m-%d'));
+    outputInfo.input = input
+    outputInfo.industry_output = industry_output
+    outputInfo.resident_output = resident_output
+    outputInfo.other_output = other_output
+    outputInfo.output_diff = output_diff
+    outputInfo.output_date = datetime.datetime.strptime(output_date,'%Y-%m-%d')
+    outputInfo.user_id = getUserId(user_company)
+    outputInfo.save();
+    
+   
+    response['status'] = 'SUCCESS'
+    response['data'] = {}
+#     print(json.dumps(response))
+    return HttpResponse(json.dumps(response),content_type ="application/json")
+    
+    
+    
+def outputDiffChart(request):
+    if  not 'user_id' in request.session:
+        loginPage(request)
+        return render_to_response('login.html', context_instance=RequestContext(request))
+    responsedata = []
+    if 'user_company' in request.GET:
+        userID = getUserId(request.GET['user_company'])
+        
+
+        for each in outputDiff.objects.filter(user_id = userID):
+            each_dict = {
+                "id": each.pk,
+                "output_diff": int(each.output_diff),
+                "output_date":     formats.date_format(each.output_date,"DATE_FORMAT"),
+            }
+            responsedata.append(each_dict)
+        response = {}
+        response['status'] = 'SUCESS'
+        response['data'] = responsedata
+        return HttpResponse(json.dumps(response),content_type ="application/json")
+        
+
+    for each in outputDiff.objects.all():
+        each_dict = {
+            "id": each.pk,
+            "output_diff": int(each.output_diff),
+            "output_date":     formats.date_format(each.output_date,"DATE_FORMAT"),
+        }
+        responsedata.append(each_dict)
+    response = {}
+    response['status'] = 'SUCESS'
+    response['data'] = responsedata
+    return HttpResponse(json.dumps(response),content_type ="application/json")
+    
+def retrieveNodeNum(request):
+    if 'user_company' in request.GET:
+        userID = getUserId(request.GET['user_company'])
+        meterSet = Meter.objects.filter(user_id__startswith = userID)
+        each_dict = {
+                "all_node_num": meterSet.count(),
+                "valid_node_num": meterSet.count(),
+        }
+        responsedata = []
+        responsedata.append(each_dict)
+        response = {}
+        response['status'] = 'SUCCESS'
+        response['data'] = responsedata
+        return HttpResponse(json.dumps(response),content_type ="application/json") 
+    
+def getMeterName(meterEUI):
+    meter = Meter.objects.get(meter_eui = meterEUI)
+    return meter.meter_name
+def getUserName(meterEUI):
+    meter = Meter.objects.get(meter_eui = meterEUI)
+    userID =  meter.user_id[0:8]
+    user = User.objects.get(user_id = userID)
+    return user.user_company
+def getGasCompany(meterEUI):
+    meter = Meter.objects.get(meter_eui = meterEUI)
+    userID =  meter.user_id[0:4]
+    user = User.objects.get(user_id = userID)
+    return user.user_company    
+    
+def getWarnInfo(request):
+    if 'user_company' in request.GET:
+        responsedata = []
+        userID = getUserId(request.GET['user_company'])  
+        meterSet = Meter.objects.filter(user_id__startswith = userID)
+        for i in range (0, len(meterSet)):
+            warnInfoSet = WarnInfo.objects.filter(meter_eui = meterSet[i].meter_eui)
+            for j in range(0,len(warnInfoSet)):
+                warnData = DataWarnType.objects.get(data_warn = warnInfoSet[j].data_warn)
+                if 'warn_level' in request.GET:
+                    if warnData.data_warn_level == request.GET['warn_level']:
+                        each_dict = {
+                            "data_warn": warnInfoSet[j].data_warn,
+                            "warn_date": formats.date_format(warnInfoSet[j].warn_date,"SHORT_DATETIME_FORMAT"),
+                            "meter_info": getMeterName(warnInfoSet[j].meter_eui),
+                            "other": warnInfoSet[j].warn_other,
+                            "solution": warnData.data_warn_solution,
+                            "warn_level": warnData.data_warn_level,
+                            "warn_info" : warnData.data_warn_reason,
+                            "company": getGasCompany(warnInfoSet[j].meter_eui),
+                            "user_id": getUserName(warnInfoSet[j].meter_eui),
+                        }       
+                        responsedata.append(each_dict)
+                    else:
+                        continue
+                else:       
+                    each_dict = {
+                        "data_warn": warnInfoSet[j].data_warn,
+                        "warn_date": formats.date_format(warnInfoSet[j].warn_date,"SHORT_DATETIME_FORMAT"),
+                        "meter_info": getMeterName(warnInfoSet[j].meter_eui),
+                        "other": warnInfoSet[j].warn_other,
+                        "solution": warnData.data_warn_solution,
+                        "warn_level": warnData.data_warn_level,
+                        "warn_info" : warnData.data_warn_reason,
+                        "company": getGasCompany(warnInfoSet[j].meter_eui),
+                        "user_id": getUserName(warnInfoSet[j].meter_eui),
+                    }       
+                    responsedata.append(each_dict)
+        response = {}
+        response['status'] = 'SUCCESS'
+        response['data'] = responsedata
+        return HttpResponse(json.dumps(response),content_type ="application/json")
+    
+def changeCompanyIntro(request):
+    if  not 'user_id' in request.session:
+        loginPage(request)
+        return render_to_response('login.html', context_instance=RequestContext(request))
+    response = {}
+    company_title = request.POST['company_title']
+    company_content = request.POST['company_content']
+    company_contract = request.POST['company_contract']
+    company_tel = request.POST['company_tel']
+    company_addr = request.POST['company_addr']
+    
+    company = Company.objects.get(id = 2);
+    company.company_title = company_title
+    company.company_content = company_content
+    company.company_contract = company_contract
+    company.company_tel = company_tel
+    company.company_addr = company_addr
+    company.save();
+    
+   
+    response['status'] = 'SUCCESS'
+    response['data'] = {}
+#     print(json.dumps(response))
+    return HttpResponse(json.dumps(response),content_type ="application/json")
+
+def AddUserFeedback(request):
+    if  not 'user_id' in request.session:
+        loginPage(request)
+        return render_to_response('login.html', context_instance=RequestContext(request))
+    response = {}
+    report_time = request.POST['report_time']
+    solution_deadline = request.POST['solution_deadline']
+    problem = request.POST['problem']
+    solution_result = request.POST['solution_result']
+    user_company = request.POST['user_company']
+    
+    feedback = UserFeedback()
+    feedback.user_id = getUserId(user_company)
+    feedback.report_time = datetime.datetime.strptime(report_time,'%Y-%m-%d')
+    feedback.solution_deadline = solution_deadline
+    feedback.problem = problem
+    feedback.solution_result = solution_result
+    feedback.save();
+    
+   
+    response['status'] = 'SUCCESS'
+    response['data'] = {}
+#     print(json.dumps(response))
+    return HttpResponse(json.dumps(response),content_type ="application/json")  
+
+def getDeviationVal(request):
+    if  not 'user_id' in request.session:
+        loginPage(request)
+        return render_to_response('login.html', context_instance=RequestContext(request))
+    responsedata = []
+    if 'meter_eui' in request.GET:
+        meterEUI = request.GET['meter_eui']
+        dataQm = request.GET['data_qm']
+        meterIdent = IdentificationMeter.objects.filter(meter_eui = meterEUI).order_by('-id')
+        each_dict = {
+#             "qmax_level": '10%Qmax'+str(round(float(meterIdent[0].outputMax)*0.1,1)),
+            "deviation_val": round(float(meterIdent[0].Qmax10),2),
+            "qmax_level": 0.1,
+        }
+        responsedata.append(each_dict)
+        each_dict = {
+#             "qmax_level": '20%Qmax'+str(round(float(meterIdent[0].outputMax)*0.2,1)),
+            "deviation_val": round(float(meterIdent[0].Qmax20),2),
+            "qmax_level": 0.2,
+        }
+        responsedata.append(each_dict)
+        each_dict = {
+#             "qmax_level": '40%Qmax'+str(round(float(meterIdent[0].outputMax)*0.4,1)),
+            "deviation_val": round(float(meterIdent[0].Qmax40),2),
+            "qmax_level": 0.4,
+        }
+        responsedata.append(each_dict)
+        each_dict = {
+#             "qmax_level": '60%Qmax'+str(round(float(meterIdent[0].outputMax)*0.6,1)),
+            "deviation_val": round(float(meterIdent[0].Qmax60),2),
+            "qmax_level": 0.6,
+        }
+        responsedata.append(each_dict)
+        each_dict = {
+#             "qmax_level": '100%Qmax'+str(round(float(meterIdent[0].outputMax),1)),
+            "deviation_val": round(float(meterIdent[0].Qmax100),2),
+            "qmax_level": 1,
+        }
+        responsedata.append(each_dict)
+        each_dict = {
+#             "qmax_level": '100%Qmax'+str(round(float(meterIdent[0].outputMax),1)),
+            "single_deviation_val": 0,
+            "single_qmax_level": (float(dataQm)/float(meterIdent[0].outputMax)*4)
+        }
+        responsedata.append(each_dict)
+        
+    response = {}
+    response['status'] = 'SUCESS'
+    response['data'] = responsedata
+    return HttpResponse(json.dumps(response),content_type ="application/json")
+
+def retrieveIndustryOutput(request):
+    if 'user_company' in request.GET:
+        userID = getUserId(request.GET['user_company'])
+        meterSet = Meter.objects.filter(user_id__startswith = userID)
+        today = datetime.datetime.today()
+        yestoday = today - datetime.timedelta(days=1)
+        outputVal = 0
+        for meter in meterSet:
+            MeterData = Data.objects.filter(meter_eui = meter.meter_eui, data_date__lt = today.strftime("%Y-%m-%d %H:%M:%S"), data_date__gt = yestoday.strftime("%Y-%m-%d %H:%M:%S")).order_by('-data_date')
+            if len(MeterData) > 0:
+                outputVal = outputVal + float(MeterData[0].data_qm)
+            else:
+                outputVal = outputVal + 0
+        each_dict = {
+                "industry_output": outputVal,
+        }
+        responsedata = []
+        responsedata.append(each_dict)
+        response = {}
+        response['status'] = 'SUCCESS'
+        response['data'] = responsedata
+        return HttpResponse(json.dumps(response),content_type ="application/json") 
+    
+def meterDataChart(request):
+    if  not 'user_id' in request.session:
+        loginPage(request)
+        return render_to_response('login.html', context_instance=RequestContext(request))
+    responsedata = []
+    if 'user_company' in request.GET:
+        userID = getUserId(request.GET['user_company'])
+        
+        meterEUISet = Meter.objects.filter(user_id__startswith = userID).values_list('meter_eui', flat=True)
+
+        for each in Data.objects.filter(meter_eui__in = meterEUISet).extra({'published':"date(data_date)"}).values('published').annotate(dsum=Sum('data_qb')):
+            each_dict = {
+                "data_qb": int(each["dsum"]),
+#                 "data_date":     formats.date_format(each.published,"DATE_FORMAT"),
+                "data_date": each["published"]
+            }
+            responsedata.append(each_dict)
     response = {}
     response['status'] = 'SUCESS'
     response['data'] = responsedata

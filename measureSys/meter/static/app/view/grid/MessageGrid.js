@@ -77,7 +77,7 @@ Ext.define('app.view.grid.MessageGrid',{
                 store: store,
                 displayInfo: true,
                 displayMsg: '显示警报信息{0} - {1} of {2}',
-                emptyMsg: "无显示警报信息",
+                emptyMsg: "无显示警报信息"
                 // items:[
                 //     '-', {
                 //     text: pluginExpanded ? 'Hide Preview' : 'Show Preview',

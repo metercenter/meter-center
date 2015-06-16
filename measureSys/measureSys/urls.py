@@ -3,10 +3,10 @@ from django.contrib import admin
 from meter.views import mainPage, logout_view
 from meter.views import getMeter
 from meter.views import userList
-from meter.views import getData
-from meter.views import loginPage, getCompanyInfo, getUserFeedback, getIndentificationMeter,selectPanel
-from meter.views import login_view, user_group_show,user_level,register_company,register_meter,meter_level,getExcelFile,warnList,getMeterType
-
+from meter.views import getData, modifyOutputDiff,retrieveNodeNum, getWarnInfo, changeCompanyIntro,AddUserFeedback , addIndentificationMeter, getIndUser
+from meter.views import loginPage, getCompanyInfo, getUserFeedback, getIndentificationMeter,selectPanel,addOutputDiff, outputDiffChart, getIndMeter
+from meter.views import login_view, user_group_show,user_level,register_company,register_meter,meter_level,getExcelFile,warnList,getMeterType, getIndComp
+from meter.views import getDeviationVal,retrieveIndustryOutput,meterDataChart
 urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'Measuringsystem.views.home', name='home'),
@@ -32,4 +32,18 @@ urlpatterns = patterns('',
     url(r'^getUserFeedback',getUserFeedback),
     url(r'^getIdentifyMeter',getIndentificationMeter),
     url(r'^selectPanel',selectPanel),
+    url(r'^addOutputDiff',addOutputDiff),
+    url(r'^outputDiffChart', outputDiffChart),
+    url(r'^meterDataChart',meterDataChart),
+    url(r'^modifyOutputDiff',modifyOutputDiff),
+    url(r'^retrieveNodeNum',retrieveNodeNum),
+    url(r'^getWarnInfo', getWarnInfo),
+    url(r'^changeCompanyIntro',changeCompanyIntro),
+    url(r'^AddUserFeedback',AddUserFeedback),
+    url(r'^addIndentificationMeter',addIndentificationMeter),
+    url(r'^getIndUser',getIndUser),
+    url(r'^getIndMeter',getIndMeter),
+    url(r'^getIndComp',getIndComp),
+    url(r'^getDeviationVal',getDeviationVal),
+    url(r'^retrieveIndustryOutput',retrieveIndustryOutput),
 )
