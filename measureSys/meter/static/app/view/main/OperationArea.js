@@ -89,9 +89,6 @@ Ext.define('app.view.main.OperationArea',{
             title: '报警信息总览',
             xtype: 'messagegrid',
             hidden: true
-//        },{
-//            title: '学习方法5',
-//            xtype: 'userFeedback'
         }, {
             title: '部署管理及统计信息',
             xtype: 'chartContainer',

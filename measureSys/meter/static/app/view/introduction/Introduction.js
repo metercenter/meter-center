@@ -20,7 +20,7 @@ Ext.define('app.view.introduction.Introduction', {
   },
 
   bind: {
-    html: '<div class="introductionShow"><h2>{title}</h2><p>{content}</p><p><h5>联系人：{contract}</h5></p><p><h5>联系电话：{tel}</h5></p><p><h5>联系方式：{addr}</h5></p></div>'
+    html: '<div class="introductionShow"><h2>{title}</h2><p>{content}</p><p><h5>联系电话：{tel}</h5></p><p><h5>传真：{contract}</h5></p><p><h5>微信公众号：{addr}</h5></p></div>'
   },
 
 //  tbar : [{

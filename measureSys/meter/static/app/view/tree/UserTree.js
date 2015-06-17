@@ -164,6 +164,7 @@ Ext.define('app.view.tree.UserTree', {
 //       }, 6000);
         Ext.ComponentQuery.query('#metercontainer')[0].setHidden(false);
         var selectMeterStore = Ext.create('store.selectMeterStore');
+        console.log(Ext.ComponentQuery.query('#dataarea'));
         Ext.ComponentQuery.query('#browseArea')[0].userName = company;
         selectMeterStore.load({
           params : {

@@ -15,15 +15,16 @@ Ext.define('app.view.main.BrowseArea', {
     userName: '金昇公司',
 
     items: [{
-        region: 'north'
-    }, {
+    	region: 'north'
+    },
+    {
         region: 'west',
 //        collapsible: true,
         xtype: 'userTree',
         split: true,
         title: '客户',
-        width: 200,
-        margin: '0 0 0 5'
+        width: 210,
+        margin: '0 0 0 0'
     }, {
         region: 'east',
         collapsible: true,
