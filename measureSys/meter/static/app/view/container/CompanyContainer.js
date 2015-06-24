@@ -19,7 +19,7 @@ Ext.define('app.view.container.CompanyContainer',{
           },
           items: [{
             xtype:'introduction',
-            height: 200
+            height: 230
           }, {
             xtype:'userFeedback'
         },{

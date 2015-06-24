@@ -161,7 +161,7 @@ table.gridtable td {
 }
 
 div.test ul > li{
-	width: 70px;
+	width: 60px;
 	float: right;
 	list-style: none;
 	display: inline;
@@ -228,7 +228,33 @@ a:active {
   line-height: 65px;
   float: left;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
-  margin:0px 0 0 70px;
+  margin:0px 0 0 10px;
+}
+
+#header-logout {
+  font-size: 14px;
+  color: #202020;
+  height: 38px;
+  line-height: 65px;
+  cursor:pointer;
+  float: right;
+  background:url(/static/resources/images/logou.png) left bottom no-repeat;
+  padding-left:18px;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+  margin:0px 40px 0 30px;
+}
+
+#header-refresh {
+  font-size: 14px;
+  color: #202020;
+  height: 38px;
+  cursor:pointer;
+  line-height: 65px;
+  float: right;
+  background:url(/static/resources/images/refresh.png) left bottom no-repeat;
+  padding-left:18px;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+  margin:0px 0px 0 30px;
 }
 
 .header-button-active button {
