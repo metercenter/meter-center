@@ -1,5 +1,5 @@
 Ext.define('app.view.main.BrowseArea', {
-    extend: 'Ext.panel.Panel',
+    extend: 'Ext.container.Container',
     alias: 'widget.browseArea',
     requires:[
               'app.view.main.OperationArea',
@@ -15,7 +15,7 @@ Ext.define('app.view.main.BrowseArea', {
     userName: '金昇公司',
 
     items: [{
-    	region: 'north'
+    	region: 'north',
     },
     {
         region: 'west',

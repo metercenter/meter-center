@@ -61,7 +61,7 @@ var headerPanel = new Ext.Panel({
 Ext.define('app.view.main.Main', {
     extend: 'Ext.container.Container',
     layout: 'border',
-    requires:['app.view.main.BrowseArea'],
+    requires:['app.view.main.MenuBrowseArea'],
     id : "titlePage",
     viewModel: {
       data: {
@@ -72,7 +72,7 @@ Ext.define('app.view.main.Main', {
     headerPanel
     , {
         region: 'center',
-        xtype: 'browseArea'
+        xtype: 'menuBrowseArea'
     }, {
         region:'south',
         xtype : 'component',
