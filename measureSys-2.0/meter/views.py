@@ -12,9 +12,11 @@ from django.template import RequestContext
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 import csv
-import sys
+import sys, os
 import time
 from django.db.models import Sum
+import xlsxwriter
+from django.core.servers.basehttp import FileWrapper 
 
 
 def unicode_csv_reader(unicode_csv_data, dialect=csv.excel, **kwargs):
@@ -565,25 +567,52 @@ def register_meter(request):
     return HttpResponse(json.dumps(response),content_type ="application/json")
 
 def getExcelFile(request):
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="Data.csv"'
+#     response = HttpResponse(content_type='text/xlsx')
+#     response['Content-Disposition'] = 'attachment; filename="Data.xlsx"'
+
     #database operation3
-    writer = csv.writer(response)
-    writer.writerow(['Accept Time', 'Vb(Nm3)', 'Vm(m3)','P','T','Qb(Nm3/h)','Qm(m3/h)'])
+#     writer = csv.writer(response)
+#     writer.writerow(['Accept Time', 'Vb(Nm3)', 'Vm(m3)','P','T','Qb(Nm3/h)','Qm(m3/h)'])
+    workbook = xlsxwriter.Workbook('Data.xlsx')
+    worksheet = workbook.add_worksheet()
+    
+    
+    worksheet.write(0, 0, u'流量计名字')
+    worksheet.write(0, 1, u'接收时间')
+    worksheet.write(0, 2, u'Vb(Nm3)')
+    worksheet.write(0, 3, u'Vm(m3)')
+    worksheet.write(0, 4, u'P')
+    worksheet.write(0, 5, u'T')
+    worksheet.write(0, 6, u'Qb(Nm3/h)')
+    worksheet.write(0, 7, u'Qm(m3/h)')
+    row = 1
     try:
-        if 'user_company' in request.GET:
-            userID = getUserId(request.GET['user_company'])
-            Children = Meter.objects.filter(user_id__startswith = userID)
+        if 'user_id' in request.GET:
+#             userID = getUserId(request.GET['user_company'])
+            Children = Meter.objects.filter(user_id__startswith = request.GET['user_id'])
             print "meter num is : "+ str(len(Children))
             for i in range (0, len(Children)):
                 meterID = Meter.objects.filter(user_id = Children[i].user_id)
                 for j in range(0,len(meterID)):
                     meterName = meterID[j].meter_name
+                    worksheet.write(row, 0, meterName)
                     for each in Data.objects.filter(meter_eui = meterID[j].meter_eui):
-                        writer.writerow([each.data_date.strftime("%Y/%m/%d %H:%M:%S"), each.data_vb, each.data_vm, each.data_p, each.data_t,each.data_qb,each.data_qm])
+#                         writer.writerow([each.data_date.strftime("%Y/%m/%d %H:%M:%S"), each.data_vb, each.data_vm, each.data_p, each.data_t,each.data_qb,each.data_qm])
+                        worksheet.write(row, 1, each.data_date.strftime("%Y/%m/%d %H:%M:%S"))
+                        worksheet.write(row, 2, each.data_vb)
+                        worksheet.write(row, 3, each.data_vm)
+                        worksheet.write(row, 4, each.data_p)
+                        worksheet.write(row, 5, each.data_t)
+                        worksheet.write(row, 6, each.data_qb)
+                        worksheet.write(row, 7, each.data_qm)
+                        row = row + 1
     except:
         print('user is not existed')
 
+    workbook.close()
+    wrapper = FileWrapper(file('Data.xlsx'))
+    response = HttpResponse(wrapper, content_type='application/x-xls')
+    response['Content-Length'] = os.path.getsize('Data.xlsx')
     return response
 
 def getMeterType(request):

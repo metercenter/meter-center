@@ -735,6 +735,12 @@ app.controller('AddFeedbackModalInstanceCtrl', function ($scope, $http, $modalIn
   };
     
 });
+
+app.controller('ExportData', function($scope, globalParams){
+  $scope.open = function(){
+    window.location.href = "/get-excel-file?&user_id="+globalParams.user_id;
+  }
+});
 function add________________Modal______________End(){};
 
 
