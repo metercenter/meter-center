@@ -24,20 +24,49 @@ function ___________globalParam_______end(){};
 
 function ___________headerUserCtrl______start(){};
 
-app.controller('headerUserCtrl', function($scope, $http){
+app.controller('headerUserCtrl', function($scope, $http, globalParams){
   $http({
     url:'/getCurrentUser',
     method:'GET',
   })
   .success(function(response) {
     $scope.headerName = response[0].userName;
+    globalParams.user_id = response[0].userID;
+    if (globalParams.user_id.length == 2){
+      $scope.homepageTitle = "#/homepage/"+globalParams.user_id;
+      page = '/homepage/00';
+    }else if (globalParams.user_id.length == 4){
+      $scope.homepageTitle = "#/companypage/"+globalParams.user_id;
+      page = "/companypage/"+globalParams.user_id;
+    }else if (globalParams.user_id.length == 8){
+      $scope.homepageTitle = "#/userpage/"+globalParams.user_id;
+      page = "/userpage/"+globalParams.user_id;
+    }   
+    $scope.warnpageTile = "#/warnpage/"+ globalParams.user_id;
+    console.log(globalParams.current_page);
   });
 });
 
 function ___________headerUserCtrl________end(){};
 
 
-
+app.run(function($location, $http, globalParams){
+  $http({
+    url:'/getCurrentUser',
+    method:'GET',
+  })
+  .success(function(response) {
+    globalParams.user_id = response[0].userID;
+    if (globalParams.user_id.length == 2){
+      page = '/homepage/00';
+    }else if (globalParams.user_id.length == 4){
+      page = "/companypage/"+globalParams.user_id;
+    }else if (globalParams.user_id.length == 8){
+      page = "/userpage/"+globalParams.user_id;
+    }
+    $location.url(page);
+  });
+});
 
 function ___________ngRoute___________Start(){};
 app.config(['$routeProvider', function($routeProvider){
@@ -68,8 +97,7 @@ app.config(['$routeProvider', function($routeProvider){
 	    }).
 	    when('/datacenter/:id',{
 	          templateUrl: 'datacenter.html',
-	    }).
-	    otherwise({redirectTo: '/homepage/00'});
+	    });
 	}]);
 
 function HomePageCtrl($scope, $routeParams, globalParams) {
@@ -287,8 +315,7 @@ app.controller('WarnCtrl-all', function ($scope, $http, globalParams) {
 	$http({
 		url:'/getWarnInfo',
 		method:'GET',
-		params:{user_id: globalParams.user_id,
-			warn_level: "一级警报"}
+		params:{user_id: globalParams.user_id}
 	}).success(function(response) {
 
 	  $scope.rowCollection = response;

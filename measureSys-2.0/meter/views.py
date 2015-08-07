@@ -1124,6 +1124,7 @@ def retrieveCurUser(request):
     each_dict = {
 #             "qmax_level": '100%Qmax'+str(round(float(meterIdent[0].outputMax),1)),
         "userName": request.session['user_name'],
+        "userID": request.session['user_id']
     }
     responsedata.append(each_dict)
     response = {}

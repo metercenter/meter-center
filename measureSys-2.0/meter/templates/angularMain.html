@@ -87,10 +87,10 @@
 				</button>
 			</div>
 
-			<div class="header-menu">
+			<div class="header-menu" ng-controller="headerUserCtrl">
 				<ul>
-					<li><a href="#/homepage/00"><i class="fa fa-file"></i><span>首页</span></a></li>
-					<li><a href="#/warnpage/00"><i class="fa fa-info"></i><span>报警信息</span></a></li>
+					<li><a href={{homepageTitle}}><i class="fa fa-file"></i><span>首页</span></a></li>
+					<li><a href={{warnpageTile}}><i class="fa fa-info"></i><span>报警信息</span></a></li>
 					<li><a href="#/datacenter/00"><i class="fa fa-gears"></i><span>数据分析</span></a></li>
 				</ul>
 			</div>
