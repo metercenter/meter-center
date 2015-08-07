@@ -335,7 +335,7 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="inputStandard" class="col-lg-3 control-label">流量范围(m³/h):</label>
+								<label for="inputStandard" class="col-lg-3 control-label">流量范围(Nm³/h):</label>
 								<div class="col-lg-3">
 									<div class="bs-component">
 										<input ng-model="outMin" class="form-control" placeholder="最小值">
@@ -736,7 +736,7 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="inputStandard" class="col-lg-6 control-label">上游进气量(m³):</label>
+								<label for="inputStandard" class="col-lg-6 control-label">上游进气量(Nm³):</label>
 								<div class="col-lg-6">
 									<div class="bs-component">
 										<input class="form-control" required="该项不能为空"
@@ -745,7 +745,7 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="inputStandard" class="col-lg-6 control-label">工业用户售气量(m³):</label>
+								<label for="inputStandard" class="col-lg-6 control-label">工业用户售气量(Nm³):</label>
 								<div class="col-lg-6">
 									<div class="bs-component">
 										<input class="form-control" required="该项不能为空"
@@ -754,7 +754,7 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="inputStandard" class="col-lg-6 control-label">居民用气总量(m³):</label>
+								<label for="inputStandard" class="col-lg-6 control-label">居民用气总量(Nm³):</label>
 								<div class="col-lg-6">
 									<div class="bs-component">
 										<input class="form-control" required="该项不能为空"
@@ -763,7 +763,7 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="inputStandard" class="col-lg-6 control-label">其他气量统计(m³):</label>
+								<label for="inputStandard" class="col-lg-6 control-label">其他气量统计(Nm³):</label>
 								<div class="col-lg-6">
 									<div class="bs-component">
 										<input class="form-control" required="该项不能为空"
@@ -772,7 +772,7 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="inputStandard" class="col-lg-6 control-label">输差计算结果(m³):</label>
+								<label for="inputStandard" class="col-lg-6 control-label">输差计算结果(Nm³):</label>
 								<div class="col-lg-6">
 									<div class="bs-component">
 										<input class="form-control" required="该项不能为空"
@@ -2720,12 +2720,12 @@
 								<tr>
 									<th st-sort="data_id">数据编号</th>
 									<th st-sort="data_date">接收时间</th>
-									<th st-sort="data_vb">标况总累计(m³)</th>
-									<th st-sort="data_vm" ng-if="meter.meter_type != '卓度'">工况总累计(m³)</th>
+									<th st-sort="data_vb">标况总累计(Nm³)</th>
+									<th st-sort="data_vm" ng-if="meter.meter_type != '卓度'">工况总累计(Nm³)</th>
 									<th st-sort="data_p" ng-if="meter.meter_type != '卓度'">压力(bar)</th>
 									<th st-sort="data_t" ng-if="meter.meter_type != '卓度'">温度(℃)</th>
-									<th st-sort="data_qb">标况瞬时流量(m³/h)</th>
-									<th st-sort="data_qm" ng-if="meter.meter_type != '卓度'">工况瞬时流量(m³/h)</th>
+									<th st-sort="data_qb">标况瞬时流量(Nm³/h)</th>
+									<th st-sort="data_qm" ng-if="meter.meter_type != '卓度'">工况瞬时流量(Nm³/h)</th>
 									<th st-sort="data_battery" ng-if="meter.meter_type != '卓度'">电量(月)</th>
 									<th st-sort="data_battery" ng-if="meter.meter_type == '卓度'">电量(V)</th>
 								</tr>
@@ -2999,7 +2999,7 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="inputStandard" class="col-lg-5 control-label">流量范围(m³/h):</label>
+								<label for="inputStandard" class="col-lg-5 control-label">流量范围(Nm³/h):</label>
 								<div class="col-lg-3">
 									<div class="bs-component">
 										<input type="password" id="password" ng-model="password"
@@ -3169,7 +3169,7 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="inputStandard" class="col-lg-5 control-label">瞬时工况流量(m³/h):</label>
+								<label for="inputStandard" class="col-lg-5 control-label">瞬时工况流量(Nm³/h):</label>
 								<div class="col-lg-6">
 									<div class="bs-component">
 										<input class="form-control" ng-model="qm_edit" placeholder="瞬时工况流量" ng-change="update()">
@@ -3193,7 +3193,7 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<button class="col-lg-11 btn btn-primary">瞬时偏差: {{ outdiff }} (m³/h)</button>
+								<button class="col-lg-11 btn btn-primary">瞬时偏差: {{ outdiff }} (Nm³/h)</button>
 							</div>
 							<div class="form-group">
 								<label for="inputStandard" style="color:red" class="col-lg-10 control-label text-left">{{ warning }}</label>
@@ -3282,7 +3282,7 @@
 						</form>
 										
 						<div class="form-group">
-							<button class="col-lg-6 btn btn-primary" ng-click="submit()">计算累计输差(m³):</button>
+							<button class="col-lg-6 btn btn-primary" ng-click="submit()">计算累计输差(Nm³):</button>
 							<div class="col-lg-5">
 								<div class="bs-component">
 									<input class="form-control" ng-model="total_diff">

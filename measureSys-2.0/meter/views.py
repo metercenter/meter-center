@@ -64,6 +64,13 @@ def getMeter(request):
             userID = request.session['user_id']
         each = Meter.objects.filter(user_id = userID)
         identData = IdentificationMeter.objects.filter(meter_eui = each[0].meter_eui).order_by('-id')
+        outputMin =  ''
+        outputMax =  ''
+        pressureMin =  ''
+        pressureMax = ''
+        temperatureMin = ''
+        temperatureMax = ''
+        valid_time = ''
         if len(identData) > 0:
             outputMin =  identData[0].outputMin
             outputMax =  identData[0].outputMax
@@ -71,15 +78,8 @@ def getMeter(request):
             pressureMax = identData[0].pressureMax
             temperatureMin = identData[0].temperatureMin
             temperatureMax = identData[0].temperatureMax
-            valid_time = identData[0].next_identify_date.strftime("%Y/%m/%d %H:%M:%S")
-        else:  
-            outputMin =  ''
-            outputMax =  ''
-            pressureMin =  ''
-            pressureMax = ''
-            temperatureMin = ''
-            temperatureMax = ''
-            valid_time = ''
+            if identData[0].next_identify_date:
+                valid_time = identData[0].next_identify_date.strftime("%Y/%m/%d %H:%M:%S")
         each_dict = {
               "user_id": each[0].user_id,
               "meter_name": each[0].meter_name,
@@ -90,8 +90,7 @@ def getMeter(request):
               "meter_eui": each[0].meter_eui,              
               "meter_revisetype": meterTypeName(each[0].meter_revisetype),
               "communication": each[0].communication,
-              "meter_district": each[0].meter_district,
-              
+              "meter_district": each[0].meter_district,              
               "outputMin": outputMin,
               "outputMax": outputMax,
               "pressureMin": pressureMin,
@@ -102,7 +101,7 @@ def getMeter(request):
         }
         responseData.append(each_dict)
     except:
-        print('user is not existed')
+        print('getMeter:user is not existed')
     response = {}
     response['status'] = 'SUCESS'
     response['data'] = responseData
@@ -168,7 +167,6 @@ def getData(request):
             today=datetime.datetime.now()
             preday = today - datetime.timedelta(days=(int)(period))
             meter = Meter.objects.get(user_id = user_id)
-            print preday
             for each in Data.objects.filter(meter_eui = meter.meter_eui).filter(data_date__gt = preday.date()).order_by('-data_date'):
                 each_dict = {
                     "id": each.pk,
@@ -184,10 +182,9 @@ def getData(request):
                     "data_battery": each.data_battery,        
                 }
                 responsedata.append(each_dict)
-    #     print(json.dumps(response))
         return HttpResponse(json.dumps(responsedata),content_type ="application/json")
     except:
-        print('user is not existed')
+        print('getData:user is not existed')
     response = {}
     response['status'] = 'SUCESS'
     response['data'] = responsedata
@@ -231,7 +228,6 @@ def login_view(request):
     try:
         if 'user_id' in request.session:
             return render_to_response('angularMain.html', context_instance=RequestContext(request))
-#         print("=================")
         username = request.POST['login-username']
         password = request.POST['login-password']
         user = User.objects.get(user_name = username, user_password = password)
@@ -274,7 +270,7 @@ def generateTreeJSON(user_id):
         if len(user_id) == 2:
             return '{"name" : "'+myself[0].user_company+'", "value": "fa-home", "visible" : true, "page": "homepage", "user_id": "'+myself[0].user_id+'", "nodes": []}'
         if len(user_id) == 4:
-            if user_id == "0003":
+            if user_id == "0099":
                 return '{"name" : "'+myself[0].user_company+'", "value": "fa-group", "visible" : false, "page": "identificationpage", "user_id": "'+myself[0].user_id+'", "nodes": []}'
             else:    
                 return '{"name" : "'+myself[0].user_company+'", "value": "fa-group", "visible" : false, "page": "companypage", "user_id": "'+myself[0].user_id+'", "nodes": []}'
@@ -283,7 +279,7 @@ def generateTreeJSON(user_id):
         if len(user_id) > 8:
             return '{"name" : "'+myself[0].user_company+'", "value": "fa-tachometer", "visible" : false,  "user_id": "'+myself[0].user_id+'", "page": "meterpage","nodes": []}'
     else:
-        children = User.objects.filter(user_id__startswith = user_id).extra(where = ['LENGTH(user_id) = ' + str(len(childSet[0].user_id))])
+        children = User.objects.filter(user_id__startswith = user_id).extra(where = ['LENGTH(user_id) = ' + str(len(childSet[0].user_id))]).order_by('user_id')
         strJson = ''
         for each in children:
             strJson = strJson + generateTreeJSON(each.user_id) + ', '
@@ -467,14 +463,12 @@ def register_company(request):
   
     response = {}  
     used = User.objects.filter(user_name = userName)
-    print used
     if len(used):
         response['status'] = 'FAIL'
         response['reason'] = 'USER_NAME'
         return HttpResponse(json.dumps(response),content_type ="application/json")
     
     used = User.objects.filter(user_company = userCompany)
-    print used
     if len(used):
         response['status'] = 'FAIL'
         response['reason'] = 'COMPANY'
@@ -511,7 +505,7 @@ def register_meter(request):
         loginPage(request)
         return render_to_response('login.html', context_instance=RequestContext(request))
     response = {}
-    print request.body            
+    print request.body
     data = json.loads(request.body)
     meterName = data.get('meter_name')
     meterEUI = data.get('meter_eui')
@@ -546,15 +540,17 @@ def register_meter(request):
     meter.wrap_code = wrapCode
     meter.save();
 
-#     indMeter = IdentificationMeter()
-#     indMeter.meter_eui = meterEUI
-#     indMeter.outputMax = outMax
-#     indMeter.outputMin = outMin
-#     indMeter.pressureMax = pressMax
-#     indMeter.pressureMin = pressMin
-#     indMeter.temperatureMax = tempMax
-#     indMeter.temperatureMin = tempMin
-#     indMeter.save();
+    print "here1"
+    indMeter = IdentificationMeter()
+    indMeter.meter_eui = meterEUI
+    indMeter.outputMax = outMax
+    indMeter.outputMin = outMin
+    indMeter.pressureMax = pressMax
+    indMeter.pressureMin = pressMin
+    indMeter.temperatureMax = tempMax
+    indMeter.temperatureMin = tempMin
+    indMeter.save();
+    print "here2"
     #add user
     user = User();
     user.user_id = meter.user_id
@@ -607,7 +603,7 @@ def getExcelFile(request):
                         worksheet.write(row, 7, each.data_qm)
                         row = row + 1
     except:
-        print('user is not existed')
+        print('getExcelFile:user is not existed')
 
     workbook.close()
     wrapper = FileWrapper(file('Data.xlsx'))
@@ -674,13 +670,21 @@ def getIndentificationMeter(request):
     responsedata = []
 
     for each in IdentificationMeter.objects.order_by('-id'):
+        indetifyDate = " "
+        next_indetifyDate = " "
+        if each.identify_date:
+            indetifyDate = each.identify_date.strftime("%Y/%m/%d")
+        else:
+            continue
+        if each.next_identify_date:
+            next_indetifyDate = each.next_identify_date.strftime("%Y/%m/%d")
         meter = Meter.objects.filter( meter_eui = each.meter_eui)
         each_dict = {
             "id": each.pk,
             "user_company": meter[0].meter_name,
             "meter_eui": each.meter_eui,
-            "identify_date":     each.identify_date.strftime("%Y/%m/%d"),
-            "next_identify_date":     each.next_identify_date.strftime("%Y/%m/%d"),
+            "identify_date":     indetifyDate,
+            "next_identify_date":     next_indetifyDate,
             "meter_type": meterTypeName(meter[0].meter_type),
             "meter_index": meter[0].meter_index,
             "meter_version": meter[0].meter_version,
@@ -964,7 +968,7 @@ def getDeviationVal(request):
         dataQm = request.GET['data_qm']
         meterIdent = IdentificationMeter.objects.filter(meter_eui = meterEUI).order_by('-id')
         if len(meterIdent) == 0:
-            return HttpResponse(json.dumps(responsedata),content_type ="application/json")
+            return
         each_dict = {
             "deviation_val": round(float(meterIdent[0].Qmax10),2),
             "qmax_level": 0.1,

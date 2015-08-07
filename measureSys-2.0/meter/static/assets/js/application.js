@@ -645,8 +645,7 @@ app.controller('AddMeterModalInstanceCtrl', function ($scope, $http, $modalInsta
 	        	meter_revisetype: $scope.meter_type2,
 	        	meter_index: $scope.meterIndex,
 	        	meter_version: $scope.meterVersion,	            
-	            wrap_code : $scope.wrapCode,
-	            
+	            wrap_code : $scope.wrapCode,	            
 	            out_min: $scope.outMin,
 	            out_max: $scope.outMin,
 	            press_min: $scope.pressMin,

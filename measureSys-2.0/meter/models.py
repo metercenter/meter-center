@@ -30,7 +30,7 @@ class Meter(models.Model):
         return "name: "+self.meter_name+"meter EUI64: "+ self.meter_eui
         
 class MeterAdmin(admin.ModelAdmin):
-    list_display = ('user_id',  'meter_name', 'meter_type', 'meter_index', 'meter_eui')
+    list_display = ('user_id',  'meter_name', 'meter_type', 'meter_index', 'meter_eui', 'meter_revisetype')
 
 class Data(models.Model):
     data_id = models.IntegerField(default=0)
@@ -101,23 +101,25 @@ class UserFeedback(models.Model):
 class IdentificationMeter(models.Model):
     meter_eui = models.CharField(max_length=200)
     
-    identify_date = models.DateTimeField('date published',default="")
-    next_identify_date = models.DateTimeField('date published',default="")
-    medium = models.CharField(max_length=200,default="")
-    outputMin = models.CharField(max_length=200,default="")
-    outputMax = models.CharField(max_length=200,default="")
-    pressureMin = models.CharField(max_length=200,default="")
-    pressureMax = models.CharField(max_length=200,default="")
-    temperatureMin = models.CharField(max_length=200,default="")
-    temperatureMax = models.CharField(max_length=200,default="")
-    Qmax100 = models.CharField(max_length=200,default="")
-    Qmax60 = models.CharField(max_length=200,default="")
-    Qmax40 = models.CharField(max_length=200,default="")
-    Qmax20 = models.CharField(max_length=200,default="")
-    Qmax10 = models.CharField(max_length=200,default="")
+    identify_date = models.DateTimeField('date published',blank=True,null=True)
+    next_identify_date = models.DateTimeField('date published',blank=True,null=True)
+    medium = models.CharField(max_length=200)
+    outputMin = models.CharField(max_length=200)
+    outputMax = models.CharField(max_length=200)
+    pressureMin = models.CharField(max_length=200)
+    pressureMax = models.CharField(max_length=200)
+    temperatureMin = models.CharField(max_length=200)
+    temperatureMax = models.CharField(max_length=200)
+    Qmax100 = models.CharField(max_length=200)
+    Qmax60 = models.CharField(max_length=200)
+    Qmax40 = models.CharField(max_length=200)
+    Qmax20 = models.CharField(max_length=200)
+    Qmax10 = models.CharField(max_length=200)
     def __uincode__(self):
         return "meter_eui: "+self.meter_eui
-
+class IndMeterAdmin(admin.ModelAdmin):
+    list_display = ('meter_eui','identify_date')
+    
 class outputDiff(models.Model):
     input = models.CharField(max_length=200)
     industry_output = models.CharField(max_length=200)
@@ -132,4 +134,6 @@ class outputDiff(models.Model):
 admin.site.register(User, UserAdmin)
 admin.site.register(Meter, MeterAdmin)
 admin.site.register(Data, DataAdmin)
+admin.site.register(IdentificationMeter, IndMeterAdmin)
+
 # Create your models here.
