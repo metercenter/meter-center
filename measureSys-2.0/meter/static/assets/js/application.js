@@ -794,8 +794,20 @@ app.controller('MeterInfoCtrl', function ($scope, $http, globalParams) {
 });
 function add________________Form______________End(){};
 
+function ______________threePiple___________start(){}
+
+function ______________threePiple___________end(){}
+
+
+
 function ________________artworkCtrl___________start(){};
-app.controller('artworkCtrl',function($scope){
+app.controller('artworkCtrl',function($scope ,globalParams){
+  $scope.threePiplePath = "/static/threePiple.htm";
+  $scope.twoPiplePath = "/static/twoPiple.htm";
+  $scope.onePiplePath = "/static/onePiple.htm";
+  
+  $scope.artworkShow = parseInt(globalParams.user_id.substring(globalParams.user_id.length-1, globalParams.user_id.length))%3
+  
   $scope.valveShow = false;
   $scope.meterShow = true;
   $scope.filterShow = false;

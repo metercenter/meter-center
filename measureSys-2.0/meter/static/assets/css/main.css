@@ -1,5 +1,5 @@
 body {
-	color: #5D5F63;
+	color: #333335;
 	background: #F9f9f9;
 	font-family: 'Open Sans', sans-serif;
 	padding: 0;
@@ -432,7 +432,7 @@ li.dropdown ul.dropdown-menu.alert>li h1 {
 }
 
 #leftside-navigation ul li a {
-	color: #777777;
+	color: #333333;
 	text-decoration: none;
 	display: block;
 	padding: 18px 0 18px 25px;
@@ -446,7 +446,7 @@ li.dropdown ul.dropdown-menu.alert>li h1 {
 }
 
 #leftside-navigation ul li ul li a {
-	color: #777777;
+	color: #333333;
 	text-decoration: none;
 	display: block;
 	font-size: 14px;
@@ -459,7 +459,7 @@ li.dropdown ul.dropdown-menu.alert>li h1 {
 }
 
 #leftside-navigation ul li ul li ul li a {
-	color: #777777;
+	color: #333333;
 	text-decoration: none;
 	display: block;
 	padding: 18px 0 18px 65px;
@@ -472,7 +472,7 @@ li.dropdown ul.dropdown-menu.alert>li h1 {
 }
 
 #leftside-navigation ul li ul li ul li ul li a {
-	color: #777777;
+	color: #333333;
 	text-decoration: none;
 	display: block;
 	padding: 18px 0 18px 85px;
@@ -519,7 +519,7 @@ li.dropdown ul.dropdown-menu.alert>li h1 {
 //	padding-top: 13px;
 //	padding-bottom: 13px;
 //	padding-left: 60px;
-//	color: #777777
+//	color: #333333
 //	
 //}
 //
@@ -529,7 +529,7 @@ li.dropdown ul.dropdown-menu.alert>li h1 {
 //	padding-bottom: 13px;
 //	padding-left: 40px;
 //	cursor:pointer;
-//	color: #777777
+//	color: #333333
 //}
 //
 //#leftside-navigation ul li a i {
@@ -1696,7 +1696,7 @@ a.btn-info:active, a.btn-info:hover {
 }
 
 .tab-wrapper>.nav-tabs>li a {
-	color: #5D5F63
+	color: #333335
 }
 
 .tab-wrapper>.nav-tabs>li.active>a {
@@ -2165,7 +2165,7 @@ a.btn-info:active, a.btn-info:hover {
 	border-top: 1px solid #f2f3f6;
 	padding: 15px;
 	border-right: 3px solid rgba(0, 0, 0, 0);
-	color: #5D5F63
+	color: #333335
 }
 
 .compose-nav>li.active>a, .compose-nav>li.active>a:focus, .compose-nav>li.active>a:hover,
@@ -2213,7 +2213,7 @@ a.btn-info:active, a.btn-info:hover {
 }
 
 .table-inbox a, .table-inbox a:visited {
-	color: #5D5F63
+	color: #333335
 }
 
 .table-inbox .unread a, .table-inbox .unread a:visited {
@@ -2704,4 +2704,275 @@ h3.timeline-title {
 	#header .dropdown.messages {
 		display: none
 	}
+}
+
+ /*==================================================================
+  Radio/Checkboxes
+-===================================================================*/
+ .option {
+  position: relative;
+  padding-right: 15px;
+  display: inline-block;
+  vertical-align: middle;
+}
+ .option > input {
+  position: absolute;
+  height: inherit;
+  width: inherit;
+  opacity: 0;
+  left: 0;
+}
+ .checkbox,
+ .radio {
+  cursor: pointer;
+  position: relative;
+  margin-right: 5px;
+  background: #fff;
+  display: inline-block;
+  border: 3px solid #DDD;
+  height: 21px;
+  width: 21px;
+  top: 4px;
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
+}
+ .checkbox:before,
+ .radio:before {
+  content: '';
+  display: none;
+}
+ input:checked + .checkbox:before,
+ input:checked + .radio:before {
+  display: block;
+}
+ .checkbox:before {
+  position: absolute;
+  top: 4px;
+  left: 3px;
+  width: 6px;
+  height: 3px;
+  border: solid #888;
+  border-width: 0 0 3px 3px;
+  -webkit-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+}
+ input:checked + .checkbox,
+ input:checked + .radio {
+  border: 3px solid #888;
+}
+ .radio {
+  -webkit-border-radius: 20px;
+  -moz-border-radius: 20px;
+  -o-border-radius: 20px;
+  border-radius: 20px;
+}
+ .radio:before {
+  margin: 4px;
+  width: 7px;
+  height: 7px;
+  background: #888;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -o-border-radius: 10px;
+  border-radius: 10px;
+}
+/*==================================================================
+  Radio/Checkboxes:hover state 
+===================================================================*/
+ input:not([disabled]):hover + .checkbox,
+ input:not([disabled]):hover + .radio {
+  border-color: #666;
+}
+/*==================================================================
+  Radio/Checkboxes:focus state 
+-===================================================================*/
+ input:focus + .checkbox,
+ input:focus + .radio {
+  border-color: #666;
+}
+ input:focus + .radio:before {
+  background: #666;
+}
+ input:focus + .checkbox:before {
+  border-color: #666;
+}
+/*==================================================================
+  Switches
+===================================================================*/
+ .switch {
+  cursor: pointer;
+  position: relative;
+  padding-right: 10px;
+  display: inline-block;
+  margin-bottom: 5px;
+  height: 26px;
+}
+ .switch > label {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  height: 25px;
+  width: 58px;
+  color: #fff;
+  font-size: 10px;
+  font-weight: bold;
+  line-height: 20px;
+  text-align: center;
+  background: #D7D7D7;
+  border: 2px solid #D7D7D7;
+  text-transform: uppercase;
+  font-family: Helvetica, Arial, sans-serif;
+  -webkit-transition: 0.3s ease-out;
+  -moz-transition: 0.3s ease-out;
+  -o-transition: 0.3s ease-out;
+  transition: 0.3s ease-out;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+}
+ .switch > label + span {
+  display: inline-block;
+  padding-left: 5px;
+  position: relative;
+  top: -7px;
+}
+ .switch > label:before {
+  content: attr(data-off);
+  position: absolute;
+  top: 1px;
+  right: 3px;
+  width: 33px;
+}
+ .switch > label:after {
+  content: "";
+  margin: 1px;
+  width: 19px;
+  height: 19px;
+  display: block;
+  background: #fff;
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
+}
+ .switch > input {
+  -webkit-appearance: none;
+  position: absolute;
+  width: inherit;
+  height: inherit;
+  opacity: 0;
+  left: 0;
+  top: 0;
+}
+/*==================================================================
+  Switch:focus state
+-===================================================================*/
+ .switch > input:focus {
+  outline: none;
+}
+ .switch > input:focus + label {
+  color: #fff;
+  border-color: #C7C7C7;
+  background: #C7C7C7;
+}
+ .switch > input:focus + label:after {
+  background: #fff;
+}
+/*==================================================================
+  Switch:checked state
+===================================================================*/
+ .switch > input:checked + label {
+  border-color: #999;
+  background: #999;
+  padding-left: 33px;
+  color: white;
+}
+ .switch > input:checked + label:before {
+  content: attr(data-on);
+  left: 1px;
+  top: 1px;
+}
+ .switch > input:checked + label:after {
+  margin: 1px;
+  width: 19px;
+  height: 19px;
+  background: white;
+}
+/*==================================================================
+  Switch:checked:focus state
+-===================================================================*/
+ .switch > input:checked:focus + label {
+  background: #555;
+  border-color: #555;
+}
+/* Round Style*/
+ .switch-round > label {
+  -webkit-border-radius: 13px;
+  -moz-border-radius: 13px;
+  -o-border-radius: 13px;
+  border-radius: 13px;
+}
+ .switch-round > label + span {
+  top: -2px;
+}
+ .switch-round > label:before {
+  width: 33px;
+}
+ .switch-round > label:after {
+  width: 19px;
+  color: #D7D7D7;
+  content: "\2022";
+  font: 20px/20px Times, Serif;
+  -webkit-border-radius: 13px;
+  -moz-border-radius: 13px;
+  -o-border-radius: 13px;
+  border-radius: 13px;
+}
+ .switch-round > input:checked + label {
+  padding-left: 33px;
+}
+ .switch-round > input:checked + label:after {
+  color: #999;
+}
+/*==================================================================
+  Switch - Custom Success/Danger Styled
+-===================================================================*/
+ .switch-custom > label {
+  background: #f3a79b;
+  border-color: #f3a79b;
+}
+ .switch-custom > input:hover + label,
+ .switch-custom > input:focus + label {
+  background: #e74b31;
+  border-color: #e74b31;
+}
+/* Checked state */
+ .switch-custom > input:checked + label {
+  background: #70ca63;
+  border-color: #70ca63;
+}
+ .switch-custom > input:checked:hover + label,
+ .switch-custom > input:checked:focus + label {
+  background: #47a839;
+  border-color: #47a839;
+}
+
+
+ .switch-primary > input:checked + label {
+  background: #3498db;
+  border-color: #3498db;
+}
+ .switch-primary > input:checked + label:after {
+  color: #3498db;
+}
+ .switch-primary > input:checked:focus + label {
+  background: #2489cc;
+  border-color: #2489cc;
+}
+
+.switch > label + span {
+  display: inline-block;
+  padding-left: 5px;
+  position: relative;
+  top: -10px;
 }
