@@ -6,7 +6,7 @@ from meter.views import userList
 from meter.views import getData, modifyOutputDiff,retrieveNodeNum, getWarnInfo, changeCompanyIntro,AddUserFeedback , addIndentificationMeter, getIndUser
 from meter.views import loginPage, getCompanyInfo, getUserFeedback, getIndentificationMeter,selectPanel,addOutputDiff, outputDiffChart, getIndMeter
 from meter.views import login_view, user_group_show,user_level,register_company,register_meter,meter_level,getExcelFile,warnList,getMeterType, getIndComp
-from meter.views import getDeviationVal,retrieveIndustryOutput,meterDataChart, retrieveCurUser
+from meter.views import getDeviationVal,retrieveIndustryOutput,meterDataChart, retrieveCurUser, getDistrict, getAnalyse
 urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'Measuringsystem.views.home', name='home'),
@@ -46,5 +46,7 @@ urlpatterns = patterns('',
     url(r'^getIndComp',getIndComp),
     url(r'^getDeviationVal',getDeviationVal),
     url(r'^retrieveIndustryOutput',retrieveIndustryOutput),
-    url(r'^getCurrentUser',retrieveCurUser)
+    url(r'^getCurrentUser',retrieveCurUser),
+    url(r'^getDistrict',getDistrict),
+    url(r'^getAnalyse',getAnalyse)
 )

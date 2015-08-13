@@ -3,7 +3,7 @@ from django.shortcuts import render_to_response
 from meter.models import Meter, MeterType, DataWarnType
 from meter.models import User
 from meter.models import Data, WarnInfo
-from meter.models import Company, UserFeedback, IdentificationMeter, outputDiff
+from meter.models import Company, UserFeedback, IdentificationMeter, outputDiff, District
 from django.http import HttpResponse
 from django.utils import formats
 import json
@@ -54,59 +54,101 @@ def meterTypeName(meter_type):
     meterType = MeterType.objects.get(meter_type = meter_type)
     return meterType.meter_type_name
 
+def getDistrict(request):
+    responseData = []
+    try:
+        if 'province_id' in request.GET:
+            districtID = request.GET['province_id']
+            districts = District.objects.filter(district_id__startswith = districtID).extra(where = ['LENGTH(district_id) = 4'])
+        elif 'city_id' in request.GET:
+            districtID = request.GET['city_id']
+            districts = District.objects.filter(district_id__startswith = districtID).extra(where = ['LENGTH(district_id) = 6'])
+        else:
+            districts = District.objects.all().extra(where = ['LENGTH(district_id) = 2'])        
+        for each in districts:
+            each_dict = {
+                "district_id": each.district_id,
+                "district_name": each.district_name,
+            }
+            responseData.append(each_dict)
+    except:
+        print('no district')
+    return HttpResponse(json.dumps(responseData), content_type="application/json")
+
+def getDistrictName(districtID):
+    id_len = len(districtID)
+    district = ''
+    try:
+        if id_len >= 2:
+            districts = District.objects.filter(district_id = districtID[0:2])
+            district += districts[0].district_name
+        if id_len >= 4:
+            districts = District.objects.filter(district_id = districtID[0:4])
+            district += districts[0].district_name
+        if id_len >= 6:
+            districts = District.objects.filter(district_id = districtID[0:6])
+            district += districts[0].district_name
+    except:
+        print('no district')
+    return district
+
 
 def getMeter(request):
     responseData = []
     try:
-        if 'user_id' in request.GET:
-            userID = request.GET['user_id']
-        else:
+        if 'district_id' in request.GET:
+            districtID = request.GET['district_id']
             userID = request.session['user_id']
-        each = Meter.objects.filter(user_id = userID)
-        identData = IdentificationMeter.objects.filter(meter_eui = each[0].meter_eui).order_by('-id')
-        outputMin =  ''
-        outputMax =  ''
-        pressureMin =  ''
-        pressureMax = ''
-        temperatureMin = ''
-        temperatureMax = ''
-        valid_time = ''
-        if len(identData) > 0:
-            outputMin =  identData[0].outputMin
-            outputMax =  identData[0].outputMax
-            pressureMin =  identData[0].pressureMin
-            pressureMax = identData[0].pressureMax
-            temperatureMin = identData[0].temperatureMin
-            temperatureMax = identData[0].temperatureMax
-            if identData[0].next_identify_date:
-                valid_time = identData[0].next_identify_date.strftime("%Y/%m/%d %H:%M:%S")
-        each_dict = {
-              "user_id": each[0].user_id,
-              "meter_name": each[0].meter_name,
-              "meter_type": meterTypeName(each[0].meter_type),
-              "meter_index": each[0].meter_index,
-              "meter_version": each[0].meter_version,
-              "meter_index": each[0].meter_index, 
-              "meter_eui": each[0].meter_eui,              
-              "meter_revisetype": meterTypeName(each[0].meter_revisetype),
-              "communication": each[0].communication,
-              "meter_district": each[0].meter_district,              
-              "outputMin": outputMin,
-              "outputMax": outputMax,
-              "pressureMin": pressureMin,
-              "pressureMax": pressureMax,
-              "temperatureMin": temperatureMin,
-              "temperatureMax": temperatureMax,
-              "valid_time" : valid_time
-        }
-        responseData.append(each_dict)
+            meters = Meter.objects.filter(user_id__startswith = userID).filter(meter_district = districtID)
+        else:
+            if 'user_id' in request.GET:
+                userID = request.GET['user_id']
+            else:
+                userID = request.session['user_id']
+            meters = Meter.objects.filter(user_id = userID)
+
+        for each in meters:
+            identData = IdentificationMeter.objects.filter(meter_eui = each.meter_eui).order_by('-id')
+            outputMin =  ''
+            outputMax =  ''
+            pressureMin =  ''
+            pressureMax = ''
+            temperatureMin = ''
+            temperatureMax = ''
+            valid_time = ''
+            if len(identData) > 0:
+                outputMin =  identData[0].outputMin
+                outputMax =  identData[0].outputMax
+                pressureMin =  identData[0].pressureMin
+                pressureMax = identData[0].pressureMax
+                temperatureMin = identData[0].temperatureMin
+                temperatureMax = identData[0].temperatureMax
+                if identData[0].next_identify_date:
+                    valid_time = identData[0].next_identify_date.strftime("%Y/%m/%d %H:%M:%S")
+            each_dict = {
+                "user_id": each.user_id,
+                "meter_name": each.meter_name,
+                "meter_typenum": each.meter_type,
+                "meter_type": meterTypeName(each.meter_type),
+                "meter_index": each.meter_index,
+                "meter_version": each.meter_version,
+                "wrapCode": each.wrap_code, 
+                "meter_eui": each.meter_eui,              
+                "meter_revisetype": meterTypeName(each.meter_revisetype),
+                "communication": each.communication,
+                "meter_district": getDistrictName(each.meter_district),              
+                "outputMin": outputMin,
+                "outputMax": outputMax,
+                "pressureMin": pressureMin,
+                "pressureMax": pressureMax,
+                "temperatureMin": temperatureMin,
+                "temperatureMax": temperatureMax,
+                "valid_time" : valid_time
+            }
+            responseData.append(each_dict)
     except:
         print('getMeter:user is not existed')
-    response = {}
-    response['status'] = 'SUCESS'
-    response['data'] = responseData
-    return HttpResponse(json.dumps(response), content_type="application/json")
-    return render_to_response('index.html')
+    return HttpResponse(json.dumps(responseData), content_type="application/json")
 
 def getReason(warn_type):
     return DataWarnType.objects.get(data_warn = warn_type).data_warn_reason;
@@ -168,6 +210,8 @@ def getData(request):
             preday = today - datetime.timedelta(days=(int)(period))
             meter = Meter.objects.get(user_id = user_id)
             for each in Data.objects.filter(meter_eui = meter.meter_eui).filter(data_date__gt = preday.date()).order_by('-data_date'):
+                print each
+                print each.data_p
                 each_dict = {
                     "id": each.pk,
                     "data_id": each.data_id,
@@ -515,6 +559,7 @@ def register_meter(request):
     meterIndex = data.get('meter_index')
     meterVersion = data.get('meter_version')
     wrapCode = data.get('wrap_code')
+    district = data.get('districts_id')
     
     outMin = data.get('out_min')
     outMax = data.get('out_max')
@@ -538,6 +583,7 @@ def register_meter(request):
     meter.meter_revisetype = meterRevise
     meter.meter_version = meterVersion
     meter.wrap_code = wrapCode
+    meter.meter_district = district
     meter.save();
 
     print "here1"
@@ -1068,6 +1114,38 @@ def retrieveIndustryOutput(request):
         response['status'] = 'SUCCESS'
         response['data'] = responsedata
         return HttpResponse(json.dumps(response),content_type ="application/json") 
+
+def getAnalyse(request):
+    if  not 'user_id' in request.session:
+        loginPage(request)
+        return render_to_response('login.html', context_instance=RequestContext(request))
+    response = []
+    if 'type' in request.GET:
+        type = request.GET['type']
+    if 'period' in request.GET:
+        period = int(request.GET['period'])
+    if 'meter_ids' in request.GET:
+        ids = request.GET['meter_ids']
+ 
+    today=datetime.datetime.now().replace(hour=23,minute=59,second=59,microsecond=999999)
+    preday = today - datetime.timedelta(days=period)   
+    meter_ids = ids.split(",") 
+    edata = 0        
+    for eachID in meter_ids:
+        responsedata = []                 
+        dataList = Data.objects.filter(meter_eui = eachID).filter(data_date__gt = preday.date())
+        for eachData in dataList:
+            if type == '0':
+                edata = eachData.data_t
+            elif type == '1':
+                edata = eachData.data_p
+            each_dict = {
+                "data_date": time.mktime(eachData.data_date.timetuple())*1000,
+                "data_e": float(edata)
+            }
+            responsedata.append(each_dict)
+        response.append(responsedata)
+    return HttpResponse(json.dumps(response),content_type ="application/json")
 
 def meterDataChart(request):
     if  not 'user_id' in request.session:

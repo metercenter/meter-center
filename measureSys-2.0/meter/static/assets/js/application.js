@@ -1,5 +1,11 @@
 var app = angular.module("Application", ['datatables','datatables.bootstrap', 'ui.bootstrap','highcharts-ng','pageRequest','smart-table','ngTable','ngRoute']);
 
+Highcharts.setOptions({
+    global : {
+        useUTC : false
+    }
+});	
+
 function ___________globalParam_______start(){};
 app.factory('globalParams', function($http){
   var current_company = "金昇公司";
@@ -319,7 +325,6 @@ app.controller('WarnCtrl-all', function ($scope, $http, globalParams) {
 	}).success(function(response) {
 
 	  $scope.rowCollection = response;
-	  console.log(response);
 
 	  //copy the references (you could clone ie angular.copy but then have to go through a dirty checking for the matches)
 	  $scope.displayedCollection = [].concat($scope.rowCollection);
@@ -339,7 +344,6 @@ app.controller('UserFeedbackCtrl', function ($scope, $http) {
 	}).success(function(response) {
 
 	  $scope.rowCollection = response;
-	  console.log(response);
 
 	  //copy the references (you could clone ie angular.copy but then have to go through a dirty checking for the matches)
 	  $scope.displayedCollection = [].concat($scope.rowCollection);
@@ -390,7 +394,7 @@ app.controller('MeterDataCtrl', function ($scope, $http, globalParams) {
 	    $("#oneMonthBt").attr("class","btn btn-default");
 	    $("#oneYearBt").attr("class","btn btn-primary");
 	    $("#totalBt").attr("class","btn btn-default");
-	    periodTime = 90;
+	    periodTime = 365;
 	    update();
 	  };
 	  $scope.total = function () {
@@ -398,7 +402,7 @@ app.controller('MeterDataCtrl', function ($scope, $http, globalParams) {
 	    $("#oneMonthBt").attr("class","btn btn-default");
 	    $("#oneYearBt").attr("class","btn btn-default");
 	    $("#totalBt").attr("class","btn btn-primary");
-	    periodTime = 365;
+	    periodTime = 9999;
 	    update();
 	  };
 });
@@ -442,6 +446,7 @@ app.controller('UserMeterDataCtrl', function ($scope,$http,globalParams) {
                 xAxis: {
                     startOnTick: true,
                     type: 'datetime',
+                    tickInterval: 3600 * 1000 * 24,
                     labels:{
                         formatter: function() {
                             var d = new Date(this.value);
@@ -551,7 +556,6 @@ app.controller('AddUserModalInstanceCtrl', function ($scope, $http, $modalInstan
     url:'/get-user-level',
     method:'GET',
   }).success(function(response) {
-    console.log(response);
     response.forEach(function(entry){
       $scope.companys.push(entry.user_company);
     });
@@ -614,7 +618,6 @@ app.controller('AddMeterModalCtrl', function($scope, $modal, $log){
   $scope.items = ['item1', 'item2', 'item3'];
 
   $scope.animationsEnabled = true;
-  
 
   $scope.open = function open() {
 
@@ -641,7 +644,14 @@ app.controller('AddMeterModalInstanceCtrl', function ($scope, $http, $modalInsta
 
   $scope.companys = [];
   $scope.metertypes = [];
+  $scope.provinces = [];
+  $scope.cities = [];
+  $scope.districts = [];
   $scope.warning = ""
+
+  var provinces_id = [];
+  var cities_id = [];
+  var districts_id = [];
   $http({
     url:'/getIndUser',
     method:'GET',
@@ -659,9 +669,68 @@ app.controller('AddMeterModalInstanceCtrl', function ($scope, $http, $modalInsta
 	      $scope.metertypes.push(entry.meter_type_name);
 	    });
 	  });
+  
+  $http({
+      url:'/getDistrict',
+      method:'GET',
+    }).success(function(response) {
+	    response.forEach(function(entry){
+	      $scope.provinces.push(entry.district_name);
+	      provinces_id.push(entry.district_id)
+	    });
+	  });
+  
+  $scope.province_update = function(province) {
+	  $http({
+		    url:'/getDistrict',
+		    method:'GET',
+		    params:{province_id: provinces_id[province]}
+		  }).success(function(response) {
+			  $scope.cities = [];
+			  cities_id = [];
+		    response.forEach(function(entry){
+		      $scope.cities.push(entry.district_name);
+		      cities_id.push(entry.district_id);
+		    });
+		  });
+  };
+
+  $scope.city_update = function(city) {
+	  $http({
+		    url:'/getDistrict',
+		    method:'GET',
+		    params:{city_id: cities_id[city]}
+		  }).success(function(response) {
+			  $scope.districts = [];
+			  districts_id = [];
+		    response.forEach(function(entry){
+		      $scope.districts.push(entry.district_name);
+		      districts_id.push(entry.district_id);
+		    });
+		  });
+  };
 
   $scope.submit = function () { 
-	    	
+	    $scope.warning = " "
+	    if ($scope.meterName == null) {$scope.warning = "请输入流量计名";return;}
+	    if ($scope.eui == null) {$scope.warning = "请输入节点编号";return;}
+	    if ($scope.company == null) {$scope.warning = "请选择隶属客户";return;}
+	    if ($scope.meter_type1 == null) {$scope.warning = "请选择流量计品牌";return;}
+	    if ($scope.meter_type2 == null) $scope.meter_type2 = $scope.meter_type1;
+	    if ($scope.meterIndex == null) $scope.meterIndex = "--";
+	    if ($scope.meterVersion == null) $scope.meterVersion = "--";
+	    if ($scope.wrapCode == null) $scope.wrapCode = "--";
+	    if ($scope.outMin == null) $scope.outMin = "-";
+	    if ($scope.outMax == null) $scope.outMax = "-";
+	    if ($scope.pressMin == null) $scope.pressMin = "-";
+	    if ($scope.pressMax == null) $scope.pressMax = "-";
+	    if ($scope.tempMin == null) $scope.tempMin = "-";
+	    if ($scope.tempMax == null) $scope.tempMax = "-";
+	    if ($scope.district == null) 
+	    	districtsID = "--";
+	    else
+	    	districtsID = districts_id[$scope.district];
+	    
 	    $http({
 	        url: '/register_meter',
 	        method: "POST",
@@ -672,13 +741,14 @@ app.controller('AddMeterModalInstanceCtrl', function ($scope, $http, $modalInsta
 	        	meter_revisetype: $scope.meter_type2,
 	        	meter_index: $scope.meterIndex,
 	        	meter_version: $scope.meterVersion,	            
-	            wrap_code : $scope.wrapCode,	            
+	            wrap_code : $scope.wrapCode,
+	            districts_id: districtsID,
 	            out_min: $scope.outMin,
-	            out_max: $scope.outMin,
+	            out_max: $scope.outMax,
 	            press_min: $scope.pressMin,
 	            press_max: $scope.pressMax,
 	            temp_min: $scope.tempMin,
-	            temp_max: $scope.tempMax         
+	            temp_max: $scope.tempMax        
 	        }
 	    }).success(function(response) {
 	      if ((response.status == "FAIL")&&(response.reason == "EUI")) {
@@ -788,8 +858,8 @@ app.controller('MeterInfoCtrl', function ($scope, $http, globalParams) {
     method:'GET',
     params:{user_id: globalParams.user_id}
   }).success(function(response) {
-     $scope.meter = response.data[0];
-     globalParams.current_meter_eui = response.data[0].meter_eui;
+     $scope.meter = response[0];
+     globalParams.current_meter_eui = response[0].meter_eui;
   });
 });
 function add________________Form______________End(){};
@@ -883,6 +953,7 @@ app.controller('OutdiffChartCtrl', function ($scope,$http,globalParams) {
 	                xAxis: {
 	                    startOnTick: true,
 	                    type: 'datetime',
+	                    tickInterval: 3600 * 1000 * 24,
 	                    labels:{
 	                        formatter: function() {
 	                            var d = new Date(this.value);
@@ -1220,6 +1291,226 @@ app.controller('DCOutDiffCtrl-total', function ($scope, $http) {
 			    	$scope.warning = "选中流量计没有录入检定信息!";
 			    });
 	  };
+});
+
+app.controller('DistrictAnalyseCtrl', function ($scope, $http) {
+	  $scope.analysetypes = ["温度","压力"]
+	  $scope.periods = ["一周","一月", "一年", "所有"]
+
+	  $scope.provinces = [];
+	  $scope.cities = [];
+	  $scope.districts = [];
+	  $scope.meters = [];
+	  
+	  $scope.warning = ""
+	  $scope.names = []
+	  $scope.period = '0';
+	  $scope.left_count = 5
+
+	  var provinces_id = [];
+	  var cities_id = [];
+	  var districts_id = [];
+	  var meters_id = [];
+	  var analyse_ids = [];
+      var periodTime = 7;
+	  
+	  $http({
+	      url:'/getDistrict',
+	      method:'GET',
+	    }).success(function(response) {
+		    response.forEach(function(entry){
+		      $scope.provinces.push(entry.district_name);
+		      provinces_id.push(entry.district_id)
+		    });
+		  });
+	  
+	  $scope.province_update = function(province) {
+		  $scope.warning = ""
+		  $http({
+			    url:'/getDistrict',
+			    method:'GET',
+			    params:{province_id: provinces_id[province]}
+			  }).success(function(response) {
+				  $scope.cities = [];
+				  cities_id = [];
+			    response.forEach(function(entry){
+			      $scope.cities.push(entry.district_name);
+			      cities_id.push(entry.district_id);
+			      
+			    });
+			  });
+		  $scope.city = -1;
+	  };
+
+	  $scope.city_update = function(city) {
+		  $scope.warning = ""
+		  $http({
+			    url:'/getDistrict',
+			    method:'GET',
+			    params:{city_id: cities_id[city]}
+			  }).success(function(response) {
+				  $scope.districts = [];
+				  districts_id = [];
+			    response.forEach(function(entry){
+			      $scope.districts.push(entry.district_name);
+			      districts_id.push(entry.district_id);			      
+			    });
+			  });
+		  $scope.district = -1;
+	  };
+
+	  $scope.district_update = function(district) {
+		  $scope.warning = ""
+		  $http({
+			    url:'/get-meter',
+			    method:'GET',
+			    params:{district_id: districts_id[district]}
+			  }).success(function(response) {
+				  $scope.meters = [];
+				  meters_id = [];
+				  if (response.length == 0) {
+					  $scope.warning = "当前用户在该区域没有流量计"
+					  return
+				  }
+			    response.forEach(function(entry){
+			      if (entry.meter_typenum != 2) { //卓度流量计没有压力 温度数据
+			    	  $scope.meters.push(entry.meter_name)
+			    	  meters_id.push(entry.meter_eui)	
+			      }		      
+			    });
+			  });
+		  $scope.meter = -1;
+	  };
+	  
+	  $scope.add_meter = function() {
+		  $scope.warning = ""
+		  if ($scope.left_count <= 0)
+			  return
+		  if ($scope.meter == null){
+			  $scope.warning = "请选择流量计"
+			  return  
+		  }
+		  for (var i = 0; i < analyse_ids.length; i++){
+			  if (analyse_ids[i] == meters_id[$scope.meter]){
+				  $scope.warning = "该流量计已在列表中"
+				  return  
+		      }
+		  }
+		  $scope.left_count = $scope.left_count - 1
+		  $scope.names.push($scope.meters[$scope.meter])
+		  analyse_ids.push(meters_id[$scope.meter])
+	  };
+	  
+	  $scope.clear_meter = function() {
+		  $scope.names = []
+		  analyse_ids = []
+		  $scope.left_count = 5
+	  };
+	  
+	  $scope.period_update = function(period) {
+		  if (period == 0)
+			  periodTime = 7
+		  else if (period == 1)
+			  periodTime = 30
+		  else if (period == 2)
+			  periodTime = 365
+		  else if (period == 3)
+			  periodTime = 9999
+	  };
+	  
+	  $scope.start_analyse = function() {
+		  var datas = [];
+		  var ytext = "";
+		  var titletext = "";
+		  $scope.warning = ""
+
+		  if ($scope.analyse_type == null){
+			  $scope.warning = "请选择分析数据类型"
+			  return
+		  }
+		  if ($scope.left_count == 5) {
+			  $scope.warning = "请选择分析对象"
+			  return
+		  }
+		  
+		  if ($scope.analyse_type == 0) {
+			  ytext = "温度(℃)"
+			  titletext = "区域性分析（温度)"
+		  }
+		  else if ($scope.analyse_type == 1) {
+			  ytext = "压力(bar)"
+			  titletext = "区域性分析（压力)"	  
+		  }
+			  
+	  
+		  $http({
+		        url:'/getAnalyse',
+		        method:'GET',
+		        params:{type: $scope.analyse_type,
+		        	meter_ids: analyse_ids.toString(),
+		          period: periodTime }
+		      }).success(function(response) {				  
+		        for (var i=0;i<response.length;i++)
+		        {
+		        	var eachdatas = [];
+		        	for (var j=0;j<response[i].length;j++){
+		        		eachdatas.push([response[i][j].data_date, response[i][j].data_e])
+		        	}
+		        	datas.push(eachdatas)
+		        }
+		        for (var a=0;a<5;a++) {
+		        	if ($scope.names[a]==null)
+		        		$scope.names.push(" ")
+		        }
+		        $scope.chartConfig = {
+		                options: {
+		                    chart: {
+		                        type: 'spline',
+		                        zoomType: 'x'
+		                    },
+		                    rangeSelector: {
+		                        enabled: true
+		                    },
+		                    navigator: {
+		                        enabled: true
+		                    }
+		                },
+		                title: {
+		                    text: titletext,
+		                },
+//		                useHighStocks: true,
+		                xAxis: {
+		                    startOnTick: true,
+		                    type: 'datetime',
+		                    tickInterval: 3600 * 1000 * 24,
+		                    labels:{
+		                        formatter: function() {
+		                            var d = new Date(this.value);
+		                            return Highcharts.dateFormat("%Y-%m-%e",this.value);		                             
+		                        },
+		                    rotation: -45
+		                    }
+		                },
+		                yAxis: {
+		                    title: {
+		                        text: ytext
+		                    },
+		                    plotLines: [{
+		                        value: 0,
+		                        width: 1,
+		                        color: '#808080'
+		                    }]
+		                },
+		                series: [{name: $scope.names[0],data: datas[0]},
+		                         {name: $scope.names[1],data: datas[1]},
+		                         {name: $scope.names[2],data: datas[2]},
+		                         {name: $scope.names[3],data: datas[3]},
+		                         {name: $scope.names[4],data: datas[4]}
+		                         ]
+		        }
+		      });
+	  };
+	  
 });
 
 app.controller('DataPickerCtrl', function ($scope, $http, globalParams) {

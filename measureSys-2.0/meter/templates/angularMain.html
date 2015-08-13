@@ -200,8 +200,8 @@
 							<!--  <p>Dallas, TX</p> -->
 						</div>
 						<div class="item-status item-status-online"></div>
-					</a> <a href="javascript:void(0)" class="list-item" 
-            ng-controller="ExportData" ng-click="open()">
+					</a> <a href="javascript:void(0)" class="list-item"
+						ng-controller="ExportData" ng-click="open()">
 						<div class="list-item-image">
 							<img src="/static/assets/img/avatar3.png" class="img-circle">
 						</div>
@@ -217,7 +217,7 @@
 		<!--sidebar right end-->
 	</section>
 
-<script type="text/ng-template" id="pagination.custom.html">
+	<script type="text/ng-template" id="pagination.custom.html">
 <nav ng-if="pages.length >= 2">
   <ul class="pagination">
     <li><a ng-click="selectPage(1)">First</a>
@@ -291,7 +291,7 @@
 							</div>
 							<div class="form-group">
 								<label for="inputSelect" class="col-lg-3 control-label">流量计品牌：</label>
-								<div class="col-lg-8">
+								<div class="col-lg-3">
 									<div class="bs-component">
 										<select class="form-control input-sm"
 											ng-options="key as value for (key , value) in metertypes"
@@ -300,10 +300,8 @@
 										</select>
 									</div>
 								</div>
-							</div>
-							<div class="form-group">
-								<label for="inputSelect" class="col-lg-3 control-label">修正仪：</label>
-								<div class="col-lg-8">
+								<label for="inputSelect" class="col-lg-2 control-label">修正仪：</label>
+								<div class="col-lg-3">
 									<div class="bs-component">
 										<select class="form-control input-sm"
 											ng-options="key as value for (key , value) in metertypes"
@@ -317,7 +315,7 @@
 								<div class="col-lg-8">
 									<div class="bs-component">
 										<input type="text" id="userPhone" ng-model="meterVersion"
-											class="form-control" required="该项不能为空" placeholder="流量计型号">
+											class="form-control" placeholder="流量计型号">
 									</div>
 								</div>
 							</div>
@@ -326,7 +324,7 @@
 								<div class="col-lg-8">
 									<div class="bs-component">
 										<input type="text" id="userPhone" ng-model="meterIndex"
-											class="form-control" required="该项不能为空" placeholder="序列号">
+											class="form-control" placeholder="序列号">
 									</div>
 								</div>
 							</div>
@@ -381,11 +379,29 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="inputStandard" class="col-lg-3 control-label">所在区域：</label>
-								<div class="col-lg-8">
+								<label for="inputSelect" class="col-lg-3 control-label">所在区域：</label>
+								<div class="col-lg-3">
 									<div class="bs-component">
-										<input ng-model="district" class="form-control"
-											placeholder="所在区域">
+										<select class="form-control input-sm"
+											ng-options="key as value for (key , value) in provinces"
+											ng-model="province" id="province" ng-change="province_update(province)">
+										</select>
+									</div>
+								</div>
+								<div class="col-lg-3">
+									<div class="bs-component">
+										<select class="form-control input-sm"
+											ng-options="key as value for (key , value) in cities"
+											ng-model="city" id="city" ng-change="city_update(city)">
+										</select>
+									</div>
+								</div>
+								<div class="col-lg-3">
+									<div class="bs-component">
+										<select class="form-control input-sm"
+											ng-options="key as value for (key , value) in districts"
+											ng-model="district" id="district">
+										</select>
 									</div>
 								</div>
 							</div>
@@ -855,7 +871,7 @@
 
 
 	<!--  工艺图， 用户曲线图 重要报警信息-->
-<script type=text/ng-template id=user.html>
+	<script type=text/ng-template id=user.html>
  
       <div class ="row" ng-controller="artworkCtrl">
       	<div ng-include="threePiplePath" ng-show={{artworkShow}}==3></div>
@@ -978,9 +994,9 @@
 							meter.outputMax }} Nm³/h</label>
 					</div>
 					<div class="row form-group">
-						<label class="col-lg-2 control-label text-right">通信方式:</label> <label
+						<label class="col-lg-2 control-label text-right">所在区域:</label> <label
 							class="col-lg-2 control-label text-left"
-							style="font-weight: bold">{{ meter.communication }}</label> <label
+							style="font-weight: bold">{{ meter.meter_district }}</label> <label
 							class="col-lg-2 control-label text-right">检定有效期:</label> <label
 							class="col-lg-2 control-label text-left"
 							style="font-weight: bold">{{ meter.valid_time }}</label> <label
@@ -1440,7 +1456,8 @@
 	</div>
 </script>
 
-	<script type=text/ng-template id=datacenter.html>
+
+<script type=text/ng-template id=datacenter.html>
 	<div class="row" ng-controller="DCOutDiffCtrl-shunshi">
 		<div class="col-md-12">
 			<div class="panel panel-primary">
@@ -1457,7 +1474,8 @@
 									<div class="bs-component">
 										<select class="form-control input-sm"
 											ng-options="key as value for (key , value) in companys"
-											ng-model="company" id="company" ng-change="company_update(company)">
+											ng-model="company" id="company"
+											ng-change="company_update(company)">
 										</select>
 									</div>
 								</div>
@@ -1481,7 +1499,8 @@
 									<div class="bs-component">
 										<select class="form-control input-sm"
 											ng-options="key as value for (key , value) in meters"
-											ng-model="meter_selected" id="meter" ng-change="meter_update()">
+											ng-model="meter_selected" id="meter"
+											ng-change="meter_update()">
 										</select>
 									</div>
 								</div>
@@ -1490,7 +1509,8 @@
 								<label for="inputStandard" class="col-lg-5 control-label">瞬时工况流量(Nm³/h):</label>
 								<div class="col-lg-6">
 									<div class="bs-component">
-										<input class="form-control" ng-model="qm_edit" placeholder="瞬时工况流量" ng-change="update()">
+										<input class="form-control" ng-model="qm_edit"
+											placeholder="瞬时工况流量" ng-change="update()">
 									</div>
 								</div>
 							</div>
@@ -1498,7 +1518,8 @@
 								<label for="inputStandard" class="col-lg-5 control-label">温度(℃):</label>
 								<div class="col-lg-6">
 									<div class="bs-component">
-										<input class="form-control" ng-model="temp_edit" ng-change="update_diff()">
+										<input class="form-control" ng-model="temp_edit"
+											ng-change="update_diff()">
 									</div>
 								</div>
 							</div>
@@ -1506,17 +1527,20 @@
 								<label for="inputStandard" class="col-lg-5 control-label">压力(bar):</label>
 								<div class="col-lg-6">
 									<div class="bs-component">
-										<input class="form-control" ng-model="pressure_edit" ng-change="update_diff()">
+										<input class="form-control" ng-model="pressure_edit"
+											ng-change="update_diff()">
 									</div>
 								</div>
 							</div>
 							<div class="form-group">
-								<button class="col-lg-11 btn btn-primary">瞬时偏差: {{ outdiff }} (Nm³/h)</button>
+								<button class="col-lg-11 btn btn-primary">瞬时偏差: {{
+									outdiff }} (Nm³/h)</button>
 							</div>
 							<div class="form-group">
-								<label for="inputStandard" style="color:red" class="col-lg-10 control-label text-left">{{ warning }}</label>
+								<label for="inputStandard" style="color: red"
+									class="col-lg-10 control-label text-left">{{ warning }}</label>
 							</div>
-						</form>						
+						</form>
 					</div>
 					<div class="col-md-7">
 						<div class="row">
@@ -1545,7 +1569,8 @@
 									<div class="bs-component">
 										<select class="form-control input-sm"
 											ng-options="key as value for (key , value) in companys"
-											ng-model="company" id="company" ng-change="company_update(company)">
+											ng-model="company" id="company"
+											ng-change="company_update(company)">
 										</select>
 									</div>
 								</div>
@@ -1569,7 +1594,8 @@
 									<div class="bs-component">
 										<select class="form-control input-sm"
 											ng-options="key as value for (key , value) in meters"
-											ng-model="meter_selected" id="meter" ng-change="meter_update()">
+											ng-model="meter_selected" id="meter"
+											ng-change="meter_update()">
 										</select>
 									</div>
 								</div>
@@ -1579,7 +1605,8 @@
 								<div class="col-lg-6">
 									<div class="bs-component">
 										<input type="date" class="form-control" datepicker-popup
-											ng-model="start_date" is-open="opened" datepicker-options="dateOptions"
+											ng-model="start_date" is-open="opened"
+											datepicker-options="dateOptions"
 											date-disabled="disabled(date, mode)" ng-required="true"
 											close-text="Close" />
 									</div>
@@ -1598,7 +1625,7 @@
 								</div>
 							</div>
 						</form>
-										
+
 						<div class="form-group">
 							<button class="col-lg-6 btn btn-primary" ng-click="submit()">计算累计输差(Nm³):</button>
 							<div class="col-lg-5">
@@ -1608,7 +1635,8 @@
 							</div>
 						</div>
 						<div class="form-group">
-								<label for="inputStandard" style="color:red" class="col-lg-10 control-label text-left">{{ warning }}</label>
+							<label for="inputStandard" style="color: red"
+								class="col-lg-10 control-label text-left">{{ warning }}</label>
 						</div>
 					</div>
 					<div class="col-md-7">
@@ -1622,47 +1650,58 @@
 		</div>
 	</div>
 
-	<div class="row">
+	<div class="row" ng-controller="DistrictAnalyseCtrl">
 		<div class="col-md-12">
 			<div class="panel panel-primary">
 				<div class="panel-heading">
 					<h3 class="panel-title">区域性分析</h3>
 				</div>
-				<div class="panel-body text-left">
+				<div class="panel-body">
 					<div class="col-md-4">
-						<form class="form-horizontal" role="form" ng-sumbit="submit()">
+						<form class="form-horizontal" role="form"">
 							<div class="form-group">
 								<label for="inputStandard" class="col-lg-5 control-label">分析数据类型:
 								</label>
 								<div class="col-lg-6">
 									<div class="bs-component">
 										<select class="form-control input-sm"
-											ng-options="key as value for (key , value) in companys"
-											ng-model="company" id="company">
+											ng-options="key as value for (key , value) in analysetypes"
+											ng-model="analyse_type" id="analyse_type">
 										</select>
 									</div>
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="inputStandard" class="col-lg-5 control-label">区域范围:
-								</label>
+								<label for="inputStandard" class="col-lg-5 control-label">区域选择:</label>
 								<div class="col-lg-6">
 									<div class="bs-component">
 										<select class="form-control input-sm"
-											ng-options="key as value for (key , value) in companys"
-											ng-model="company" id="company">
+											ng-options="key as value for (key , value) in provinces"
+											ng-model="province" id="province"
+											ng-change="province_update(province)">
 										</select>
 									</div>
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="inputStandard" class="col-lg-5 control-label">燃气用户:
-								</label>
+								<label for="inputStandard" class="col-lg-5 control-label"></label>
 								<div class="col-lg-6">
 									<div class="bs-component">
 										<select class="form-control input-sm"
-											ng-options="key as value for (key , value) in selectData"
-											ng-model="company" id="company">
+											ng-options="key as value for (key , value) in cities"
+											ng-model="city" id="city" ng-change="city_update(city)">
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="inputStandard" class="col-lg-5 control-label"></label>
+								<div class="col-lg-6">
+									<div class="bs-component">
+										<select class="form-control input-sm"
+											ng-options="key as value for (key , value) in districts"
+											ng-model="district" id="district"
+											ng-change="district_update(district)">
 										</select>
 									</div>
 								</div>
@@ -1673,35 +1712,84 @@
 								<div class="col-lg-6">
 									<div class="bs-component">
 										<select class="form-control input-sm"
-											ng-options="key as value for (key , value) in selectData"
-											ng-model="company" id="company">
-
+											ng-options="key as value for (key , value) in meters"
+											ng-model="meter" id="meter">
 										</select>
 									</div>
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="inputStandard" class="col-lg-1 control-label">  </label>
-								<button class="col-lg-4 btn btn-primary" ng-click="submit()">添加分析对象</button>
-								<label for="inputStandard" class="col-lg-1 control-label">  </label>
-								<button class="col-lg-4 btn btn-primary" ng-click="submit()">开始分析</button>
+								<label for="inputStandard" class="col-lg-5 control-label">时间范围:
+								</label>
+								<div class="col-lg-6">
+									<div class="bs-component">
+										<select class="form-control input-sm"
+											ng-options="key as value for (key , value) in periods"
+											ng-model="period" id="period" ng-change="period_update(period)">
+										</select>
+									</div>
+								</div>
 							</div>
 							<div class="form-group">
-								<label for="inputStandard" class="text-left col-lg-4 control-label">已选对象:</label>
-							</div>			
-						</form>			
+								<label for="inputStandard" class="col-lg-1 control-label">
+								</label>
+								<button class="col-lg-2 btn btn-primary" ng-click="add_meter()">添加</button>
+								<label for="inputStandard" class="col-lg-1 control-label">
+								</label>
+								<button class="col-lg-2 btn btn-primary" ng-click="clear_meter()">清空</button>
+								<label for="inputStandard" class="col-lg-1 control-label">
+								</label>
+								<button class="col-lg-4 btn btn-primary" ng-click="start_analyse()">开始分析</button>
+							</div>
+							<div class="form-group">
+								<div class="col-lg-10">
+									<div class="bs-component">
+										<label for="inputStandard" style="color: red"
+										class="control-label text-left">{{ warning }}</label>
+									</div>
+								</div>								
+							</div>
+							<div class="form-group">
+								<div class="col-lg-10">
+									<div class="bs-component">
+										<label for="inputStandard"
+										class="control-label text-left">已添加对象（最多5个，还可以选择{{left_count}}个）:</label>
+									</div>
+								</div>								
+							</div>
+							<div class="form-group">
+								<label for="inputStandard" style="color: blue"
+									class="text-left col-lg-4 control-label">{{ names[0] }}</label>
+							</div>
+							<div class="form-group">
+								<label for="inputStandard" style="color: blue"
+									class="text-left col-lg-4 control-label">{{ names[1] }}</label>
+							</div>
+							<div class="form-group">
+								<label for="inputStandard" style="color: blue"
+									class="text-left col-lg-4 control-label">{{ names[2] }}</label>
+							</div>
+							<div class="form-group">
+								<label for="inputStandard" style="color: blue"
+									class="text-left col-lg-4 control-label">{{ names[3] }}</label>
+							</div>
+							<div class="form-group">
+								<label for="inputStandard" style="color: blue"
+									class="text-left col-lg-4 control-label">{{ names[4] }}</label>
+							</div>
+						</form>
 					</div>
 					<div class="col-md-7">
-						<div class="row" ng-controller="DCDeviationCtrl">
+						<div class="row">
 							<highchart id="chart1" config="chartConfig" class="span10"
-								style="width:100%; height:300px;"></highchart>
+								style="width:100%; height:420px;"></highchart>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</script>
+	</script>
 	<!-- <option ng-repeat="(key,value) in selectData" value="{{key}}">{{value}}</option> -->
 	{% endverbatim %}
 </body>

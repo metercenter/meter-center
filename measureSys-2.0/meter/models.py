@@ -131,9 +131,19 @@ class outputDiff(models.Model):
     def __uincode__(self):
         return "user_id: "+self.user_id+ " input: "+self.input+ " industry_output "+ self.industry_output
     
+class District(models.Model):
+    district_id = models.CharField(max_length=24)
+    district_name = models.CharField(max_length=24)
+    def __unicode__(self):              # __unicode__ on Python 2
+        return "id: "+self.district_id
+        
+class DistrictAdmin(admin.ModelAdmin):
+    list_display = ('district_id',  'district_name')
+    
 admin.site.register(User, UserAdmin)
 admin.site.register(Meter, MeterAdmin)
 admin.site.register(Data, DataAdmin)
 admin.site.register(IdentificationMeter, IndMeterAdmin)
+admin.site.register(District, DistrictAdmin)
 
 # Create your models here.
