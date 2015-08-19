@@ -917,7 +917,73 @@ app.controller('IdentificationShowCtrl', function ($scope, $http, globalParams) 
 
 
 app.controller('AddIdentificationCtrl', function ($scope, $http, globalParams) {
+	  $scope.companys = [];
+	  $scope.users = [];
+	  $scope.meters = [];
+	  
+	  $scope.outdiff = 0;
+	  $scope.warning = "";
 
+	  $scope.user_selected = 0;
+	  $scope.meter_selected = 0;
+	  $scope.meter_type = "";
+	  $scope.temp_edit = "0";
+	  $scope.pressure_edit = "1.013";
+
+	  var companys_id = [];
+	  var users_id = [];
+	  var meters_eui = []; 
+	  var meterEui;
+	  var diff = 0;
+	  
+	  $http({
+	    url:'/getIndComp',
+	    method:'GET',
+	  }).success(function(response) {
+		  $scope.companys = [];
+		  companys_id = [];
+	    response.forEach(function(entry){
+	      $scope.companys.push(entry.gas_company);
+	      companys_id.push(entry.user_id);
+	    });
+	  });
+
+	  $scope.company_update = function(company) {
+		  $http({
+			    url:'/getIndUser',
+			    method:'GET',
+			    params:{user_id: companys_id[company]}
+			  }).success(function(response) {
+				  $scope.users = [];
+				  users_id = [];
+			    response.forEach(function(entry){
+			      $scope.users.push(entry.user_company);
+			      users_id.push(entry.user_id);
+				  $scope.user_selected = -1;
+			    });
+			  });
+	  };
+
+	  $scope.user_update = function() {
+		  $http({
+			    url:'/getIndMeter',
+			    method:'GET',
+			    params:{user_id: users_id[$scope.user_selected]}
+			  }).success(function(response) {
+				  $scope.meters = [];
+				  meters_eui = [];
+			    response.forEach(function(entry){
+			      $scope.meters.push(entry.meter_name);
+			      meters_eui.push(entry.meter_eui);
+			    });
+				$scope.meter_selected = -1;
+			  });		  
+	  };
+	  
+	  $scope.meter_update = function() {
+		  meterEui = meters_eui[$scope.meter_selected];
+		  $scope.update();
+	  };
 });
 
 
@@ -1064,7 +1130,6 @@ app.controller('DCOutDiffCtrl-shunshi', function ($scope, $http) {
 	  });
 
 	  $scope.company_update = function(company) {
-		  console.log(company);
 		  $http({
 			    url:'/getIndUser',
 			    method:'GET',
@@ -1081,8 +1146,6 @@ app.controller('DCOutDiffCtrl-shunshi', function ($scope, $http) {
 	  };
 
 	  $scope.user_update = function() {
-		  console.log(users_id);
-		  console.log(users_id[$scope.user_selected]);
 		  $http({
 			    url:'/getIndMeter',
 			    method:'GET',
@@ -1098,7 +1161,6 @@ app.controller('DCOutDiffCtrl-shunshi', function ($scope, $http) {
 			  });		  
 	  };
 	  $scope.meter_update = function() {
-		  console.log($scope.meter_selected);
 		  meterEui = meters_eui[$scope.meter_selected];
 		  $scope.update();
 	  };

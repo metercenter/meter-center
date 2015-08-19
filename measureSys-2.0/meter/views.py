@@ -210,8 +210,6 @@ def getData(request):
             preday = today - datetime.timedelta(days=(int)(period))
             meter = Meter.objects.get(user_id = user_id)
             for each in Data.objects.filter(meter_eui = meter.meter_eui).filter(data_date__gt = preday.date()).order_by('-data_date'):
-                print each
-                print each.data_p
                 each_dict = {
                     "id": each.pk,
                     "data_id": each.data_id,
@@ -734,10 +732,13 @@ def getIndentificationMeter(request):
             "meter_type": meterTypeName(meter[0].meter_type),
             "meter_index": meter[0].meter_index,
             "meter_version": meter[0].meter_version,
-            "output_range": each.outputMin+'~'+each.outputMax,
+            "output_range_min": each.outputMin,
+            "output_range_max": each.outputMax,
             "medium": each.medium,
-            "pressure": each.pressureMin+'~'+each.pressureMax,
-            "temperature": each.temperatureMin+'~'+each.temperatureMax,
+            "pressure_min": each.pressureMin,
+            "pressure_max": each.pressureMax,
+            "temperature_min": each.temperatureMin,
+            "temperature_max": each.temperatureMax,
             "Qmax100": each.Qmax100,
             "Qmax60": each.Qmax60,
             "Qmax40": each.Qmax40,
@@ -1171,31 +1172,22 @@ def meterDataChart(request):
         vb_total = 0      
         while((today-preday).days<period):
             for eachMeter in meterEUISet:               
-                valuelist = dataList.filter(meter_eui = eachMeter).filter(data_date__gte = preday.date()).order_by('-data_date')
-                print 'valuelist length: '+str(len(valuelist))
-                print str(preday.date())
-                print '距今有'+str((today-preday).days)+'天'
-                print '表ID'+str(eachMeter)
+                valuelist = dataList.filter(meter_eui = eachMeter).filter(data_date__startswith = preday.date()).order_by('-data_date')
                 if valuelist:
                     value1 = valuelist[0].data_vb
                 else:
-                    value1 = '0.0'
+                    continue
                     
-                valuelist = dataList.filter(meter_eui = eachMeter).filter(data_date__lt = preday.date()).filter(data_date__gte = (preday - datetime.timedelta(days=1)).date()).order_by('-data_date')
+                valuelist = dataList.filter(meter_eui = eachMeter).filter(data_date__lt = preday.date()).order_by('-data_date')
                 if valuelist:
                     value2 = valuelist[0].data_vb
                 else:
                     value2 = '0.0'
                 
-                vb_day_diff = int(float(value1))- int(float(value2))
-                if vb_day_diff < 0:
-                    vb_day_diff = 0
-                vb_total = vb_total + vb_day_diff
-                print '**********value1: '+value1
-                print '**********value2: '+value2
-
+                vb_total = vb_total + int(float(value1))- int(float(value2))
+           
             each_dict = {
-                "data_date": time.mktime(preday.timetuple())*1000,
+                "data_date": time.mktime(preday.timetuple())*1000 - 85680000,
                 "data_qb": vb_total
             }
             responsedata.append(each_dict)

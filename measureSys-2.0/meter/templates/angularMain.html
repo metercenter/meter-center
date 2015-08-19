@@ -1196,12 +1196,12 @@
 									<td>{{row.meter_type}}</td>
 									<td>{{row.meter_version}}</td>
 									<td>{{row.meter_index}}</td>
-									<td>{{row.output_range}}</td>
+									<td>{{row.output_range_min}}~{{row.output_range_max}}</td>
 									<td>{{row.identify_date}}</td>
 									<td>{{row.next_identify_date}}</td>
 									<td>{{row.medium}}</td>
-									<td>{{row.pressure}}</td>
-									<td>{{row.temperature}}</td>
+									<td>{{row.pressure_min}}~{{row.pressure_max}}</td>
+									<td>{{row.temperature_min}}~{{row.temperature_max}}</td>
 									<td>{{row.Qmax100}}</td>
 									<td>{{row.Qmax60}}</td>
 									<td>{{row.Qmax40}}</td>
@@ -1226,7 +1226,7 @@
 		</div>
 	</div>
 
-	<div class="row" ng-controller="AddIdentificationCtrl DataPickerCtrl">
+	<div class="row" ng-controller="AddIdentificationCtrl">
 		<div class="col-md-12">
 			<div class="panel panel-primary">
 				<div class="panel-heading">
@@ -1242,7 +1242,7 @@
 									<div class="bs-component">
 										<select class="form-control input-sm"
 											ng-options="key as value for (key , value) in companys"
-											ng-model="company" id="company">
+											ng-model="company" id="company" ng-change="company_update(company)">
 										</select>
 									</div>
 								</div>
@@ -1253,8 +1253,8 @@
 								<div class="col-lg-6">
 									<div class="bs-component">
 										<select class="form-control input-sm"
-											ng-options="key as value for (key , value) in selectData"
-											ng-model="company" id="company">
+											ng-options="key as value for (key , value) in users"
+											ng-model="user_selected" id="user_selected" ng-change="user_update()">
 										</select>
 									</div>
 								</div>
@@ -1265,9 +1265,8 @@
 								<div class="col-lg-6">
 									<div class="bs-component">
 										<select class="form-control input-sm"
-											ng-options="key as value for (key , value) in selectData"
-											ng-model="company" id="company">
-
+											ng-options="key as value for (key , value) in meters"
+											ng-model="meter_selected" id="meter_selected" ng-change="meter_update()">
 										</select>
 									</div>
 								</div>
@@ -1277,10 +1276,7 @@
 								</label>
 								<div class="col-lg-6">
 									<div class="bs-component">
-										<select class="form-control input-sm"
-											ng-options="key as value for (key , value) in selectData"
-											ng-model="company" id="company">
-
+										<input class="form-control" ng-model="meter_type" disabled="true">
 										</select>
 									</div>
 								</div>
@@ -1308,7 +1304,7 @@
 					</div>
 					<div class="col-md-4">
 						<form class="form-horizontal" role="form" ng-sumbit="submit()">
-							<div class="form-group">
+							<div class="form-group" ng-controller="DataPickerCtrl">
 								<label for="inputStandard" class="col-lg-5 control-label">检定日期:</label>
 								<div class="col-lg-6">
 									<div class="bs-component">
@@ -1320,7 +1316,7 @@
 									</div>
 								</div>
 							</div>
-							<div class="form-group">
+							<div class="form-group" ng-controller="DataPickerCtrl">
 								<label for="inputStandard" class="col-lg-5 control-label">下次检定:</label>
 								<div class="col-lg-6">
 									<div class="bs-component">
