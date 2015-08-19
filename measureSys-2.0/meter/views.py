@@ -1171,19 +1171,28 @@ def meterDataChart(request):
         vb_total = 0      
         while((today-preday).days<period):
             for eachMeter in meterEUISet:               
-                valuelist = dataList.filter(meter_eui = eachMeter).filter(data_date__startswith = preday.date()).order_by('-data_date')
+                valuelist = dataList.filter(meter_eui = eachMeter).filter(data_date__gte = preday.date()).order_by('-data_date')
+                print 'valuelist length: '+str(len(valuelist))
+                print str(preday.date())
+                print '距今有'+str((today-preday).days)+'天'
+                print '表ID'+str(eachMeter)
                 if valuelist:
                     value1 = valuelist[0].data_vb
                 else:
-                    continue
+                    value1 = '0.0'
                     
-                valuelist = dataList.filter(data_date__lt = preday.date()).order_by('-data_date')
+                valuelist = dataList.filter(meter_eui = eachMeter).filter(data_date__lt = preday.date()).filter(data_date__gte = (preday - datetime.timedelta(days=1)).date()).order_by('-data_date')
                 if valuelist:
                     value2 = valuelist[0].data_vb
                 else:
                     value2 = '0.0'
-                 
-                vb_total = vb_total + int(float(value1))- int(float(value2))
+                
+                vb_day_diff = int(float(value1))- int(float(value2))
+                if vb_day_diff < 0:
+                    vb_day_diff = 0
+                vb_total = vb_total + vb_day_diff
+                print '**********value1: '+value1
+                print '**********value2: '+value2
 
             each_dict = {
                 "data_date": time.mktime(preday.timetuple())*1000,
