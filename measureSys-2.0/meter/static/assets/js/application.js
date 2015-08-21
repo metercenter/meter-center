@@ -175,7 +175,11 @@ app.controller('siderbarCtrl',function($scope, $http, sidebarStyle){
     for (i=0; i<nodeSet.length; i++){
       nodeSet[i].visible = !nodeSet[i].visible;
     }
+    //遍历整个tree
+    
   };
+  
+  
   $scope.show =function(data) {
     if (data.visible == true)
       return true;

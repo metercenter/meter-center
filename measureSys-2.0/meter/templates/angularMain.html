@@ -133,11 +133,11 @@
 		<aside class="sidebar" ng-controller="siderbarCtrl"
 			ng-class="{'sidebar-toggle': sidebarStyle.isActive}">
 			<script type="text/ng-template" id="tree_item_renderer.html">
-  		<a ng-href="#/{{data.page}}/{{data.user_id}}" data-ng-click="toggle(data)"> <i class="fa {{data.value}}"></i> <span>{{data.name}}</span><i
+  		<a ng-href="#/{{data.page}}/{{data.user_id}}" data-ng-click="toggle(data)"  data-toggle="tooltip" data-placement="right" title="点击可以展开或收缩"> <i class="fa {{data.value}}"></i> <span>{{data.name}}</span><i
 							class="arrow fa fa-angle-right pull-right"></i></a>
     
     	<ul>
-        <li ng-show="show(data)" ng-repeat="data in data.nodes" ng-include="'tree_item_renderer.html'"></li>
+        <li ng-show="show(data)" ng-repeat="data in data.nodes" ng-include="'tree_item_renderer.html'" data-toggle="tooltip" data-placement="right" title="点击可以展开或收缩"></li>
     	</ul>
 		</script>
 
@@ -584,11 +584,11 @@
 				</div>
 				<div class="panel-body text-left">
 					<!-- <div id="area-chart"></div> -->
-					<p>南京金昇燃气设备有限公司自2003年12月成立以来，一直专注于提供燃气行业优质、可靠的计量和控制设备，同时提供计量管理、设备成撬及周期检定技术服务等。是ELSTER在中国区授权代理商。公司坚持“准确计量、精确控制”的原则，不断努力为用户提供最佳的产品和服务。公司已建立完整的服务体系，提供从售前、售中到售后全面的技术支持和服务。服务团队由具有丰富实践经验的技术人员组成，具备不同类型的工程和设备安装、调试和应急处理能力。
+					<p>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp南京金昇燃气设备有限公司自2003年12月成立以来，一直专注于提供燃气行业优质、可靠的计量和控制设备，同时提供计量管理、设备成撬及周期检定技术服务等。是ELSTER在中国区授权代理商。公司坚持“准确计量、精确控制”的原则，不断努力为用户提供最佳的产品和服务。</p><p>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp公司已建立完整的服务体系，提供从售前、售中到售后全面的技术支持和服务。服务团队由具有丰富实践经验的技术人员组成，具备不同类型的工程和设备安装、调试和应急处理能力。
 					</p>
-					<p>联系电话 ：025-58818283</p>
-					<p>传真 ：025-58822672</p>
-					<p>微信公众号：南京金昇</p>
+					<p><b>联系电话：</b>025-58818283</p>
+					<p><b>传真：</b>025-58822672</p>
+					<p><b>微信公众号：</b>南京金昇</p>
 				</div>
 			</div>
 		</div>
