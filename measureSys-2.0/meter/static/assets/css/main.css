@@ -2976,3 +2976,20 @@ h3.timeline-title {
   position: relative;
   top: -10px;
 }
+
+.form-horizontal .control-label{
+/* text-align:right; */
+text-align:left;
+}
+
+.form-group .control-label{
+/* text-align:right; */
+text-align:left;
+}
+
+.form-group .col-lg-1{
+/* text-align:right; */
+ color: #888;
+ padding-right: 0
+ 
+}

@@ -921,73 +921,118 @@ app.controller('IdentificationShowCtrl', function ($scope, $http, globalParams) 
 
 
 app.controller('AddIdentificationCtrl', function ($scope, $http, globalParams) {
-	  $scope.companys = [];
-	  $scope.users = [];
-	  $scope.meters = [];
-	  
-	  $scope.outdiff = 0;
-	  $scope.warning = "";
-
-	  $scope.user_selected = 0;
-	  $scope.meter_selected = 0;
-	  $scope.meter_type = "";
-	  $scope.temp_edit = "0";
-	  $scope.pressure_edit = "1.013";
-
-	  var companys_id = [];
-	  var users_id = [];
-	  var meters_eui = []; 
-	  var meterEui;
-	  var diff = 0;
+	  $scope.identDate = new Date();
+    $scope.nextDate = new Date();
 	  
 	  $http({
 	    url:'/getIndComp',
 	    method:'GET',
 	  }).success(function(response) {
 		  $scope.companys = [];
-		  companys_id = [];
 	    response.forEach(function(entry){
-	      $scope.companys.push(entry.gas_company);
-	      companys_id.push(entry.user_id);
+	      var field = {
+	          key: entry.user_id,
+	          value: entry.gas_company
+	      }
+	      $scope.companys.push(field);
 	    });
 	  });
 
 	  $scope.company_update = function(company) {
+	    $scope.isCompanyShow = false;
 		  $http({
 			    url:'/getIndUser',
 			    method:'GET',
-			    params:{user_id: companys_id[company]}
+			    params:{user_id: company}
 			  }).success(function(response) {
 				  $scope.users = [];
-				  users_id = [];
+				  $scope.meters = [];
+				  $scope.seqNo = '';
+				  $scope.meterVersion = '';
+				  $scope.meterType = '';
+				  
 			    response.forEach(function(entry){
-			      $scope.users.push(entry.user_company);
-			      users_id.push(entry.user_id);
-				  $scope.user_selected = -1;
+  				  var field = {
+  	            key: entry.user_id,
+  	            value: entry.user_company
+  	        }
+  	        $scope.users.push(field);
 			    });
 			  });
 	  };
 
-	  $scope.user_update = function() {
+	  $scope.user_update = function(user) {
+	    $scope.isUserShow = false;
 		  $http({
 			    url:'/getIndMeter',
 			    method:'GET',
-			    params:{user_id: users_id[$scope.user_selected]}
+			    params:{user_id: user}
 			  }).success(function(response) {
 				  $scope.meters = [];
-				  meters_eui = [];
 			    response.forEach(function(entry){
-			      $scope.meters.push(entry.meter_name);
-			      meters_eui.push(entry.meter_eui);
+			      var field = {
+		            key: entry.meter_eui,
+		            value: entry.meter_name,
+		            meterType: entry.meter_type,
+		            meterSeqno: entry.meter_index,
+		            meterVersion: entry.meter_version 
+		        }
+		        $scope.meters.push(field);
 			    });
-				$scope.meter_selected = -1;
+			    console.log($scope.meters);
 			  });		  
 	  };
 	  
-	  $scope.meter_update = function() {
-		  meterEui = meters_eui[$scope.meter_selected];
-		  $scope.update();
+	  $scope.meter_update = function(meter) {
+	    $scope.isMeterShow = false;
+	    $scope.seqNo = meter.meterSeqno;
+	    $scope.meterVersion = meter.meterVersion;
+	    $scope.meterType = meter.meterType;
 	  };
+	  
+    
+    
+	  $scope.submit = function() {
+	    if (($scope.company == null) || ($scope.company.key == '')) {
+	      $scope.isCompanyShow = true;
+	      return false;
+	    }
+	    if (($scope.user == null) || ($scope.user.key == '')) {
+	      $scope.isUserShow = true;
+	      return false;
+	    }
+	    if (($scope.meter == null) || ($scope.meter.key == '')) {
+	      $scope.isMeterShow = true;
+	      return false;
+	    }
+	    
+	    var data = {
+	        meter_eui: $scope.meter.key,
+	        model: $scope.meterVersion,
+	        meter_type: $scope.meterType,
+	        identify_date : $scope.identDate.getFullYear()+'-'+$scope.identDate.getMonth()+'-'+$scope.identDate.getDate(),
+	        next_identify_date : $scope.nextDate.getFullYear()+'-'+$scope.nextDate.getMonth()+'-'+$scope.nextDate.getDate(),
+	        medium : $scope.medium,
+	        pressureMax : $scope.presureMax,
+	        pressureMin : $scope.presureMin,
+	        temperatureMax : $scope.temperatureMax,
+	        temperatureMin : $scope.temperatureMin,
+	        outputMax : $scope.outputMax,
+	        outputMin : $scope.outputMin,
+	        Qmax100 : $scope.Qmax100,
+	        Qmax60 : $scope.Qmax60,
+	        Qmax40 : $scope.Qmax40,   
+	        Qmax20 : $scope.Qmax20,
+	        Qmax10 : $scope.Qmax10 
+	      };
+	    $http({
+	      url: '/addIndentificationMeter',
+	      method:'POST',
+	      data: data
+	      }).success(function(response){
+	      });
+	    }
+	  
 });
 
 

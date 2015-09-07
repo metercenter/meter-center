@@ -402,7 +402,7 @@ def getIndComp (request):
         loginPage(request)
         return render_to_response('login.html', context_instance=RequestContext(request))
     responsedata = []
-    for each in User.objects.filter(user_id__startswith = request.session['user_id']).extra(where = ['LENGTH(user_id) = 4']):
+    for each in User.objects.filter(user_id__startswith = request.session['user_id']).extra(where = ['LENGTH(user_id) = 4']).extra(where = ['user_id <> "0099"']).order_by('user_id'):
         each_dict = {
             "user_id": each.user_id,
             "gas_company":     each.user_company,    
@@ -427,7 +427,10 @@ def getIndMeter(request):
         each_dict = {
             "user_id": each.user_id,
             "meter_eui": each.meter_eui,    
-            "meter_name": each.meter_name
+            "meter_name": each.meter_name,
+            "meter_type": meterTypeName(each.meter_type),
+            "meter_version": each.meter_version,
+            "meter_index": each.meter_index
         }
         responsedata.append(each_dict)
     return HttpResponse(json.dumps(responsedata),content_type ="application/json")    
@@ -722,6 +725,9 @@ def getIndentificationMeter(request):
             continue
         if each.next_identify_date:
             next_indetifyDate = each.next_identify_date.strftime("%Y/%m/%d")
+        print '----------------'
+        print each.meter_eui
+        print '----------------'
         meter = Meter.objects.filter( meter_eui = each.meter_eui)
         each_dict = {
             "id": each.pk,
@@ -753,21 +759,24 @@ def addIndentificationMeter(request):
         loginPage(request)
         return render_to_response('login.html', context_instance=RequestContext(request))
     response = {}
-    meter_eui = request.POST['meter_eui']
-    identify_date = request.POST['identify_date']
-    next_identify_date = request.POST['next_identify_date']
-    medium = request.POST['medium']
-    pressureMax = request.POST['pressureMax']
-    pressureMin = request.POST['pressureMin']
-    temperatureMax = request.POST['temperatureMax']
-    temperatureMin = request.POST['temperatureMin']
-    outputMax = request.POST['outputMax']
-    outputMin = request.POST['outputMin']
-    Qmax100 = request.POST['Qmax100']
-    Qmax60 = request.POST['Qmax60']
-    Qmax40 = request.POST['Qmax40']   
-    Qmax20 = request.POST['Qmax20']
-    Qmax10 = request.POST['Qmax10']   
+    print request.body
+    data = json.loads(request.body)
+    meter_eui = data.get('meter_eui')
+    print meter_eui
+    identify_date = data.get('identify_date')
+    next_identify_date = data.get('next_identify_date')
+    medium = data.get('medium')
+    pressureMax = data.get('pressureMax')
+    pressureMin = data.get('pressureMin')
+    temperatureMax = data.get('temperatureMax')
+    temperatureMin = data.get('temperatureMin')
+    outputMax = data.get('outputMax')
+    outputMin = data.get('outputMin')
+    Qmax100 = data.get('Qmax100')
+    Qmax60 = data.get('Qmax60')
+    Qmax40 = data.get('Qmax40')   
+    Qmax20 = data.get('Qmax20')
+    Qmax10 = data.get('Qmax10')   
              
     indMeter = IdentificationMeter()
     indMeter.meter_eui = meter_eui

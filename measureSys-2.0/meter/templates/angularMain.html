@@ -971,49 +971,49 @@
 				</div>
 				<div class="panel-body">
 					<div class="row form-group">
-						<label class="col-lg-2 control-label text-right">名称:</label> <label
-							class="col-lg-2 control-label text-left"
+						<label class="col-lg-1 control-label text-right">名称:</label> <label
+							class="col-lg-3 control-label text-left"
 							style="font-weight: bold">{{ meter.meter_name }}</label> <label
-							class="col-lg-2 control-label text-right">品牌:</label> <label
-							class="col-lg-2 control-label text-left"
+							class="col-lg-1 control-label text-right">品牌:</label> <label
+							class="col-lg-3 control-label text-left"
 							style="font-weight: bold">{{ meter.meter_type }}</label>
-							<label class="col-lg-2 control-label text-right">修正仪:</label> <label
-							class="col-lg-2 control-label text-left"
+							<label class="col-lg-1 control-label text-right">修正仪:</label> <label
+							class="col-lg-3 control-label text-left"
 							style="font-weight: bold">{{ meter.meter_revisetype }}</label>
 					</div>
 					<div class="row form-group">
-						<label class="col-lg-2 control-label text-right">型号: </label> <label
-							class="col-lg-2 control-label text-left"
+						<label class="col-lg-1 control-label text-right">型号: </label> <label
+							class="col-lg-3 control-label text-left"
 							style="font-weight: bold">{{ meter.meter_version }}</label> <label
-							class="col-lg-2 control-label text-right">序列号:</label> <label
-							class="col-lg-2 control-label text-left"
+							class="col-lg-1 control-label text-right">序列号:</label> <label
+							class="col-lg-3 control-label text-left"
 							style="font-weight: bold">{{ meter.meter_index }}</label> <label
-							class="col-lg-2 control-label text-right">流量范围:</label> <label
-							class="col-lg-2 control-label text-left"
+							class="col-lg-1 control-label text-right">流量范围:</label> <label
+							class="col-lg-3 control-label text-left"
 							style="font-weight: bold">{{ meter.outputMin }} -- {{
 							meter.outputMax }} Nm³/h</label>
 					</div>
 					<div class="row form-group">
-						<label class="col-lg-2 control-label text-right">所在区域:</label> <label
-							class="col-lg-2 control-label text-left"
+						<label class="col-lg-1 control-label text-right">所在区域:</label> <label
+							class="col-lg-3 control-label text-left"
 							style="font-weight: bold">{{ meter.meter_district }}</label> <label
-							class="col-lg-2 control-label text-right">检定有效期:</label> <label
-							class="col-lg-2 control-label text-left"
+							class="col-lg-1 control-label text-right">检定有效期:</label> <label
+							class="col-lg-3 control-label text-left"
 							style="font-weight: bold">{{ meter.valid_time }}</label> <label
-							class="col-lg-2 control-label text-right">压力范围:</label> <label
-							class="col-lg-2 control-label text-left"
+							class="col-lg-1 control-label text-right">压力范围:</label> <label
+							class="col-lg-3 control-label text-left"
 							style="font-weight: bold">{{ meter.pressureMin }} --
 							{{ meter.pressureMax }} bar</label>
 					</div>
 					<div class="row form-group">
-						<label class="col-lg-2 control-label text-right">节点编号:</label> <label
-							class="col-lg-2 control-label text-left"
+						<label class="col-lg-1 control-label text-right">节点编号:</label> <label
+							class="col-lg-3 control-label text-left"
 							style="font-weight: bold">{{ meter.meter_eui }}</label> <label
-							class="col-lg-2 control-label text-right">铅封编号:</label> <label
-							class="col-lg-2 control-label text-left"
+							class="col-lg-1 control-label text-right">铅封编号:</label> <label
+							class="col-lg-3 control-label text-left"
 							style="font-weight: bold">{{ meter.wrapCode }}</label> <label
-							class="col-lg-2 control-label text-right">温度范围:</label> <label
-							class="col-lg-2 control-label text-left"
+							class="col-lg-1 control-label text-right">温度范围:</label> <label
+							class="col-lg-3 control-label text-left"
 							style="font-weight: bold">{{ meter.temperatureMin }}
 							-- {{ meter.temperatureMax }} ℃ </label>
 					</div>
@@ -1156,7 +1156,7 @@
 				</div> 
 </script>
 
-	<script type=text/ng-template id=identification.html>
+<script type=text/ng-template id=identification.html>
 	<div class="row">
 		<div class="col-md-12">
 			<div class="panel panel-primary">
@@ -1233,223 +1233,254 @@
 					<h3 class="panel-title">检定信息录入</h3>
 				</div>
 				<div class="panel-body text-left">
-					<div class="col-md-4">
-						<form class="form-horizontal" role="form" ng-sumbit="submit()">
-							<div class="form-group">
-								<label for="inputStandard" class="col-lg-5 control-label">燃气公司:
-								</label>
-								<div class="col-lg-6">
-									<div class="bs-component">
-										<select class="form-control input-sm"
-											ng-options="key as value for (key , value) in companys"
-											ng-model="company" id="company" ng-change="company_update(company)">
-										</select>
-									</div>
-								</div>
-							</div>
-							<div class="form-group">
-								<label for="inputStandard" class="col-lg-5 control-label">燃气用户:
-								</label>
-								<div class="col-lg-6">
-									<div class="bs-component">
-										<select class="form-control input-sm"
-											ng-options="key as value for (key , value) in users"
-											ng-model="user_selected" id="user_selected" ng-change="user_update()">
-										</select>
-									</div>
-								</div>
-							</div>
-							<div class="form-group">
-								<label for="inputStandard" class="col-lg-5 control-label">流量计名称:
-								</label>
-								<div class="col-lg-6">
-									<div class="bs-component">
-										<select class="form-control input-sm"
-											ng-options="key as value for (key , value) in meters"
-											ng-model="meter_selected" id="meter_selected" ng-change="meter_update()">
-										</select>
-									</div>
-								</div>
-							</div>
-							<div class="form-group">
-								<label for="inputStandard" class="col-lg-5 control-label">流量计品牌:
-								</label>
-								<div class="col-lg-6">
-									<div class="bs-component">
-										<input class="form-control" ng-model="meter_type" disabled="true">
-										</select>
-									</div>
-								</div>
-							</div>
-
-							<div class="form-group">
-								<label for="inputStandard" class="col-lg-5 control-label">型号:</label>
-								<div class="col-lg-6">
-									<div class="bs-component">
-										<input type="password" id="password" ng-model="password"
-											class="form-control" required="该项不能为空" placeholder="型号">
-									</div>
-								</div>
-							</div>
-							<div class="form-group">
-								<label for="inputStandard" class="col-lg-5 control-label">序列号:</label>
-								<div class="col-lg-6">
-									<div class="bs-component">
-										<input type="password" id="password" ng-model="password"
-											class="form-control" required="该项不能为空" placeholder="序列号">
-									</div>
-								</div>
-							</div>
-						</form>
-					</div>
-					<div class="col-md-4">
-						<form class="form-horizontal" role="form" ng-sumbit="submit()">
-							<div class="form-group" ng-controller="DataPickerCtrl">
-								<label for="inputStandard" class="col-lg-5 control-label">检定日期:</label>
-								<div class="col-lg-6">
-									<div class="bs-component">
-										<input type="date" class="form-control" datepicker-popup
-											ng-model="dt" is-open="opened" min-date="minDate"
-											max-date="'2015-06-22'" datepicker-options="dateOptions"
-											date-disabled="disabled(date, mode)" ng-required="true"
-											close-text="Close" />
-									</div>
-								</div>
-							</div>
-							<div class="form-group" ng-controller="DataPickerCtrl">
-								<label for="inputStandard" class="col-lg-5 control-label">下次检定:</label>
-								<div class="col-lg-6">
-									<div class="bs-component">
-										<input type="date" class="form-control" datepicker-popup
-											ng-model="dt" is-open="opened" min-date="minDate"
-											max-date="'2015-06-22'" datepicker-options="dateOptions"
-											date-disabled="disabled(date, mode)" ng-required="true"
-											close-text="Close" />
-									</div>
-								</div>
-							</div>
-							<div class="form-group">
-								<label for="inputStandard" class="col-lg-5 control-label">流量范围(Nm³/h):</label>
-								<div class="col-lg-3">
-									<div class="bs-component">
-										<input type="password" id="password" ng-model="password"
-											class="form-control" required="该项不能为空" placeholder="最小值">
-									</div>
-								</div>
-								<label for="inputStandard" class="col-lg-1 control-label">-</label>
-								<div class="col-lg-3">
-									<div class="bs-component">
-										<input type="password" id="password" ng-model="password"
-											class="form-control" required="该项不能为空" placeholder="最大值">
-									</div>
-								</div>
-							</div>
-							<div class="form-group">
-								<label for="inputStandard" class="col-lg-5 control-label">压力范围(bar):</label>
-								<div class="col-lg-3">
-									<div class="bs-component">
-										<input type="password" id="password" ng-model="password"
-											class="form-control" required="该项不能为空" placeholder="最小值">
-									</div>
-								</div>
-								<label for="inputStandard" class="col-lg-1 control-label">-</label>
-								<div class="col-lg-3">
-									<div class="bs-component">
-										<input type="password" id="password" ng-model="password"
-											class="form-control" required="该项不能为空" placeholder="最大值">
-									</div>
-								</div>
-							</div>
-							<div class="form-group">
-								<label for="inputStandard" class="col-lg-5 control-label">温度范围(℃):</label>
-								<div class="col-lg-3">
-									<div class="bs-component">
-										<input type="password" id="password" ng-model="password"
-											class="form-control" required="该项不能为空" placeholder="最小值">
-									</div>
-								</div>
-								<label for="inputStandard" class="col-lg-1 control-label">-</label>
-								<div class="col-lg-3">
-									<div class="bs-component">
-										<input type="password" id="password" ng-model="password"
-											class="form-control" required="该项不能为空" placeholder="最大值">
-									</div>
-								</div>
-							</div>
-							<div class="form-group">
-								<label for="inputStandard" class="col-lg-5 control-label">介质:</label>
-								<div class="col-lg-6">
-									<div class="bs-component">
-										<input type="password" id="password" ng-model="password"
-											class="form-control" required="该项不能为空" placeholder="介质">
-									</div>
-								</div>
-							</div>
-						</form>
-					</div>
-					<div class="col-md-4">
-						<form class="form-horizontal" role="form" ng-sumbit="submit()">
-
-							<div class="form-group">
-								<label for="inputStandard" class="col-lg-5 control-label">100%Qmax偏差:</label>
-								<div class="col-lg-4">
-									<div class="bs-component">
-										<input type="password" id="password" ng-model="password"
-											class="form-control" required="该项不能为空" placeholder="100%Qmax">
-									</div>
-								</div>
-								<label for="inputStandard" class="col-lg-1 control-label">%</label>
-							</div>
-
-							<div class="form-group">
-								<label class="col-lg-5 control-label">60%Qmax偏差:</label>
-								<div class="col-lg-4">
-									<div class="bs-component">
-										<input type="password" id="password" ng-model="password"
-											class="form-control" required="该项不能为空" placeholder="60%Qmax">
-									</div>
-								</div>
-								<label for="inputStandard" class="col-lg-1 control-label">%</label>
-							</div>
-							<div class="form-group">
-								<label for="inputStandard" class="col-lg-5 control-label">40%Qmax偏差:</label>
-								<div class="col-lg-4">
-									<div class="bs-component">
-										<input type="password" id="password" ng-model="password"
-											class="form-control" required="该项不能为空" placeholder="40%Qmax">
-									</div>
-								</div>
-								<label for="inputStandard" class="col-lg-1 control-label">%</label>
-							</div>
-							<div class="form-group">
-								<label for="inputStandard" class="col-lg-5 control-label">20%Qmax偏差:</label>
-								<div class="col-lg-4">
-									<div class="bs-component">
-										<input type="password" id="password" ng-model="password"
-											class="form-control" required="该项不能为空" placeholder="20%Qmax">
-									</div>
-								</div>
-								<label for="inputStandard" class="col-lg-1 control-label">%</label>
-							</div>
-							<div class="form-group">
-								<label for="inputStandard" class="col-lg-5 control-label">10%Qmax偏差:</label>
-								<div class="col-lg-4">
-									<div class="bs-component">
-										<input type="password" id="password" ng-model="password"
-											class="form-control" required="该项不能为空" placeholder="10%Qmax">
-									</div>
-								</div>
-								<label for="inputStandard" class="col-lg-1 control-label">%</label>
-							</div>
-							<div class="modal-footer">
-								<button class="btn btn-primary" ng-click="submit()">保存</button>
-							</div>
+					<!-- <div class="col-md-4"> -->
+						<form name="identification" class="form-horizontal" role="form">
+             <div class="row">
+               <div class="col-lg-4">
+    							<div class="form-group">
+    								<label for="inputStandard" class="col-lg-5 control-label">燃气公司:
+    								</label>
+    								<div class="col-lg-7">
+    									<div class="bs-component">
+    										<select name="companyID" class="form-control input-sm"
+    											ng-options="company.value for company in companys"
+    											ng-model="company" id="company" required ng-change="company_update(company.key)">
+    										</select>
+                        <span style="color:red" ng-show=isCompanyShow>请先选择燃气公司</span>
+    									</div>
+    								</div>
+    							</div>
+                </div> 
+               <div class="col-lg-4">
+                  <div class="form-group">
+                    <label for="inputStandard" class="col-lg-5 control-label">检定日期:</label>
+                    <div class="col-lg-7">
+                      <div class="bs-component">
+                        <input type="date" class="form-control" datepicker-popup
+                          ng-model="identDate" />
+                      </div>
+                    </div>
+                  </div>
+                </div> 
+                <div class="col-lg-4"> 
+                  <div class="form-group">
+                    <label for="inputStandard" class="col-lg-5 control-label">100%Qmax偏差:</label>
+                    <div class="col-lg-6">
+                      <div class="bs-component">
+                        <input type="text" id="Qmax100" ng-model="Qmax100"
+                          class="form-control"  placeholder="-1~1">
+                      </div>
+                    </div>
+                    <label for="inputStandard" class="col-lg-1 control-label">%</label>
+                  </div>
+                </div>               
+              </div>
+              <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label for="inputStandard" class="col-lg-5 control-label">燃气用户:
+                        </label>
+                        <div class="col-lg-7">
+                          <div class="bs-component">
+                            <select class="form-control input-sm"
+                              ng-options="user.value for user in users"
+                              ng-model="user" id="user" ng-change="user_update(user.key)">
+                            </select>
+                            <span style="color:red" ng-show=isUserShow>请先选择燃气用户</span>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label for="inputStandard" class="col-lg-5 control-label">下次检定:</label>
+                        <div class="col-lg-7">
+                          <div class="bs-component">
+                            <input type="date" class="form-control" datepicker-popup
+                              ng-model="nextDate" />
+                          </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label class="col-lg-5 control-label">60%Qmax偏差:</label>
+                        <div class="col-lg-6">
+                          <div class="bs-component">
+                            <input type="text" id="Qmax60" ng-model="Qmax60"
+                              class="form-control"  placeholder="-1~1">
+                          </div>
+                        </div>
+                        <label for="inputStandard" class="col-lg-1 control-label">%</label>
+                    </div>
+                </div>
+              </div>              
+              <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label for="inputStandard" class="col-lg-5 control-label">流量计名称:
+                        </label>
+                        <div class="col-lg-7">
+                          <div class="bs-component">
+                            <select class="form-control input-sm"
+                              ng-options="meter.value for meter in meters"
+                              ng-model="meter" id="meter" ng-change="meter_update(meter)">
+                            </select>
+                            <span style="color:red" ng-show=isMeterShow>请先选择流量计</span>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label for="inputStandard" class="col-lg-5 control-label">流量范围(Nm³/h):</label>
+                        <div class="col-lg-3">
+                          <div class="bs-component">
+                            <input type="text" id="outputMin" ng-model="outputMin"
+                              class="form-control"  placeholder="最小值">
+                          </div>
+                        </div>
+                        <label for="inputStandard" class="col-lg-1 control-label">-</label>
+                        <div class="col-lg-3">
+                          <div class="bs-component">
+                            <input type="text" id="outputMax" ng-model="outputMax"
+                              class="form-control"  placeholder="最大值">
+                          </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label for="inputStandard" class="col-lg-5 control-label">40%Qmax偏差:</label>
+                        <div class="col-lg-6">
+                          <div class="bs-component">
+                            <input type="text" id="Qmax40" ng-model="Qmax40"
+                              class="form-control"  placeholder="-1~1">
+                          </div>
+                        </div>
+                        <label for="inputStandard" class="col-lg-1 control-label">%</label>
+                    </div>
+                </div>
+              </div>   
+              <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label for="inputStandard" class="col-lg-5 control-label">流量计品牌:
+                        </label>
+                        <div class="col-lg-7">
+                          <div class="bs-component">
+                            <input class="form-control" ng-model="meterType" disabled="true">
+                            </select>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label for="inputStandard" class="col-lg-5 control-label">压力范围(bar):</label>
+                        <div class="col-lg-3">
+                          <div class="bs-component">
+                            <input type="text" id="presureMin" ng-model="presureMin"
+                              class="form-control"  placeholder="最小值" required>
+                          </div>
+                        </div>
+                        <label for="inputStandard" class="col-lg-1 control-label">-</label>
+                        <div class="col-lg-3">
+                          <div class="bs-component">
+                            <input type="text" id="presureMax" ng-model="presureMax"
+                              class="form-control"  placeholder="最大值">
+                          </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label for="inputStandard" class="col-lg-5 control-label">20%Qmax偏差:</label>
+                        <div class="col-lg-6">
+                          <div class="bs-component">
+                            <input type="text" id="Qmax20" ng-model="Qmax20"
+                              class="form-control"  placeholder="-1~1">
+                          </div>
+                        </div>
+                        <label for="inputStandard" class="col-lg-1 control-label">%</label>
+                    </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label for="inputStandard" class="col-lg-5 control-label">型号:</label>
+                        <div class="col-lg-7">
+                          <div class="bs-component">
+                            <input type="text" id="meterVersion" ng-model="meterVersion"
+                              class="form-control"  placeholder="型号">
+                          </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label for="inputStandard" class="col-lg-5 control-label">温度范围(℃):</label>
+                        <div class="col-lg-3">
+                          <div class="bs-component">
+                            <input type="text" id="temperatureMin" ng-model="temperatureMin"
+                              class="form-control"  placeholder="最小值">
+                          </div>
+                        </div>
+                        <label for="inputStandard" class="col-lg-1 control-label">-</label>
+                        <div class="col-lg-3">
+                          <div class="bs-component">
+                            <input type="text" id="temperatureMax" ng-model="temperatureMax"
+                              class="form-control"  placeholder="最大值">
+                          </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label for="inputStandard" class="col-lg-5 control-label">10%Qmax偏差:</label>
+                        <div class="col-lg-6">
+                          <div class="bs-component">
+                            <input type="text" id="Qmax10" ng-model="Qmax10"
+                              class="form-control"  placeholder="-1~1">
+                          </div>
+                        </div>
+                        <label for="inputStandard" class="col-lg-1 control-label">%</label>
+                    </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label for="inputStandard" class="col-lg-5 control-label">序列号:</label>
+                        <div class="col-lg-7">
+                          <div class="bs-component">
+                            <input type="text" id="seqNo" ng-model="seqNo"
+                              class="form-control"  placeholder="序列号">
+                          </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label for="inputStandard" class="col-lg-5 control-label">介质:</label>
+                        <div class="col-lg-7">
+                          <div class="bs-component">
+                            <input type="text" id="medium" ng-model="medium"
+                              class="form-control"  placeholder="介质">
+                          </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                <button class="btn btn-primary col-lg-offset-10" ng-click="submit()">保存</button>
+                </div>
+              </div>                 
 						</form>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
 </script>
 
 
