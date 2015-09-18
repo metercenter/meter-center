@@ -484,23 +484,35 @@ def generateID(userName):
             return '0001'
         else:
             return user[0].user_id+'0001'
-#     if len(brother) == 0:
-#         return user[0].user_id+'0002'
+
     ID = brother[0].user_id
     for i in range(1,len(brother)):
         if int(brother[i].user_id) - int(ID) >1:
-            return ID[0:-1]+str(int(ID[-1])+1)
+            break
         else:
             ID = brother[i].user_id
-            
-    return ID[0:-1]+str(int(ID[-1])+1)
+    if len(ID) == 4:
+        return str(int(ID)+1).zfill(4)
+#         return zeroStr(4-len(str(int(ID)+1)))+str(int(ID)+1).zfill(4)
+    elif len(ID) == 8:
+        return str(int(ID)+1).zfill(8)
+    
+def zeroStr(num):
+    zerostr = ''
+    for i in range(0,num):
+        zerostr = zerostr+'0'
+    return zerostr
 
 def register_company(request):
     if  not 'user_id' in request.session:
         loginPage(request)
         return render_to_response('login.html', context_instance=RequestContext(request))
+#     data = request.body
+#     jsondata = json.dumps(request.body)
+    print request.body
     data = json.loads(request.body)
-    userName = data.get('user')
+#     print data''
+    userName = data.get("user")
     userPassword = data.get('pass')
     userCompany = data.get('company')
     userPhone = data.get('phone')
