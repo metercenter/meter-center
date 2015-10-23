@@ -76,7 +76,7 @@ class WarnInfo(models.Model):
         return "meter_eui: " +self.meter_eui + "data_warn " + self.data_warn 
         
 class DataWarnTypeAdmin(admin.ModelAdmin):
-    list_display = ('warn_type', 'warn_type_reason')
+    list_display = ('data_warn', 'data_warn_reason', 'data_warn_solution', 'data_warn_level')
     
     
 class Company(models.Model):
@@ -145,5 +145,6 @@ admin.site.register(Meter, MeterAdmin)
 admin.site.register(Data, DataAdmin)
 admin.site.register(IdentificationMeter, IndMeterAdmin)
 admin.site.register(District, DistrictAdmin)
+admin.site.register(DataWarnType, DataWarnTypeAdmin)
 
 # Create your models here.

@@ -21,10 +21,9 @@ SerSock = socket(AF_INET, SOCK_DGRAM)
 SerSock.bind(ADDR)
 
 while True:
-    print 'waiting for message...'
+    print 'waiting for message...\n\n'
     data, addr = SerSock.recvfrom(BUFSIZE)
     print 'received message from:', addr
-    print data 
     if data:
         if len(data) < 12:
             continue
@@ -135,5 +134,38 @@ while True:
         new_data = Data(data_id=new_id, meter_eui=eui_str, data_battery=battery_s, data_vb=vb_s, data_vm=vm_s, data_p=p_s, data_t=t_s, data_qb=qb_s, data_qm=qm_s)
         new_data.data_date = datetime.datetime.now()
         new_data.save()
+
+    if data_type == 17:
+	print ("type 17\n")
+        payload = data[12:(12+24)]
+        if length == 40:
+            warn = data[36:(36+16)]
+            for i in range(0,14,2):
+                if warn[i]:
+                    warn_num = i/2+20
+                    new_warn = WarnInfo(meter_eui=eui_str,data_warn=warn_num,warn_level=1)
+                    new_warn.warn_date = datetime.datetime.now()
+                    new_warn.save()
+             
+        pres, temp, qm, qb, vm, vb = struct.unpack("!ffffff", payload)
+        meter_data=Data.objects.filter(meter_eui=eui_str).order_by('-data_id')
+        if len(meter_data) > 0:
+            new_id = meter_data[0].data_id + 1
+                      
+        else:
+            print ("firstdata for this meter\n")
+            new_id = 1;
+ 
+        p_s = str(pres)
+        t_s = str(temp)
+        qb_s = str(qb)
+        qm_s = str(qm)
+        vb_s = str(vb)
+        vm_s = str(vm)
+        battery_s="-"
+        new_data = Data(data_id=new_id, meter_eui=eui_str, data_battery=battery_s, data_vb=vb_s, data_vm=vm_s, data_p=p_s, data_t=t_s, data_qb=qb_s, data_qm=qm_s)
+        new_data.data_date = datetime.datetime.now()
+        new_data.save()
+
 
 SerSock.close()
