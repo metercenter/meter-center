@@ -1182,7 +1182,7 @@ def meterDataChart(request):
             period = 30
         
         meterEUISet = Meter.objects.filter(user_id__startswith = userID).values_list('meter_eui', flat=True)            
-        dataList = Data.objects.filter(meter_eui__in = meterEUISet).order_by('data_date')
+        dataList = Data.objects.filter(meter_eui__in = meterEUISet)
         
         today=datetime.datetime.now().replace(hour=23,minute=59,second=59,microsecond=999999)
         totalperiod = (today - dataList[0].data_date).days
@@ -1192,14 +1192,14 @@ def meterDataChart(request):
         
         vb_total = 0      
         while((today-preday).days<period):
-            for eachMeter in meterEUISet:               
-                valuelist = dataList.filter(meter_eui = eachMeter).filter(data_date__startswith = preday.date()).order_by('-data_date')
+            for eachMeter in meterEUISet:
+                valuelist = Data.objects.filter(meter_eui = eachMeter).filter(data_date__startswith = preday.date()).order_by('-data_date')
                 if valuelist:
                     value1 = valuelist[0].data_vb
                 else:
                     continue
                     
-                valuelist = dataList.filter(meter_eui = eachMeter).filter(data_date__lt = preday.date()).order_by('-data_date')
+                valuelist = Data.objects.filter(meter_eui = eachMeter).filter(data_date__lt = preday.date()).order_by('-data_date')
                 if valuelist:
                     value2 = valuelist[0].data_vb
                 else:

@@ -231,11 +231,11 @@
 
 
 
-	<script type="text/ng-template" id="myModalContent.html">
+	<script type="text/ng-template" id="deviationCtrl.html">
 	<div class="modal-body" class="col-md-10">
 		<div ng-controller="DeviationCtrl" >
 			<div class="row"  class="col-md-8">
-				<highchart id="chart1" config="chartConfig" class="span10" style="margin-left:14px; width:594px; height:500px;"></highchart>
+				<highchart id="chart1" config="chartConfig" class="span10" style="margin-left:14px; width:594px; height:350px;"></highchart>
 			</div>
 		</div>
 	</div>
@@ -1076,7 +1076,7 @@
 									<td ng-if="meter.meter_type != '卓度'">{{row.data_qm}}</td>
 									<td>{{row.data_battery}}</td>
 									<td ng-if="meter.meter_type != '卓度'">
-										<div ng-controller="ModalDemoCtrl">
+										<div ng-controller="deviationCtrl">
 											<button type="button" ng-click="open(row)"
 												class="btn btn-sm btn-info">数据分析</button>
 										</div>

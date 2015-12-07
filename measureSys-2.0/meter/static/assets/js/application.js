@@ -196,7 +196,7 @@ function ___________SidebarControl_________end(){};
 
 
 function ___________dataAnalyzeModal________start(){};
-app.controller('ModalDemoCtrl', function ($scope, $modal, $log, globalParams) {
+app.controller('deviationCtrl', function ($scope, $modal, $log, globalParams) {
   
   $scope.items = ['item1', 'item2', 'item3'];
 
@@ -209,7 +209,7 @@ app.controller('ModalDemoCtrl', function ($scope, $modal, $log, globalParams) {
     globalParams.current_meter_eui = row.meter_eui;
     var modalInstance = $modal.open({
       animation: $scope.animationsEnabled,
-      templateUrl: 'myModalContent.html',
+      templateUrl: 'deviationCtrl.html',
       controller: 'ModalInstanceCtrl',
       resolve: {
         items: function () {
@@ -271,6 +271,9 @@ app.controller('DeviationCtrl',  function ($scope,$http,globalParams) {
                 title: {
                     text: '偏差(%)'
                 },
+                min: -2,
+                max: 2,
+                startOnTick: false,
                 plotLines: [{
                     value: 0,
                     width: 1,
@@ -871,7 +874,6 @@ function add________________Form______________End(){};
 function ______________threePiple___________start(){}
 
 function ______________threePiple___________end(){}
-
 
 
 function ________________artworkCtrl___________start(){};

@@ -71,14 +71,20 @@ while True:
         if warn_num != 0:
             new_warn = WarnInfo(meter_eui=eui_str,data_warn=warn_num, warn_level=1)
             new_warn.warn_date = datetime.datetime.now()
-            new_warn.save()
+            try:
+                new_warn.save()
+            except:
+                print ("db busy\n")   
  
         qb_s = str(qb/1000.0)
         vb_s = str(vb1)+'.'+str(vb2)
         battery_s = str(battery/1000.0)
         new_data = Data(data_id=new_id, meter_eui=eui_str, data_battery=battery_s, data_vb=vb_s, data_qb=qb_s)
         new_data.data_date = datetime.datetime.now()
-        new_data.save()
+        try:
+            new_data.save()
+        except:
+            print ("db busy\n") 
 
     if data_type == 7:
         payload = data[12:(12+length)]
@@ -94,7 +100,10 @@ while True:
         if battery<3:
             new_warn = WarnInfo(meter_eui=eui_str,data_warn=9,warn_level=1)
             new_warn.warn_date = datetime.datetime.now()
-            new_warn.save()
+            try:
+                new_warn.save()
+            except:
+                print ("db busy\n")
  
         battery_s = str(battery)
         vb_s = str(vb1)+'.'+str(vb2)
@@ -105,7 +114,10 @@ while True:
         qm_s = str(qm)
         new_data = Data(data_id=new_id, meter_eui=eui_str, data_battery=battery_s, data_vb=vb_s, data_vm=vm_s, data_p=p_s, data_t=t_s, data_qb=qb_s, data_qm=qm_s)
         new_data.data_date = datetime.datetime.now()
-        new_data.save()
+        try:
+            new_data.save()
+        except:
+            print ("db busy\n")
 
     if data_type == 8:
         print ("type 8\n")
@@ -122,7 +134,10 @@ while True:
         if battery<3:
             new_warn = WarnInfo(meter_eui=eui_str,data_warn=9,warn_level=1)
             new_warn.warn_date = datetime.datetime.now()
-            new_warn.save()
+            try:
+                new_warn.save()
+            except:
+                print ("db busy\n")
  
         battery_s = str(battery)
         vb_s = str(vb1)+'.'+str(vb2)
@@ -133,19 +148,25 @@ while True:
         qm_s = str(qm)
         new_data = Data(data_id=new_id, meter_eui=eui_str, data_battery=battery_s, data_vb=vb_s, data_vm=vm_s, data_p=p_s, data_t=t_s, data_qb=qb_s, data_qm=qm_s)
         new_data.data_date = datetime.datetime.now()
-        new_data.save()
+        try:
+            new_data.save()
+        except:
+            print ("db busy\n")
 
     if data_type == 17:
-	print ("type 17\n")
         payload = data[12:(12+24)]
         if length == 40:
             warn = data[36:(36+16)]
-            for i in range(0,14,2):
+            for i in range(1,15,2):
                 if warn[i]:
                     warn_num = i/2+20
                     new_warn = WarnInfo(meter_eui=eui_str,data_warn=warn_num,warn_level=1)
                     new_warn.warn_date = datetime.datetime.now()
-                    new_warn.save()
+                    try:
+                        new_warn.save()
+                    except:
+                        print ("db busy\n")
+                    print ("warn info add\n");
              
         pres, temp, qm, qb, vm, vb = struct.unpack("!ffffff", payload)
         meter_data=Data.objects.filter(meter_eui=eui_str).order_by('-data_id')
@@ -156,16 +177,19 @@ while True:
             print ("firstdata for this meter\n")
             new_id = 1;
  
-        p_s = str(pres)
-        t_s = str(temp)
-        qb_s = str(qb)
-        qm_s = str(qm)
-        vb_s = str(vb)
-        vm_s = str(vm)
+        p_s = str("%.3f" % pres)
+        t_s = str("%.3f" % temp)
+        qb_s = str("%.3f" % qb)
+        qm_s = str("%.3f" % qm)
+        vb_s = str("%.3f" % vb)
+        vm_s = str("%.3f" % vm)
         battery_s="-"
         new_data = Data(data_id=new_id, meter_eui=eui_str, data_battery=battery_s, data_vb=vb_s, data_vm=vm_s, data_p=p_s, data_t=t_s, data_qb=qb_s, data_qm=qm_s)
         new_data.data_date = datetime.datetime.now()
-        new_data.save()
+        try:
+            new_data.save()
+        except:
+            print ("db busy\n")
 
 
 SerSock.close()
