@@ -251,6 +251,16 @@ app.controller('DeviationCtrl',  function ($scope,$http,globalParams) {
     params:{meter_eui: globalParams.current_meter_eui,
       data_qm: globalParams.data_qm_p }
   }).success(function(response) {
+	  
+	  if(response.length==12){
+		  factoryContent = '出厂检定偏差曲线'
+		  factoryData = [0, response[7].deviation_val, response[8].deviation_val, response[9].deviation_val,response[10].deviation_val, response[11].deviation_val]
+	  }
+	  else {
+		  factoryContent = '暂未录入出厂检定参数'
+		  factoryData = [0,0,0,0,0,0]
+	  }			  
+
     $scope.chartConfig = {
             options: {
                 chart: {
@@ -284,10 +294,14 @@ app.controller('DeviationCtrl',  function ($scope,$http,globalParams) {
                 valueSuffix: '%'
             },
             series: [{
-                name: '偏差统计',
+                name: '最新检定偏差曲线',
                 data: [0, response[0].deviation_val, response[1].deviation_val, response[2].deviation_val,
                        response[3].deviation_val, response[4].deviation_val]
-            }, 
+            },
+            {
+                name: factoryContent,
+                data: factoryData
+            },
             {name: '实时工况瞬时流量',
              marker: {
                 radius: 5,
@@ -925,6 +939,7 @@ app.controller('IdentificationShowCtrl', function ($scope, $http, globalParams) 
 app.controller('AddIdentificationCtrl', function ($scope, $http, globalParams) {
 	  $scope.identDate = new Date();
     $scope.nextDate = new Date();
+    $scope.checkboxSelection = 0;
 	  
 	  $http({
 	    url:'/getIndComp',
@@ -1025,7 +1040,8 @@ app.controller('AddIdentificationCtrl', function ($scope, $http, globalParams) {
 	        Qmax60 : $scope.Qmax60,
 	        Qmax40 : $scope.Qmax40,   
 	        Qmax20 : $scope.Qmax20,
-	        Qmax10 : $scope.Qmax10 
+	        Qmax10 : $scope.Qmax10,
+	        isFactory: $scope.checkboxSelection
 	      };
 	    $http({
 	      url: '/addIndentificationMeter',
@@ -1105,6 +1121,14 @@ app.controller('DCDeviationCtrl',  function ($scope,$http,globalParams) {
 	    params:{meter_eui: "36ffd60532573238",
 	      data_qm: 3.5 }
 	  }).success(function(response) {
+		  if(response.length==12){
+			  factoryContent = '出厂检定偏差曲线'
+			  factoryData = [0, response[7].deviation_val, response[8].deviation_val, response[9].deviation_val,response[10].deviation_val, response[11].deviation_val]
+		  }
+		  else{
+			  factoryContent = '暂未录入出厂检定参数'
+			  factoryData = [0,0,0,0,0,0]
+		  }			  
 	    $scope.chartConfig = {
 	            options: {
 	                chart: {
@@ -1125,6 +1149,9 @@ app.controller('DCDeviationCtrl',  function ($scope,$http,globalParams) {
 	                title: {
 	                    text: '偏差(%)'
 	                },
+	                min: -2,
+	                max: 2,
+	                startOnTick: false,
 	                plotLines: [{
 	                    value: 0,
 	                    width: 1,
@@ -1135,10 +1162,14 @@ app.controller('DCDeviationCtrl',  function ($scope,$http,globalParams) {
 	                valueSuffix: '%'
 	            },
 	            series: [{
-	                name: '偏差统计',
+	                name: '最新检定偏差曲线',
 	                data: [0, response[0].deviation_val, response[1].deviation_val, response[2].deviation_val,
 	                       response[3].deviation_val, response[4].deviation_val]
-	            }, 
+	            },
+	            {
+	                name: factoryContent,
+	                data: factoryData
+	            },
 	            {name: '实时工况瞬时流量',
 	             marker: {
 	                radius: 5,
@@ -1230,6 +1261,14 @@ app.controller('DCOutDiffCtrl-shunshi', function ($scope, $http) {
 			    params:{meter_eui: meterEui,
 			      data_qm: $scope.qm_edit }
 			  }).success(function(response) {
+				  if(response.length==12){
+					  factoryContent = '出厂检定偏差曲线'
+					  factoryData = [0, response[7].deviation_val, response[8].deviation_val, response[9].deviation_val,response[10].deviation_val, response[11].deviation_val]
+				  }
+				  else{
+					  factoryContent = '暂未录入出厂检定参数'
+					  factoryData = [0,0,0,0,0,0]
+				  }
 				$scope.warning = "选中流量计的流量范围:"+response[6].outputmin+"~"+response[6].outputmax+"(m³/h)";
 				var qm = parseFloat($scope.qm_edit);
 				var temp = parseFloat($scope.temp_edit);
@@ -1253,6 +1292,9 @@ app.controller('DCOutDiffCtrl-shunshi', function ($scope, $http) {
 			                title: {
 			                    text: '偏差(%)'
 			                },
+			                min: -2,
+			                max: 2,
+			                startOnTick: false,
 			                plotLines: [{
 			                    value: 0,
 			                    width: 1,
@@ -1263,10 +1305,14 @@ app.controller('DCOutDiffCtrl-shunshi', function ($scope, $http) {
 			                valueSuffix: '%'
 			            },
 			            series: [{
-			                name: '偏差统计',
+			                name: '最新检定偏差曲线',
 			                data: [0, response[0].deviation_val, response[1].deviation_val, response[2].deviation_val,
 			                       response[3].deviation_val, response[4].deviation_val]
-			            }, 
+			            },
+			            {
+			                name: factoryContent,
+			                data: factoryData
+			            },
 			            {name: '实时工况瞬时流量偏差(%)',
 			             marker: {
 			                radius: 5,
@@ -1357,6 +1403,14 @@ app.controller('DCOutDiffCtrl-total', function ($scope, $http) {
 			    params:{meter_eui: meterEui,
 			      data_qm: $scope.qm_edit }
 			  }).success(function(response) {
+				  if(response.length==12){
+					  factoryContent = '出厂检定偏差曲线'
+					  factoryData = [0, response[7].deviation_val, response[8].deviation_val, response[9].deviation_val,response[10].deviation_val, response[11].deviation_val]
+				  }
+				  else{
+					  factoryContent = '暂未录入出厂检定参数'
+					  factoryData = [0,0,0,0,0,0]
+				  }
 				$scope.warning = "选中流量计的流量范围:"+response[6].outputmin+"~"+response[6].outputmax+"(m³/h)";
 				var qm = parseFloat($scope.qm_edit);
 				var temp = parseFloat($scope.temp_edit);
@@ -1380,6 +1434,9 @@ app.controller('DCOutDiffCtrl-total', function ($scope, $http) {
 			                title: {
 			                    text: '偏差(%)'
 			                },
+			                min: -2,
+			                max: 2,
+			                startOnTick: false,
 			                plotLines: [{
 			                    value: 0,
 			                    width: 1,
@@ -1390,10 +1447,14 @@ app.controller('DCOutDiffCtrl-total', function ($scope, $http) {
 			                valueSuffix: '%'
 			            },
 			            series: [{
-			                name: '偏差统计',
+			                name: '最新检定偏差曲线',
 			                data: [0, response[0].deviation_val, response[1].deviation_val, response[2].deviation_val,
 			                       response[3].deviation_val, response[4].deviation_val]
-			            }, 
+			            },
+			            {
+			                name: factoryContent,
+			                data: factoryData
+			            },
 			            {name: '实时工况瞬时流量偏差(%)',
 			             marker: {
 			                radius: 5,

@@ -64,6 +64,8 @@ class DataWarnType(models.Model):
     data_warn_level = models.CharField(max_length = 200)
     def __uincode__(self):
         return "warn_type: " +self.data_warn
+class DataWarnTypeAdmin(admin.ModelAdmin):
+    list_display = ('data_warn', 'data_warn_reason', 'data_warn_solution', 'data_warn_level')
     
 class WarnInfo(models.Model):
     meter_eui = models.CharField(max_length=200)
@@ -74,10 +76,8 @@ class WarnInfo(models.Model):
     warn_other = models.CharField(max_length=200)
     def __uincode__(self):
         return "meter_eui: " +self.meter_eui + "data_warn " + self.data_warn 
-        
-class DataWarnTypeAdmin(admin.ModelAdmin):
-    list_display = ('data_warn', 'data_warn_reason', 'data_warn_solution', 'data_warn_level')
-    
+class WarnInfoAdmin(admin.ModelAdmin):
+    list_display = ('meter_eui', 'data_warn')        
     
 class Company(models.Model):
     user_id = models.CharField(max_length=24)
@@ -97,7 +97,9 @@ class UserFeedback(models.Model):
     solution_result = models.CharField(max_length=200)
     def __uincode__(self):
         return "user_id: "+self.user_id+ " report_time: "+self.report_time+ " solution_deadlie "+ self.solution_deadline + " problem: "+ self.problem 
-
+class UserFeedbackAdmin(admin.ModelAdmin):
+    list_display = ('user_id', 'problem')
+    
 class IdentificationMeter(models.Model):
     meter_eui = models.CharField(max_length=200)
     
@@ -115,6 +117,7 @@ class IdentificationMeter(models.Model):
     Qmax40 = models.CharField(max_length=200)
     Qmax20 = models.CharField(max_length=200)
     Qmax10 = models.CharField(max_length=200)
+    isFactory = models.IntegerField(default=0)
     def __uincode__(self):
         return "meter_eui: "+self.meter_eui
 class IndMeterAdmin(admin.ModelAdmin):
@@ -146,5 +149,7 @@ admin.site.register(Data, DataAdmin)
 admin.site.register(IdentificationMeter, IndMeterAdmin)
 admin.site.register(District, DistrictAdmin)
 admin.site.register(DataWarnType, DataWarnTypeAdmin)
+admin.site.register(UserFeedback, UserFeedbackAdmin)
+admin.site.register(WarnInfo, WarnInfoAdmin)
 
 # Create your models here.

@@ -155,18 +155,18 @@ while True:
 
     if data_type == 17:
         payload = data[12:(12+24)]
-        if length == 40:
-            warn = data[36:(36+16)]
-            for i in range(1,15,2):
-                if warn[i]:
-                    warn_num = i/2+20
-                    new_warn = WarnInfo(meter_eui=eui_str,data_warn=warn_num,warn_level=1)
-                    new_warn.warn_date = datetime.datetime.now()
-                    try:
-                        new_warn.save()
-                    except:
-                        print ("db busy\n")
-                    print ("warn info add\n");
+#         if length == 40:
+#             warn = data[36:(36+16)]
+#             for i in range(1,15,2):
+#                 if warn[i]:
+#                     warn_num = i/2+20
+#                     new_warn = WarnInfo(meter_eui=eui_str,data_warn=warn_num,warn_level=1)
+#                     new_warn.warn_date = datetime.datetime.now()
+#                     try:
+#                         new_warn.save()
+#                     except:
+#                         print ("db busy\n")
+#                     print ("warn info add\n");
              
         pres, temp, qm, qb, vm, vb = struct.unpack("!ffffff", payload)
         meter_data=Data.objects.filter(meter_eui=eui_str).order_by('-data_id')

@@ -1473,7 +1473,16 @@
                     </div>
                 </div>
                 <div class="col-lg-4">
-                <button class="btn btn-primary col-lg-offset-10" ng-click="submit()">保存</button>
+                    <div class="form-group">
+                        <label for="inputStandard" class="col-lg-5 control-label">出厂检定参数:</label>
+                        <div class="col-lg-5">
+                          <div class="bs-component">
+							<input type="radio" value=1 ng-model="checkboxSelection"/>  是  
+							<input type="radio" value=0 ng-model="checkboxSelection"/>  否  
+                          </div>
+                        </div>
+						<button class="btn btn-primary" ng-click="submit()">保存</button>
+                    </div>
                 </div>
               </div>                 
 						</form>
